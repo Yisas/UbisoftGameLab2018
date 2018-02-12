@@ -1,6 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/**
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ *  WARNING SCRIPT OBSOLETE/BROKEN ONLY LEAVING THIS HERE IN CASE WE WANNA LOOK AT SOME OF THIS FOR REFERENCE 
+ * 
+ * 
+ * 
+ * 
+ * 
+ **/
+
 //simple "platformer enemy" AI
 [RequireComponent(typeof(CharacterMotor))]
 [RequireComponent(typeof(DealDamage))]
@@ -82,8 +97,8 @@ public class EnemyAI : MonoBehaviour
 			AudioSource.PlayClipAtPoint(bounceSound, transform.position);
 		if(playerMove)
 		{
-			Vector3 bounceMultiplier = new Vector3(0f, 1.5f, 0f) * playerMove.onEnemyBounce;
-			playerMove.Jump (bounceForce + bounceMultiplier);
+			//Vector3 bounceMultiplier = new Vector3(0f, 1.5f, 0f) * playerMove.onEnemyBounce;
+			//playerMove.Jump (bounceForce + bounceMultiplier);
 		}
 		else
 			Debug.LogWarning("'Player' tagged object landed on enemy, but without playerMove script attached, is unable to bounce");

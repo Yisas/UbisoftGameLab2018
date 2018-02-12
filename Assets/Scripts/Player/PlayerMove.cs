@@ -3,7 +3,6 @@ using System.Collections;
 
 //handles player movement, utilising the CharacterMotor class
 [RequireComponent(typeof(CharacterMotor))]
-[RequireComponent(typeof(DealDamage))]
 [RequireComponent(typeof(AudioSource))]
 public class PlayerMove : MonoBehaviour
 {
@@ -38,8 +37,6 @@ public class PlayerMove : MonoBehaviour
     public Vector3 thirdJumpForce = new Vector3(0, 13, 0);  //the force of a 3rd consecutive jump
     public float jumpDelay = 0.1f;                          //how fast you need to jump after hitting the ground, to do the next type of jump
     public float jumpLeniancy = 0.17f;                      //how early before hitting the ground you can press jump, and still have it work
-    [HideInInspector]
-    public int onEnemyBounce;
 
     // States
     private int onJump;
@@ -53,8 +50,6 @@ public class PlayerMove : MonoBehaviour
     private Transform[] floorCheckers;
     private Quaternion screenMovementSpace;
     private CharacterMotor characterMotor;
-    private EnemyAI enemyAI;
-    private DealDamage dealDamage;
 
     //setup
     void Awake()
@@ -80,7 +75,6 @@ public class PlayerMove : MonoBehaviour
         }
 
         //usual setup
-        dealDamage = GetComponent<DealDamage>();
         characterMotor = GetComponent<CharacterMotor>();
         //gets child objects of floorcheckers, and puts them in an array
         //later these are used to raycast downward and see if we are on the ground
@@ -190,17 +184,9 @@ public class PlayerMove : MonoBehaviour
                         Vector3 slide = new Vector3(0f, -slideAmount, 0f);
                         GetComponent<Rigidbody>().AddForce(slide, ForceMode.Force);
                     }
-                    //enemy bouncing
-                    if (hit.transform.tag == "Enemy" && GetComponent<Rigidbody>().velocity.y < 0)
-                    {
-                        enemyAI = hit.transform.GetComponent<EnemyAI>();
-                        enemyAI.BouncedOn();
-                        onEnemyBounce++;
-                        dealDamage.Attack(hit.transform.gameObject, 1, 0f, 0f);
-                    }
-                    else
-                        onEnemyBounce = 0;
+                        
                     //moving platforms
+                    // TODO: double check this implementation
                     if (hit.transform.tag == "MovingPlatform" || hit.transform.tag == "Pushable")
                     {
                         movingObjSpeed = hit.transform.GetComponent<Rigidbody>().velocity;
@@ -263,6 +249,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (jumpSound)
         {
+            // TODO: add clip volume change as attribute, not hardcoded. Single get
             GetComponent<AudioSource>().volume = 1;
             GetComponent<AudioSource>().clip = jumpSound;
             GetComponent<AudioSource>().Play();
