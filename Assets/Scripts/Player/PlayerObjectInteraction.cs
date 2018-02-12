@@ -8,11 +8,7 @@ using System.Collections;
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerObjectInteraction : MonoBehaviour
 {
-    // GGJ additions
-    private ResetButton resetButton;
-    private bool canPushButton = false;
-    private ResetButton button = null;
-
+    // Audio
     public AudioClip pickUpSound;                               //sound when you pickup/grab an object
     public AudioClip throwSound;                                //sound when you throw an object
     public AudioClip boxCollideSound;                           //sound when you collide with a box
@@ -38,15 +34,18 @@ public class PlayerObjectInteraction : MonoBehaviour
     public GameObject heldObj;
     private Vector3 holdPos;
     private FixedJoint joint;
-    private float timeOfPickup, timeOfThrow, defRotateSpeed;
     private Color gizmoColor;
+    private ResetButton resetButton = null;
 
+    // State attributes
+    private float timeOfPickup, timeOfThrow, defRotateSpeed;
+    private bool canPushButton = false;
 
+    // Private references
     private PlayerMove playerMove;
     private CharacterMotor characterMotor;
     private TriggerParent triggerParent;
     private RigidbodyInterpolation objectDefInterpolation;
-
 
     //setup
     void Awake()
@@ -85,13 +84,9 @@ public class PlayerObjectInteraction : MonoBehaviour
 
         if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj == null && canPushButton)
         {
-            animator.SetTrigger("PushSingleMotion");
+            PushButton();
 
-            if (button)
-                button.Push();
-            else
-                Debug.LogError("Button reference is missing dude!");
-
+            // TODO: huh?
             return;
         }
 
@@ -145,7 +140,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         if (other.tag == "Button")
         {
             canPushButton = true;
-            button = other.GetComponent<ResetButton>();
+            resetButton = other.GetComponent<ResetButton>();
         }
     }
 
@@ -154,7 +149,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         if (other.tag == "Button")
         {
             canPushButton = false;
-            button = null;
+            resetButton = null;
         }
     }
 
@@ -182,9 +177,9 @@ public class PlayerObjectInteraction : MonoBehaviour
     public void PushButton()
     {
         if (resetButton)
-            resetButton.Push();
-
-        resetButton = null;
+            resetButton.Push(playerMove.PlayerID);
+        else
+            Debug.LogError("Button reference is missing dude!");
     }
 
     private void GrabPushable(Collider other)
