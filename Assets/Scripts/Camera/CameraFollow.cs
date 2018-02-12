@@ -12,7 +12,6 @@ public class CameraFollow : MonoBehaviour
     public float followSpeed = 6;                               //how fast the camera moves to its intended position
     public float inputRotationSpeed = 100;                      //how fast the camera rotates around lookTarget when you press the camera adjust buttons
     public float rotateDamping = 100;                           //how fast camera rotates to look at target
-    public GameObject waterFilter;                              //object to render in front of camera when it is underwater
     public float minDistance = 5;                               //how close camera can move to player, when avoiding clipping with walls
 
     private Transform followTarget;
@@ -25,8 +24,6 @@ public class CameraFollow : MonoBehaviour
         playerMove = target.GetComponent<PlayerMove>();
         followTarget = new GameObject().transform;  //create empty gameObject as camera target, this will follow and rotate around the player
         followTarget.name = "Camera Target";
-        if (waterFilter)
-            waterFilter.GetComponent<Renderer>().enabled = false;
         defTargetOffset = targetOffset;
         if (!target)
             Debug.LogError("'CameraFollow script' has no target assigned to it", transform);
@@ -43,23 +40,17 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
-    //toggle waterfilter, is camera clipping walls?
+    //is camera clipping walls?
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Water" && waterFilter)
-            waterFilter.GetComponent<Renderer>().enabled = true;
-
-        if (other.tag != "Water" && !other.isTrigger)
+        if (!other.isTrigger)
             camColliding = true;
     }
 
-    //toggle waterfilter, is camera clipping walls?
+    //is camera clipping walls?
     void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Water" && waterFilter)
-            waterFilter.GetComponent<Renderer>().enabled = false;
-
-        if (other.tag != "Water" && !other.isTrigger)
+        if (!other.isTrigger)
             camColliding = false;
     }
 
