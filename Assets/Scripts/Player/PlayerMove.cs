@@ -105,14 +105,14 @@ public class PlayerMove : MonoBehaviour
         screenMovementRight = screenMovementSpace * Vector3.right;
 
         //get movement input, set direction to move in
-        float h = Input.GetAxisRaw("Horizontal " + playerID);
-        float v = Input.GetAxisRaw("Vertical " + playerID);
+        float horizontalInput = Input.GetAxisRaw("Horizontal " + playerID);
+        float verticalInput = Input.GetAxisRaw("Vertical " + playerID);
 
-        direction = (screenMovementForward * v) + (screenMovementRight * h);
+        direction = (screenMovementForward * verticalInput) + (screenMovementRight * horizontalInput);
 
         if (restrictMovementToOneAxis)
         {
-            float magnitude = new Vector2(h, v).magnitude;
+            float magnitude = new Vector2(horizontalInput, verticalInput).magnitude;
             direction = new Vector3(transform.forward.x * Mathf.Sign(direction.x) * Mathf.Sign(mainCam.forward.x), 0, transform.forward.z * Mathf.Sign(direction.z) * Mathf.Sign(mainCam.forward.z)) * (Mathf.Abs(magnitude));
         }
 
@@ -145,6 +145,7 @@ public class PlayerMove : MonoBehaviour
         // Adding footsteps audio GGJ2018:
         if (grounded && runSound && !GetComponent<AudioSource>().isPlaying && GetComponent<Rigidbody>().velocity.magnitude > 0)
         {
+            // TODO: add clip volume change as attribute, not hardcoded
             GetComponent<AudioSource>().volume = 1;
             GetComponent<AudioSource>().clip = runSound;
             GetComponent<AudioSource>().Play();
