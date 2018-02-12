@@ -6,7 +6,7 @@ using System.Collections;
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(PlayerMove))]
-public class Throwing : MonoBehaviour
+public class PlayerObjectInteraction : MonoBehaviour
 {
     // GGJ additions
     private ResetButton resetButton;

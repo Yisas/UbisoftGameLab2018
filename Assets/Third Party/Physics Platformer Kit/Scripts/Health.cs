@@ -28,7 +28,7 @@ public class Health : MonoBehaviour
 	private int defHealth, h, hitForce;
 	private bool hitColor = false;
 	private float nextFlash, stopFlashTime;
-	private Throwing throwing;
+	private PlayerObjectInteraction throwing;
 	
 	//setup
 	void Awake()
@@ -89,7 +89,7 @@ public class Health : MonoBehaviour
 	{
 		//player drop item
 		if(tag == "Player")
-			throwing = GetComponent<Throwing>();
+			throwing = GetComponent<PlayerObjectInteraction>();
 		if(throwing && throwing.heldObj && throwing.heldObj.tag == "Pickup")
 			throwing.ThrowPickup();
 		

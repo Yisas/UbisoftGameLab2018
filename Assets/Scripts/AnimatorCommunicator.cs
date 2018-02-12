@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimatorCommunicator : MonoBehaviour {
 
-    public Throwing throwing;
+    public PlayerObjectInteraction throwing;
 
     public void PushButton()
     {
