@@ -44,6 +44,7 @@ public class PlayerObjectInteraction : MonoBehaviour
     // Private references
     private PlayerMove playerMove;
     private CharacterMotor characterMotor;
+    private AudioSource audioSource;
     private TriggerParent triggerParent;
     private RigidbodyInterpolation objectDefInterpolation;
 
@@ -114,8 +115,6 @@ public class PlayerObjectInteraction : MonoBehaviour
     {
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
         {
-            AudioSource aus = GetComponent<AudioSource>();
-
             if (boxCollideSound)
             {
                 if (other.GetComponent<AppearingObject>() && other.gameObject.layer != LayerMask.NameToLayer("Default"))
@@ -123,16 +122,16 @@ public class PlayerObjectInteraction : MonoBehaviour
                     if (appearObjectSound)
                     {
                         Instantiate(particlesObjectAppear, transform.position + transform.forward + transform.up, transform.rotation);
-                        GetComponent<AudioSource>().volume = 1f;
-                        aus.clip = appearObjectSound;
-                        aus.Play();
+                        audioSource.volume = 1f;
+                        audioSource.clip = appearObjectSound;
+                        audioSource.Play();
                     }
                 }
                 else
                 {
-                    GetComponent<AudioSource>().volume = 0.5f;
-                    aus.clip = boxCollideSound;
-                    aus.Play();
+                    audioSource.volume = 0.5f;
+                    audioSource.clip = boxCollideSound;
+                    audioSource.Play();
                 }
             }
         }
@@ -265,9 +264,10 @@ public class PlayerObjectInteraction : MonoBehaviour
     {
         if (throwSound)
         {
-            GetComponent<AudioSource>().volume = 1;
-            GetComponent<AudioSource>().clip = throwSound;
-            GetComponent<AudioSource>().Play();
+            // TODO: undo hardcoded volume, multiple get etc.
+            audioSource.volume = 1;
+            audioSource.clip = throwSound;
+            audioSource.Play();
         }
         Destroy(joint);
         heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
@@ -284,9 +284,10 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             if (pickUpSound)
             {
-                GetComponent<AudioSource>().volume = 1;
-                GetComponent<AudioSource>().clip = pickUpSound;
-                GetComponent<AudioSource>().Play();
+                // TODO: undo hardcoded volume, multiple get etc.
+                audioSource.volume = 1;
+                audioSource.clip = pickUpSound;
+                audioSource.Play();
             }
             joint = heldObj.AddComponent<FixedJoint>();
             joint.connectedBody = GetComponent<Rigidbody>();
