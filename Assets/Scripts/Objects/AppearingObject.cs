@@ -10,7 +10,7 @@ public class AppearingObject : MonoBehaviour {
     {
         if(collision.transform.tag == "Player")
         {
-            int playerID = collision.transform.GetComponent<PlayerMove>().playerID;
+            int playerID = collision.transform.GetComponent<PlayerMove>().PlayerID;
 
             if(playerID==playerToAppearTo)
             {

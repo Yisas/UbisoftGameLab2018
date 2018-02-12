@@ -12,7 +12,7 @@ public class TutorialTrigger : MonoBehaviour {
     {
         if (other.tag == "Player")
         {
-            UIManager.Instance.showText(myText, other.GetComponent<PlayerMove>().playerID);
+            UIManager.Instance.showText(myText, other.GetComponent<PlayerMove>().PlayerID);
         }
     }
 
@@ -20,7 +20,7 @@ public class TutorialTrigger : MonoBehaviour {
     {
         if (other.tag == "Player")
         {
-            UIManager.Instance.hideText(other.GetComponent<PlayerMove>().playerID);
+            UIManager.Instance.hideText(other.GetComponent<PlayerMove>().PlayerID);
         }
     }
 }

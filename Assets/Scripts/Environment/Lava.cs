@@ -13,7 +13,7 @@ public class Lava : MonoBehaviour {
         if(other.tag == "Player")
         {
             // Deactivate camera follow
-            int playerID = other.GetComponent<PlayerMove>().playerID;
+            int playerID = other.GetComponent<PlayerMove>().PlayerID;
 
             cameraFollow = GameObject.Find("Player " + playerID + " Camera").GetComponent<CameraFollow>();
 

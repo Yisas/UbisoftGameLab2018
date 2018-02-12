@@ -33,7 +33,7 @@ public class SceneTransitionTrigger : MonoBehaviour {
     {
         if(other.tag == "Player")
         {
-            if(other.GetComponent<PlayerMove>().playerID == 1)
+            if(other.GetComponent<PlayerMove>().PlayerID == 1)
             {
                 player1In = true;
             }
@@ -48,7 +48,7 @@ public class SceneTransitionTrigger : MonoBehaviour {
     {
         if (other.tag == "Player")
         {
-            if (other.GetComponent<PlayerMove>().playerID == 1)
+            if (other.GetComponent<PlayerMove>().PlayerID == 1)
             {
                 player1In = false;
             }

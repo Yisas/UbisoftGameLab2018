@@ -7,8 +7,10 @@ using System.Collections;
 [RequireComponent(typeof(AudioSource))]
 public class PlayerMove : MonoBehaviour
 {
-    // GGJ addition
-    public int playerID;
+    [SerializeField]
+    private int playerID;
+
+    // Camera interactions
     public float cameraDelayTimerBeforeRespawn;
     private bool restrictMovementToOneAxis = false;
 
@@ -17,7 +19,6 @@ public class PlayerMove : MonoBehaviour
     public Animator animator;                   //object with animation controller on, which you want to animate
     public AudioClip jumpSound;                 //play when jumping
     public AudioClip landSound;                 //play when landing on ground
-    //GGJ addition:
     public AudioClip runSound;                  //play when running
 
     //movement
@@ -40,13 +41,17 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector]
     public int onEnemyBounce;
 
+    // States
     private int onJump;
     private bool grounded;
-    private Transform[] floorCheckers;
-    private Quaternion screenMovementSpace;
+
+    // Movement data
     private float airPressTime, groundedCount, curAccel, curDecel, curRotateSpeed, slope;
     private Vector3 direction, moveDirection, screenMovementForward, screenMovementRight, movingObjSpeed;
 
+    // Private references
+    private Transform[] floorCheckers;
+    private Quaternion screenMovementSpace;
     private CharacterMotor characterMotor;
     private EnemyAI enemyAI;
     private DealDamage dealDamage;
@@ -279,5 +284,14 @@ public class PlayerMove : MonoBehaviour
     public bool isRestrictedMovementToOneAxis()
     {
         return restrictMovementToOneAxis;
+    }
+
+    // Getters
+    public int PlayerID
+    {
+        get
+        {
+            return playerID;
+        }
     }
 }

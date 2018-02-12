@@ -9,7 +9,6 @@ using System.Collections;
 public class Throwing : MonoBehaviour
 {
     // GGJ additions
-    public int playerID;
     private ResetButton resetButton;
     private bool canPushButton = false;
     private ResetButton button = null;
@@ -75,7 +74,7 @@ public class Throwing : MonoBehaviour
     void Update()
     {
         //when we press grab button, throw object if we're holding one
-        if (Input.GetButtonDown("Grab " + playerID) && heldObj)
+        if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj)
         {
             if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + 0.1f)
                 ThrowPickup();
@@ -84,7 +83,7 @@ public class Throwing : MonoBehaviour
 
         }
 
-        if (Input.GetButtonDown("Grab " + playerID) && heldObj == null && canPushButton)
+        if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj == null && canPushButton)
         {
             animator.SetTrigger("PushSingleMotion");
 
@@ -109,7 +108,7 @@ public class Throwing : MonoBehaviour
             animator.SetBool("HoldingPushable", false);
 
         //when grab is released, let go of any pushable objects were holding
-        if (Input.GetButtonDown("Drop " + playerID) && heldObj != null)
+        if (Input.GetButtonDown("Drop " + playerMove.PlayerID) && heldObj != null)
         {
             DropPickup();
         }
@@ -163,7 +162,7 @@ public class Throwing : MonoBehaviour
     void OnTriggerStay(Collider other)
     {
         //if grab is pressed and an object is inside the players "grabBox" trigger
-        if (Input.GetButton("Grab " + playerID))
+        if (Input.GetButton("Grab " + playerMove.PlayerID))
         {
             //pickup
             if (other.tag == "Pickup" && heldObj == null && timeOfThrow + 0.2f < Time.time)
@@ -172,7 +171,7 @@ public class Throwing : MonoBehaviour
                 return;
             }
             //grab
-            if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerID))) && heldObj == null && timeOfThrow + 0.2f < Time.time)
+            if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null && timeOfThrow + 0.2f < Time.time)
             {
                 GrabPushable(other);
                 return;
