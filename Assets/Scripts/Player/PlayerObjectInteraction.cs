@@ -64,6 +64,7 @@ public class PlayerObjectInteraction : MonoBehaviour
 
         playerMove = GetComponent<PlayerMove>();
         characterMotor = GetComponent<CharacterMotor>();
+        audioSource = GetComponent<AudioSource>();
         defRotateSpeed = playerMove.rotateSpeed;
         //set arms animation layer to animate with 1 weight (full override)
         if (animator)
