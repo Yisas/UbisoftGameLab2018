@@ -79,6 +79,8 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + 0.1f)
                 ThrowPickup();
+            else if (heldObj.tag == "Player" && Time.time > timeOfPickup + 0.1f)    //NOTE: can combine with above 'if' ---Added for player to pick up another player
+                ThrowPickup(); 
             else if (heldObj.tag == "Pushable")
                 DropPickup();
 
@@ -95,6 +97,13 @@ public class PlayerObjectInteraction : MonoBehaviour
         //set animation value for arms layer
         if (animator)
             if (heldObj && heldObj.tag == "Pickup")
+                animator.SetBool("HoldingPickup", true);
+            else
+                animator.SetBool("HoldingPickup", false);
+
+        //**NOTE: Add Animation for picking up the player. --- BUG: player animation still active when the player falls off players head
+        if (animator)
+            if (heldObj && heldObj.tag == "Player")
                 animator.SetBool("HoldingPickup", true);
             else
                 animator.SetBool("HoldingPickup", false);
@@ -171,6 +180,12 @@ public class PlayerObjectInteraction : MonoBehaviour
                 GrabPushable(other);
                 return;
             }
+            //NOTE: Added to pickup the player:
+            if (other.tag == "Player" && heldObj == null && timeOfThrow + 0.2f < Time.time)
+            {
+                PickupPlayer(other);    //Created new function.
+                return;
+            }
         }
     }
 
@@ -201,6 +216,37 @@ public class PlayerObjectInteraction : MonoBehaviour
             po.SetIsBeingPushed(true);
         else
             Debug.LogError("Unasignsed PushableObject component");
+    }
+
+    //NOTE: Added this function to lift above its head
+    private void PickupPlayer(Collider other)
+    {
+        Debug.Log("Player Pickup triggered !!!");
+        Mesh otherMesh = other.GetComponent<MeshFilter>().mesh;
+        holdPos = transform.position;
+        holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + gap;
+
+        //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
+        if (!Physics.CheckSphere(holdPos, checkRadius, 2))
+        {
+            gizmoColor = Color.green;
+            heldObj = other.gameObject;
+            objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
+            heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+            heldObj.transform.position = holdPos;
+            heldObj.transform.rotation = transform.rotation;
+            //AddJoint();
+            //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
+            heldObj.GetComponent<Rigidbody>().mass *= weightChange;
+            //make sure we don't immediately throw object after picking it up
+            timeOfPickup = Time.time;
+        }
+        //if not print to console (look in scene view for sphere gizmo to see whats stopping the pickup)
+        else
+        {
+            gizmoColor = Color.red;
+            print("Can't lift object here. If nothing is above the player, make sure triggers are set to layer index 2 (ignore raycast by default)");
+        }
     }
 
     private void LiftPickup(Collider other)
@@ -236,6 +282,13 @@ public class PlayerObjectInteraction : MonoBehaviour
     private void DropPickup()
     {
         if (heldObj.tag == "Pickup")
+        {
+            heldObj.transform.position = dropBox.transform.position;
+            heldObj.GetComponent<Rigidbody>().mass /= weightChange;
+        }
+
+        //NOTE: Added to allow and drop the player....
+        if (heldObj.tag == "Player")
         {
             heldObj.transform.position = dropBox.transform.position;
             heldObj.GetComponent<Rigidbody>().mass /= weightChange;
