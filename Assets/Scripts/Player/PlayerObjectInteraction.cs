@@ -103,7 +103,7 @@ public class PlayerObjectInteraction : MonoBehaviour
 
         //**NOTE: Add Animation for picking up the player. --- BUG: player animation still active when the player falls off players head
         if (animator)
-            if (heldObj && heldObj.tag == "Player")
+            if (heldObj && heldObj.tag == "Player") // && !isJumping --the character lifted jumps
                 animator.SetBool("HoldingPickup", true);
             else
                 animator.SetBool("HoldingPickup", false);
@@ -235,7 +235,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
-            //AddJoint();
+            AddJoint();
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
             heldObj.GetComponent<Rigidbody>().mass *= weightChange;
             //make sure we don't immediately throw object after picking it up
@@ -247,6 +247,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             gizmoColor = Color.red;
             print("Can't lift object here. If nothing is above the player, make sure triggers are set to layer index 2 (ignore raycast by default)");
         }
+        //if other.getComponent<PlayerMove>().isJumping { dropPickup(); }
     }
 
     private void LiftPickup(Collider other)

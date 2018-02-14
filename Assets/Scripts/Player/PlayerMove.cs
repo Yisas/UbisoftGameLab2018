@@ -37,6 +37,8 @@ public class PlayerMove : MonoBehaviour
     public Vector3 thirdJumpForce = new Vector3(0, 13, 0);  //the force of a 3rd consecutive jump
     public float jumpDelay = 0.1f;                          //how fast you need to jump after hitting the ground, to do the next type of jump
     public float jumpLeniancy = 0.17f;                      //how early before hitting the ground you can press jump, and still have it work
+    //NOTE: adding:
+    public bool isJumping;
 
     // States
     private int onJump;
@@ -247,6 +249,7 @@ public class PlayerMove : MonoBehaviour
     //push player at jump force
     public void Jump(Vector3 jumpVelocity)
     {
+        setJumping();   //Added.
         if (jumpSound)
         {
             // TODO: add clip volume change as attribute, not hardcoded. Single get
@@ -257,6 +260,12 @@ public class PlayerMove : MonoBehaviour
         GetComponent<Rigidbody>().velocity = new Vector3(GetComponent<Rigidbody>().velocity.x, 0f, GetComponent<Rigidbody>().velocity.z);
         GetComponent<Rigidbody>().AddRelativeForce(jumpVelocity, ForceMode.Impulse);
         airPressTime = 0f;
+    }
+
+    //NOTE: added.
+    public void setJumping()
+    {
+        isJumping = true;
     }
 
     public void ToogleRestrictMovementToOneAxis()
