@@ -86,7 +86,6 @@ public class PlayerMove : MonoBehaviour
 
         //Added
         isJumping = true;
-        Debug.Log("isJumpping is set to " + isJumping);
     }
 
     //get state of player, values and input

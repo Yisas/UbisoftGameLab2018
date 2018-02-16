@@ -88,7 +88,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         //NOTE: Added--Now set the heldObj so that when it jumps it gets of the bottom player:                                                   
         if (heldObj != null && heldObj.tag == "Player" && Input.GetButton("Jump " + heldObj.GetComponent<PlayerMove>().PlayerID))
         {
-                Debug.Log("here...");
+                //Debug.Log("here...");
                 PlayerDrop();
         }
 
@@ -226,7 +226,7 @@ public class PlayerObjectInteraction : MonoBehaviour
     //NOTE: Added this function to lift above its head
     private void PickupPlayer(Collider other)
     {
-        Debug.Log("Player Pickup triggered !!!");
+        //Debug.Log("Player Pickup triggered !!!");
         Mesh otherMesh = other.GetComponent<MeshFilter>().mesh;
         holdPos = transform.position;
         holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + gap;
@@ -242,9 +242,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             heldObj.transform.rotation = transform.rotation;
             AddJoint();
             playerMove.setJumping(false);   //Bottom player cannot jump
-
-            Debug.Log("Player on top : " + heldObj.GetComponent<PlayerMove>().PlayerID);
-
+                        
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
             heldObj.GetComponent<Rigidbody>().mass *= weightChange;
             //make sure we don't immediately throw object after picking it up
