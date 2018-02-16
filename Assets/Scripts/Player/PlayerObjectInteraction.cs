@@ -85,14 +85,11 @@ public class PlayerObjectInteraction : MonoBehaviour
                 DropPickup();
         }
 
-        //Now set the heldObj so that when it jumps it gets of the bottom player:                                                   
-        if (heldObj != null && Input.GetButton("Jump " + heldObj.GetComponent<PlayerMove>().PlayerID))
+        //NOTE: Added--Now set the heldObj so that when it jumps it gets of the bottom player:                                                   
+        if (heldObj != null && heldObj.tag == "Player" && Input.GetButton("Jump " + heldObj.GetComponent<PlayerMove>().PlayerID))
         {
-            if (heldObj.tag == "Player")  
-            {
                 Debug.Log("here...");
                 PlayerDrop();
-            }
         }
 
         if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj == null && canPushButton)
