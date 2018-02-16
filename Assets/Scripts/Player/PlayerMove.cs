@@ -83,6 +83,10 @@ public class PlayerMove : MonoBehaviour
         floorCheckers = new Transform[floorChecks.childCount];
         for (int i = 0; i < floorCheckers.Length; i++)
             floorCheckers[i] = floorChecks.GetChild(i);
+
+        //Added
+        isJumping = true;
+        Debug.Log("isJumpping is set to " + isJumping);
     }
 
     //get state of player, values and input
@@ -249,7 +253,13 @@ public class PlayerMove : MonoBehaviour
     //push player at jump force
     public void Jump(Vector3 jumpVelocity)
     {
-        setJumping();   //Added.
+        if (!isJumping)  //Added.
+        {
+            Debug.Log("should not be jumping");
+            return;
+        }
+
+        isJumping = true;
         if (jumpSound)
         {
             // TODO: add clip volume change as attribute, not hardcoded. Single get
@@ -263,9 +273,13 @@ public class PlayerMove : MonoBehaviour
     }
 
     //NOTE: added.
-    public void setJumping()
+    public void setJumping(bool jump)
     {
-        isJumping = true;
+        isJumping = jump;
+    }
+    public bool getJumping()
+    {
+        return isJumping;
     }
 
     public void ToogleRestrictMovementToOneAxis()
