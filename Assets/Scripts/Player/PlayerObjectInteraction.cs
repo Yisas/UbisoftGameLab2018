@@ -108,7 +108,7 @@ public class PlayerObjectInteraction : MonoBehaviour
                 animator.SetBool("HoldingPickup", false);
 
 
-            //**NOTE: Add Animation for picking up the player. --- BUG: player animation still active when the player falls off players head
+            //**NOTE: Add Animation for picking up the player. 
             //if (animator)
             if (heldObj && heldObj.tag == "Player")
                 animator.SetBool("HoldingPickup", true);
@@ -298,7 +298,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             heldObj.GetComponent<Rigidbody>().mass /= weightChange;
         }
 
-        //NOTE: Added to allow and drop the player....
+        //NOTE: Added the bottom player allow and drop the top player
         if (heldObj.tag == "Player")
         {
             heldObj.transform.position = dropBox.transform.position;
@@ -338,11 +338,12 @@ public class PlayerObjectInteraction : MonoBehaviour
         heldObj.GetComponent<Rigidbody>().mass /= weightChange;
         heldObj.GetComponent<Rigidbody>().AddRelativeForce(throwForce, ForceMode.VelocityChange);
         heldObj = null;
-        playerMove.setJumping(true);    //lets the bottom player jump again
+        playerMove.setJumping(true);    //Added: lets the bottom player jump again
         timeOfThrow = Time.time;
     }
 
     //Adding:
+    //If the top player jumps while being held it will break the joint and reset both the players.
     public void PlayerDrop()
     {
         Destroy(joint);
