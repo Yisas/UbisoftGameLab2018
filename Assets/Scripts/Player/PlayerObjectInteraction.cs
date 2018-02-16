@@ -80,7 +80,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + 0.1f)
                 ThrowPickup();
             else if (heldObj.tag == "Player" && Time.time > timeOfPickup + 0.1f)    //NOTE: can combine with above 'if' ---Added for player to pick up another player
-                ThrowPickup(); 
+                ThrowPickup();
             else if (heldObj.tag == "Pushable")
                 DropPickup();
         }
@@ -88,8 +88,8 @@ public class PlayerObjectInteraction : MonoBehaviour
         //NOTE: Added--Now set the heldObj so that when it jumps it gets of the bottom player:                                                   
         if (heldObj != null && heldObj.tag == "Player" && Input.GetButton("Jump " + heldObj.GetComponent<PlayerMove>().PlayerID))
         {
-                //Debug.Log("here...");
-                PlayerDrop();
+            //Debug.Log("here...");
+            PlayerDrop();
         }
 
         if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj == null && canPushButton)
@@ -101,23 +101,26 @@ public class PlayerObjectInteraction : MonoBehaviour
 
         //set animation value for arms layer
         if (animator)
+        {
             if (heldObj && heldObj.tag == "Pickup")
                 animator.SetBool("HoldingPickup", true);
             else
                 animator.SetBool("HoldingPickup", false);
 
-        //**NOTE: Add Animation for picking up the player. --- BUG: player animation still active when the player falls off players head
-        if (animator)
-            if (heldObj && heldObj.tag == "Player") // && !isJumping --the character lifted jumps
+
+            //**NOTE: Add Animation for picking up the player. --- BUG: player animation still active when the player falls off players head
+            //if (animator)
+            if (heldObj && heldObj.tag == "Player")
                 animator.SetBool("HoldingPickup", true);
             else
                 animator.SetBool("HoldingPickup", false);
 
-        if (heldObj && heldObj.tag == "Pushable")
-            animator.SetBool("HoldingPushable", true);
-        else
-            animator.SetBool("HoldingPushable", false);
+            if (heldObj && heldObj.tag == "Pushable")
+                animator.SetBool("HoldingPushable", true);
+            else
+                animator.SetBool("HoldingPushable", false);
 
+        }
         //when grab is released, let go of any pushable objects were holding
         if (Input.GetButtonDown("Drop " + playerMove.PlayerID) && heldObj != null)
         {
@@ -242,7 +245,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             heldObj.transform.rotation = transform.rotation;
             AddJoint();
             playerMove.setJumping(false);   //Bottom player cannot jump
-                        
+
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
             heldObj.GetComponent<Rigidbody>().mass *= weightChange;
             //make sure we don't immediately throw object after picking it up
