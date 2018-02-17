@@ -10,5 +10,6 @@ public abstract class Movable : MonoBehaviour {
     public float rotationSpeed;
     public float angleChangeLimit;
     public float timeBetweenAngleChange;
-    public Vector3 targetRotation;
+
+    internal Vector3 targetRotation;
 }

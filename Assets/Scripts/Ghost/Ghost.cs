@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // States used in state machine
-enum MovementState { Pursuit, Wander, Return }
+public enum MovementState { Pursuit, Wander, Return, AvoidingWall}
 
 public class Ghost : Movable {
 
@@ -12,35 +12,39 @@ public class Ghost : Movable {
 
     // Internal values hidden from inspector   
     internal bool isCarryingObject;
-    internal MovementState movementState;
+    public MovementState movementState;
+    public float wallAvoidDistance;
 
 
     private List<ResettableObject> pickupableList;
     private ResettableObject closestResettableObject;
     private Coroutine angleChangeCoroutine;
     private bool isWanderCoRunning;
+    private bool isHittingWall;
+    private Vector3 wallNormal;
+    private Vector3 rayHitPosition;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         pickupableList = new List<ResettableObject>();
 
         // Set Movable values
-        velocity = Vector3.zero;
-        velocityMax = 5.0f;
-        accelerationMax = 15.0f;
-        fov = 90.0f;
-        rotationSpeed = 3f;
-        angleChangeLimit = 30.0f;
-        timeBetweenAngleChange = 1.0f;
+        //velocity = Vector3.zero;
+        //velocityMax = 5.0f;
+        //accelerationMax = 15.0f;
+        //fov = 90.0f;
+        //rotationSpeed = 3f;
+        //angleChangeLimit = 30.0f;
+        //timeBetweenAngleChange = 1.0f;
         targetRotation = Vector3.zero;
     }
 	
 	// Update is called once per frame
 	void Update () {
         gatherInfo();
+        avoidWalls();
         updateState();
         move();
-
 	}
 
     private void gatherInfo()
@@ -76,6 +80,10 @@ public class Ghost : Movable {
             // Return the object to its original location
             movementState = MovementState.Return;
         }
+        else if(isHittingWall)
+        {
+            movementState = MovementState.AvoidingWall;
+        }
         else
         {
             movementState = MovementState.Wander;
@@ -91,12 +99,18 @@ public class Ghost : Movable {
                 // Pursue the closest object
                 if(isWanderCoRunning)
                     StopCoroutine(angleChangeCoroutine);
-                MovementUtilitySeek.SteerSeek(this, closestResettableObject.transform);
+                MovementUtilitySeek.SteerSeek(this, closestResettableObject.transform.position);
                 break;
             case MovementState.Return:
                 if (isWanderCoRunning)
                     StopCoroutine(angleChangeCoroutine);
                 // Return the carried object
+                break;
+            case MovementState.AvoidingWall:
+                // Pursue the closest object
+                if (isWanderCoRunning)
+                    StopCoroutine(angleChangeCoroutine);
+                MovementUtilitySeek.SteerSeek(this, wallNormal);
                 break;
             case MovementState.Wander:                
                 MovementUtilityWander.WanderForward(this);
@@ -106,6 +120,47 @@ public class Ghost : Movable {
                 break;
         }
     }
+
+    /**
+     * Casts two rays in front of the ghost to detect if there is wall.
+     * If a wall is hit then seek a position in the direction of the normal of the wall.
+     */
+    private void avoidWalls()
+    {
+        isHittingWall = false;
+        Vector3 position = transform.position;
+        float range = 10.0f;
+        RaycastHit rayHit;
+
+        // Cast a ray to detect walls
+        //if (Physics.Raycast(position + (transform.right * 7), transform.forward, out ray, range) || Physics.Raycast(position - (transform.right * 7), transform.forward, out ray, range))
+        if (Physics.Raycast(position, transform.TransformDirection(Vector3.forward), out rayHit, range))
+        {
+            if (rayHit.collider.gameObject.CompareTag("MapBounds"))
+            {
+                isHittingWall = true; 
+                rayHitPosition = rayHit.point;
+                Vector3 direction = (rayHitPosition - transform.position).normalized;
+                Vector3 wallNormalDirection = Vector3.Cross(direction, Vector3.up);
+                wallNormal = rayHitPosition + wallNormalDirection * wallAvoidDistance;    
+            }
+        }
+        Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 10, Color.blue);
+    }
+
+    // Code used to visualize the wall avoidance
+    private void OnDrawGizmos()
+    {
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(wallNormal, 1.0f);
+        if (rayHitPosition != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(rayHitPosition, 1.0f);
+        }
+    }
+
 
     // Used by wander to change the ghost's angle
     IEnumerator ChangeAngle()

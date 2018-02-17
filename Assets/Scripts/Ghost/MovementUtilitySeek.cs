@@ -4,13 +4,15 @@ using UnityEngine;
 
 public static class MovementUtilitySeek{
 
-    public static void SteerSeek(Movable character, Transform target)
+    /**
+     * Moves and rotates the character towards the target position.
+     */
+    public static void SteerSeek(Movable character, Vector3 targetPosition)
     {
         Vector3 characterPosition = character.transform.position;
-        Vector3 targetPosition = target.transform.position;
 
         // Check if enemy is within our field of view
-        Vector3 directionTowardsTarget = target.transform.position - character.transform.position;
+        Vector3 directionTowardsTarget = targetPosition - character.transform.position;
         // Get angle between the target and our forward
         float angle = Vector3.Angle(directionTowardsTarget, character.transform.forward);
 
@@ -33,7 +35,7 @@ public static class MovementUtilitySeek{
 
             // Rotate towards the target
             Quaternion characterRotation = character.transform.rotation;
-            Vector3 targetOrientation = target.transform.position - character.transform.position;
+            Vector3 targetOrientation = targetPosition - character.transform.position;
             Quaternion rotation = Quaternion.LookRotation(targetOrientation);
             rotation = new Quaternion(0, rotation.y, 0, rotation.w);
             character.transform.rotation = Quaternion.Slerp(characterRotation, rotation, Time.deltaTime * character.rotationSpeed);
