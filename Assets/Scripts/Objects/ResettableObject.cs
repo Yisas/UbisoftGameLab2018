@@ -8,8 +8,15 @@ public class ResettableObject : MonoBehaviour {
     private Vector3 ogPosition;
     private Quaternion ogRotation;
 
-	// Use this for initialization
-	void Start () {
+    //Properties
+    private bool isMoved;
+    private bool isOnPressurePlate;
+    private bool isHeld;
+    // Distance from the original position for the object to be considered moved
+    private const float distanceMovedThreshold = 10.0f;
+
+    // Use this for initialization
+    void Start () {
         ogPosition = transform.position;
         ogRotation = transform.rotation;
 	}
@@ -27,4 +34,35 @@ public class ResettableObject : MonoBehaviour {
         transform.position = ogPosition;
         transform.rotation = ogRotation;
     }
+
+    public bool IsMoved
+    {
+        get
+        {
+            if (Vector3.Distance(ogPosition, transform.position) > distanceMovedThreshold)
+                isMoved = true;
+            else
+                isMoved = false;
+            return isMoved;
+        }
+    }
+
+    public bool IsOnPressurePlate
+    {
+        get { return isOnPressurePlate; }
+        set { isOnPressurePlate = value; }
+    }
+
+    public bool IsHeld
+    {
+        get { return isHeld; }
+        set { isHeld = value; }
+    }
+
+    public Vector3 OriginalPosition
+    {
+        get { return ogPosition; }
+    }
+
+
 }
