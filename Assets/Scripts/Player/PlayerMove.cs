@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.Networking;
 
 //handles player movement, utilising the CharacterMotor class
 [RequireComponent(typeof(CharacterMotor))]
 [RequireComponent(typeof(AudioSource))]
-public class PlayerMove : MonoBehaviour
+public class PlayerMove : NetworkBehaviour
 {
     [SerializeField]
     private int playerID;
@@ -85,7 +85,6 @@ public class PlayerMove : MonoBehaviour
 
         // Get references on startup: required since networking needs player to spawn
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
-        
         mainCam.GetComponent<CameraFollow>().StartFollowingPlayer(this, backCameraPosition);
         mainCam.GetComponent<CameraFollow>().target = transform;
     }
@@ -93,6 +92,11 @@ public class PlayerMove : MonoBehaviour
     //get state of player, values and input
     void Update()
     {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
         //handle jumping
         JumpCalculations();
         //adjust movement values if we're in the air or on the ground
