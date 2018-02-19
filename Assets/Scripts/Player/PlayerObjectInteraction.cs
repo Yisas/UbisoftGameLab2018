@@ -231,6 +231,13 @@ public class PlayerObjectInteraction : MonoBehaviour
             gizmoColor = Color.red;
             print("Can't lift object here. If nothing is above the player, make sure triggers are set to layer index 2 (ignore raycast by default)");
         }
+
+        // If the object is a pickup set the boolean that its currently being held
+        ResettableObject resettableObject = other.GetComponent<ResettableObject>();
+        if (resettableObject != null && resettableObject.CompareTag("Pickup"))
+        {
+            resettableObject.IsHeld = true;
+        }
     }
 
     private void DropPickup()
@@ -255,6 +262,13 @@ public class PlayerObjectInteraction : MonoBehaviour
                 Debug.LogError("Unasignsed PushableObject component");
         }
 
+        // If the object is a pickup set the boolean that its currently being held
+        ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
+        if (resettableObject != null && resettableObject.CompareTag("Pickup"))
+        {
+            resettableObject.IsHeld = false;
+        }
+
         heldObj = null;
         timeOfThrow = Time.time;
 
@@ -276,6 +290,13 @@ public class PlayerObjectInteraction : MonoBehaviour
         heldObj.GetComponent<Rigidbody>().AddRelativeForce(throwForce, ForceMode.VelocityChange);
         heldObj = null;
         timeOfThrow = Time.time;
+
+        // If the object is a pickup set the boolean that its currently being held
+        ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
+        if (resettableObject != null && resettableObject.CompareTag("Pickup"))
+        {
+            resettableObject.IsHeld = false;
+        }
     }
 
     //connect player and pickup/pushable object via a physics joint

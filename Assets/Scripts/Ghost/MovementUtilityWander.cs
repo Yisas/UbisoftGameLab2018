@@ -21,7 +21,7 @@ public static class MovementUtilityWander {
         float smallAngle = Mathf.Clamp(angle - player.angleChangeLimit, 0, 360);
         float largeAngle = Mathf.Clamp(angle + player.angleChangeLimit, 0, 360);
         angle = Random.Range(smallAngle, largeAngle);
-        player.transform.eulerAngles = new Vector3(player.transform.eulerAngles.x, angle, player.transform.eulerAngles.z);
+        //player.transform.eulerAngles = new Vector3(player.transform.eulerAngles.x, angle, player.transform.eulerAngles.z);
         player.targetRotation = new Vector3(0, angle, 0);
     }
 

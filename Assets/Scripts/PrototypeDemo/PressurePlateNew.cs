@@ -75,10 +75,18 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             else
             {
                 objectOnMe = other.gameObject;
-            }
+            }            
 
             Open();
         }
+
+        // If the object is a pickup set the boolean that its on a pressure plate
+        ResettableObject resettableObject = other.GetComponent<ResettableObject>();
+        if(resettableObject != null && resettableObject.CompareTag("Pickup"))
+        {
+            resettableObject.IsOnPressurePlate = true;
+        }
+        
     }
 
     private void Open()
@@ -131,6 +139,13 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             Door[] doors = target.GetComponentsInChildren<Door>();
             foreach (Door d in doors)
                 d.IncCount();
+        }
+
+        // If the object is a pickup set the boolean that its on a pressure plate
+        ResettableObject resettableObject = other.GetComponent<ResettableObject>();
+        if (resettableObject != null && resettableObject.CompareTag("Pickup"))
+        {
+            resettableObject.IsOnPressurePlate = false;
         }
     }
 }

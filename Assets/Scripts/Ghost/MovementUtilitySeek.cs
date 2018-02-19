@@ -17,8 +17,8 @@ public static class MovementUtilitySeek{
         float angle = Vector3.Angle(directionTowardsTarget, character.transform.forward);
 
         // If the enemy is within our field of view then move towards it while rotating towards it
-        if (angle < character.fov)
-        {
+        //if (angle < character.fov)
+        //{
             // Move towards the target
             Vector3 velocityDirection = (targetPosition - characterPosition).normalized;
             Vector3 seekAcceleration = velocityDirection * character.accelerationMax;
@@ -40,6 +40,6 @@ public static class MovementUtilitySeek{
             rotation = new Quaternion(0, rotation.y, 0, rotation.w);
             character.transform.rotation = Quaternion.Slerp(characterRotation, rotation, Time.deltaTime * character.rotationSpeed);
             float characterYRotation = characterRotation.eulerAngles.y;
-        }
+        //}
     }
 }
