@@ -9,8 +9,9 @@ public class PlayerMove : MonoBehaviour
     [SerializeField]
     private int playerID;
 
-    // Camera interactions
+    [Header("------Camera Interactions------")]
     public float cameraDelayTimerBeforeRespawn;
+    public Transform backCameraPosition;
     private bool restrictMovementToOneAxis = false;
 
     //setup
@@ -81,6 +82,12 @@ public class PlayerMove : MonoBehaviour
         floorCheckers = new Transform[floorChecks.childCount];
         for (int i = 0; i < floorCheckers.Length; i++)
             floorCheckers[i] = floorChecks.GetChild(i);
+
+        // Get references on startup: required since networking needs player to spawn
+        mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        
+        mainCam.GetComponent<CameraFollow>().StartFollowingPlayer(this, backCameraPosition);
+        mainCam.GetComponent<CameraFollow>().target = transform;
     }
 
     //get state of player, values and input

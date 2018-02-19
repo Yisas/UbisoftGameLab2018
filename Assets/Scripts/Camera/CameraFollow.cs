@@ -18,10 +18,11 @@ public class CameraFollow : MonoBehaviour
     private Vector3 defTargetOffset;
     private bool camColliding;
 
-    //setup objects
-    void Awake()
+    public void StartFollowingPlayer(PlayerMove playerMove, Transform backCameraPosition)
     {
-        playerMove = target.GetComponent<PlayerMove>();
+        target = playerMove.transform;
+        this.backCameraPosition = backCameraPosition;
+        this.playerMove = playerMove;
         followTarget = new GameObject().transform;  //create empty gameObject as camera target, this will follow and rotate around the player
         followTarget.name = "Camera Target";
         defTargetOffset = targetOffset;
