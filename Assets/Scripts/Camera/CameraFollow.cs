@@ -8,7 +8,7 @@ public class CameraFollow : MonoBehaviour
     private PlayerMove playerMove;
 
     public Transform target;                                    //object camera will focus on and follow
-    public Vector3 targetOffset = new Vector3(0f, 3.5f, 7); //how far back should camera be from the lookTarget
+    public Vector3 targetOffset = new Vector3(0f, 3.5f, 7);     //how far back should camera be from the lookTarget
     public float followSpeed = 6;                               //how fast the camera moves to its intended position
     public float inputRotationSpeed = 100;                      //how fast the camera rotates around lookTarget when you press the camera adjust buttons
     public float rotateDamping = 100;                           //how fast camera rotates to look at target
@@ -33,9 +33,9 @@ public class CameraFollow : MonoBehaviour
     //run our camera functions each frame
     void Update()
     {
-        AdjustCamera();
         if (target)
         {
+            AdjustCamera();
             SmoothLookAt();
             SmoothFollow();
         }
