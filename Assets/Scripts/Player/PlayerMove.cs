@@ -82,11 +82,16 @@ public class PlayerMove : NetworkBehaviour
         floorCheckers = new Transform[floorChecks.childCount];
         for (int i = 0; i < floorCheckers.Length; i++)
             floorCheckers[i] = floorChecks.GetChild(i);
+    }
 
+    private void Start()
+    {
         // Get references on startup: required since networking needs player to spawn
-        mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
-        mainCam.GetComponent<CameraFollow>().StartFollowingPlayer(this, backCameraPosition);
-        mainCam.GetComponent<CameraFollow>().target = transform;
+        if (isLocalPlayer)
+        {
+            mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+            mainCam.GetComponent<CameraFollow>().StartFollowingPlayer(this, backCameraPosition);
+        }
     }
 
     //get state of player, values and input
@@ -291,6 +296,10 @@ public class PlayerMove : NetworkBehaviour
         get
         {
             return playerID;
+        }
+        set
+        {
+            playerID = value;
         }
     }
 }
