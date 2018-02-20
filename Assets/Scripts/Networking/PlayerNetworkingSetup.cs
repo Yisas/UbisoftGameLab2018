@@ -8,8 +8,7 @@ public class PlayerNetworkingSetup : MonoBehaviour {
 
 	public void SetPlayerIndex(int index)
     {
-        // TODO
-        throw new System.NotImplementedException();
+        GetComponent<PlayerMove>().PlayerID = index;
     }
 
     public void SetPlayerMaterial(Material material)

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Multidisplay : MonoBehaviour
 {
-
     // Use this for initialization
     void Start()
     {

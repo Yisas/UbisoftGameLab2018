@@ -18,8 +18,9 @@ public class CustomNetworkManager : NetworkManager {
         if(playersConnected == 2)
         {
             GameObject[] test =  GameObject.FindGameObjectsWithTag("Player");
-            Debug.Log(test.Length);
-            test[0].GetComponent<PlayerNetworkingSetup>().SetPlayerMaterial(player2Material);
+            test[1].name = "Player 2";
+            test[1].GetComponent<PlayerNetworkingSetup>().SetPlayerMaterial(player2Material);
+            test[1].GetComponent<PlayerNetworkingSetup>().SetPlayerIndex(2);
         }
         else if(playersConnected > 2)
         {
