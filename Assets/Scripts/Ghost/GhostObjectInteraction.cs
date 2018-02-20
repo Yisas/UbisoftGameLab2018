@@ -6,6 +6,7 @@ public class GhostObjectInteraction : MonoBehaviour {
 
     public AudioClip pickUpSound;
     public GameObject dropBox;
+    public GameObject grabBox;
 
     internal GameObject heldObj;
 
@@ -61,6 +62,7 @@ public class GhostObjectInteraction : MonoBehaviour {
     public void GrabObject(Collider other)
     {
         heldObj = other.gameObject;
+        heldObj.transform.position = grabBox.transform.position;
         objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
         heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
         AddJoint();

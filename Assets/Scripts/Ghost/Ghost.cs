@@ -57,16 +57,6 @@ public class Ghost : Movable
 
     void OnTriggerStay(Collider collider)
     {
-        //if (collider.tag == "Pickup")
-        //{
-        //    ResettableObject pickupableObject = collider.GetComponent<ResettableObject>();
-        //    if (!isCarryingObject && pickupableObject != null && pickupableObject.IsMoved && !pickupableObject.IsOnPressurePlate)
-        //    {
-        //        ghostObjectInteraction.GrabObject(collider);
-        //        isCarryingObject = true;
-        //    }
-        //}
-
         if (collider.tag == "Pickup")
         {
             ResettableObject pickupableObject = collider.GetComponent<ResettableObject>();
@@ -74,6 +64,7 @@ public class Ghost : Movable
             {
                 ghostObjectInteraction.GrabObject(collider);
                 pickupableObject.GetComponent<Rigidbody>().useGravity = false;
+                collider.isTrigger = true;
                 carriedObject = pickupableObject;
                 isCarryingObject = true;
             }
@@ -107,7 +98,7 @@ public class Ghost : Movable
             // Only add pickup object to list if it has been moved, is not being held and is not on pressure plate
             if (collider.tag == "Pickup")
             {
-                ResettableObject pickupableObject = collider.GetComponent<ResettableObject>();
+                ResettableObject pickupableObject = collider.GetComponent<ResettableObject>();                
                 if (pickupableObject != null && pickupableObject.IsMoved && !pickupableObject.IsOnPressurePlate)
                     pickupableList.Add(pickupableObject);
             }
@@ -161,6 +152,7 @@ public class Ghost : Movable
                 {
                     ghostObjectInteraction.DropPickup();
                     carriedObject.GetComponent<Rigidbody>().useGravity = true;
+                    carriedObject.GetComponent<Collider>().isTrigger = false;
                     carriedObject = null;
                     isCarryingObject = false;
                 }
