@@ -20,7 +20,8 @@ public class PlayerObjectInteraction : MonoBehaviour
     public GameObject grabBox;                                  //objects inside this trigger box can be picked up by the player (think of this as your reach)
     public GameObject dropBox;                                  //positions where the player's objects will begin dropping
     public float gap = 0.5f;                                    //how high above player to hold objects
-    public Vector3 throwForce = new Vector3(0, 5, 7);           //the throw force of the player
+    public Vector3 throwForce = new Vector3(0, 5, 7);           //the throw force of the player on the ojects
+    public Vector3 throwForcePlayer = new Vector3(0, 10, 20);   //Added: the throw force of the player on the player
     public float rotateToBlockSpeed = 3;                        //how fast to face the "Pushable" object you're holding/pulling
     public float checkRadius = 0.5f;                            //how big a radius to check above the players head, to see if anything is in the way of your pickup
     [Range(0.1f, 1f)]                                           //new weight of a carried object, 1 means no change, 0.1 means 10% of its original weight													
@@ -88,7 +89,6 @@ public class PlayerObjectInteraction : MonoBehaviour
         //NOTE: Added--Now set the heldObj so that when it jumps it gets of the bottom player:                                                   
         if (heldObj != null && heldObj.tag == "Player" && Input.GetButton("Jump " + heldObj.GetComponent<PlayerMove>().PlayerID))
         {
-            //Debug.Log("here...");
             PlayerDrop();
         }
 
@@ -336,7 +336,18 @@ public class PlayerObjectInteraction : MonoBehaviour
         Destroy(joint);
         heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
         heldObj.GetComponent<Rigidbody>().mass /= weightChange;
-        heldObj.GetComponent<Rigidbody>().AddRelativeForce(throwForce, ForceMode.VelocityChange);
+        //Note Added:
+        if (heldObj.tag == "Player")
+        {
+            //throwForcePlayer
+            Debug.Log("Throwing player....");
+            heldObj.GetComponent<Rigidbody>().AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+        }
+        else
+        {
+            Debug.Log("Throwing block....");
+            heldObj.GetComponent<Rigidbody>().AddRelativeForce(throwForce, ForceMode.VelocityChange);
+        }
         heldObj = null;
         playerMove.setJumping(true);    //Added: lets the bottom player jump again
         timeOfThrow = Time.time;
