@@ -11,8 +11,8 @@ public static class MovementUtilityWander {
             ,Time.deltaTime * character.timeBetweenAngleChange);
         Vector3 forward = character.transform.TransformDirection(Vector3.forward) * character.velocityMax;
         character.transform.position = new Vector3(character3DPosition.x + forward.x * Time.deltaTime
-            , character3DPosition.y + forward.y * Time.deltaTime, character3DPosition.z + forward.z * Time.deltaTime);
-        character.velocity = new Vector3(forward.x, forward.y, forward.z);
+            , character3DPosition.y, character3DPosition.z + forward.z * Time.deltaTime);
+        character.velocity = new Vector3(forward.x, 0.0f, forward.z);
     }
 
     public static void changeAngle(Movable player)

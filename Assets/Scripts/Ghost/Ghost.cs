@@ -99,7 +99,8 @@ public class Ghost : Movable
             if (collider.tag == "Pickup")
             {
                 ResettableObject pickupableObject = collider.GetComponent<ResettableObject>();                
-                if (pickupableObject != null && pickupableObject.IsMoved && !pickupableObject.IsOnPressurePlate)
+                if (pickupableObject != null && pickupableObject.IsMoved && !pickupableObject.IsOnPressurePlate 
+                    && !pickupableObject.IsHeld)
                     pickupableList.Add(pickupableObject);
             }
         }
@@ -110,15 +111,15 @@ public class Ghost : Movable
     // Changes the enum state of the ghost based on its environment
     private void updateState()
     {
-        if (closestResettableObject != null && !isCarryingObject)
-        {
-            // Pursue the closest object
-            movementState = MovementState.Pursuit;
-        }
-        else if (isCarryingObject)
+        if (isCarryingObject)
         {
             // Return the object to its original location
             movementState = MovementState.Return;
+        }
+        else if (closestResettableObject != null && !isCarryingObject)
+        {
+            // Pursue the closest object
+            movementState = MovementState.Pursuit;
         }
         else if (isHittingWall)
         {
