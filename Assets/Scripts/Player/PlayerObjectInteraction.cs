@@ -102,24 +102,28 @@ public class PlayerObjectInteraction : MonoBehaviour
         //set animation value for arms layer
         if (animator)
         {
-            if (heldObj && heldObj.tag == "Pickup")
-                animator.SetBool("HoldingPickup", true);
+            if (heldObj)
+            {
+                // --------- Holding animations ---------
+                if (heldObj.tag == "Pickup")
+                    animator.SetBool("HoldingPickup", true);
+                else if(heldObj.tag.StartsWith("Player"))
+                    //**TODO NOTE: Add Animation for picking up the player. 
+                    animator.SetBool("HoldingPickup", true);
+                else
+                    animator.SetBool("HoldingPickup", false);
+
+                // --------- Pushing animations ---------
+                if (heldObj && heldObj.tag == "Pushable")
+                    animator.SetBool("HoldingPushable", true);
+                else
+                    animator.SetBool("HoldingPushable", false);
+            }
             else
+            {
                 animator.SetBool("HoldingPickup", false);
-
-
-            //**NOTE: Add Animation for picking up the player. 
-            //if (animator)
-            if (heldObj && heldObj.tag == "Player")
-                animator.SetBool("HoldingPickup", true);
-            else
-                animator.SetBool("HoldingPickup", false);
-
-            if (heldObj && heldObj.tag == "Pushable")
-                animator.SetBool("HoldingPushable", true);
-            else
                 animator.SetBool("HoldingPushable", false);
-
+            }
         }
         //when grab is released, let go of any pushable objects were holding
         if (Input.GetButtonDown("Drop " + playerMove.PlayerID) && heldObj != null)
