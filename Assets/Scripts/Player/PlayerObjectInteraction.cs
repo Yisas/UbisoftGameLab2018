@@ -145,8 +145,9 @@ public class PlayerObjectInteraction : MonoBehaviour
                         audioSource.Play();
                     }
                 }
-                else
+                else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
                 {
+                    Instantiate(particlesBoxCollide, transform.position + transform.forward + transform.up, transform.rotation);
                     audioSource.volume = 0.5f;
                     audioSource.clip = boxCollideSound;
                     audioSource.Play();
