@@ -240,15 +240,16 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             gizmoColor = Color.green;
             heldObj = other.gameObject;
-            objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
-            heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+            Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+            objectDefInterpolation = heldObjectRigidbody.interpolation;
+            heldObjectRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
             AddJoint();
             playerMove.setJumping(false);   //Bottom player cannot jump
 
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            heldObj.GetComponent<Rigidbody>().mass *= weightChange;
+            heldObjectRigidbody.mass *= weightChange;
             //make sure we don't immediately throw object after picking it up
             timeOfPickup = Time.time;
         }
@@ -273,13 +274,14 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             gizmoColor = Color.green;
             heldObj = other.gameObject;
-            objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
-            heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+            Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+            objectDefInterpolation = heldObjectRigidbody.interpolation;
+            heldObjectRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
             AddJoint();
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            heldObj.GetComponent<Rigidbody>().mass *= weightChange;
+            heldObjectRigidbody.mass *= weightChange;
             //make sure we don't immediately throw object after picking it up
             timeOfPickup = Time.time;
         }
@@ -293,21 +295,23 @@ public class PlayerObjectInteraction : MonoBehaviour
 
     private void DropPickup()
     {
+        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+
         if (heldObj.tag == "Pickup")
         {
             heldObj.transform.position = dropBox.transform.position;
-            heldObj.GetComponent<Rigidbody>().mass /= weightChange;
+            heldObjectRigidbody.mass /= weightChange;
         }
 
         //NOTE: Added the bottom player allow and drop the top player
         if (heldObj.tag == "Player")
         {
             heldObj.transform.position = dropBox.transform.position;
-            heldObj.GetComponent<Rigidbody>().mass /= weightChange;
+            heldObjectRigidbody.mass /= weightChange;
             playerMove.setJumping(true);
         }
 
-        heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
+        heldObjectRigidbody.interpolation = objectDefInterpolation;
         Destroy(joint);
         playerMove.rotateSpeed = defRotateSpeed;
         playerMove.SetRestrictMovementToOneAxis(false);
@@ -335,19 +339,20 @@ public class PlayerObjectInteraction : MonoBehaviour
             audioSource.Play();
         }
         Destroy(joint);
-        heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
-        heldObj.GetComponent<Rigidbody>().mass /= weightChange;
+        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+        heldObjectRigidbody.interpolation = objectDefInterpolation;
+        heldObjectRigidbody.mass /= weightChange;
         //Note Added:
         if (heldObj.tag == "Player")
         {
             //throwForcePlayer
             Debug.Log("Throwing player....");
-            heldObj.GetComponent<Rigidbody>().AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+            heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
         }
         else
         {
             Debug.Log("Throwing block....");
-            heldObj.GetComponent<Rigidbody>().AddRelativeForce(throwForce, ForceMode.VelocityChange);
+            heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
         }
         heldObj = null;
         playerMove.setJumping(true);    //Added: lets the bottom player jump again
