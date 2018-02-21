@@ -22,6 +22,8 @@ public class PlayerObjectInteraction : MonoBehaviour
     public float gap = 0.5f;                                    //how high above player to hold objects
     public Vector3 throwForce = new Vector3(0, 5, 7);           //the throw force of the player on the ojects
     public Vector3 throwForcePlayer = new Vector3(0, 10, 20);   //Added: the throw force of the player on the player
+    [Tooltip("Amount of time it takes before the player can use the 'throw' button again")]
+    public float throwCooldownTime = 0.1f;                      
     public float rotateToBlockSpeed = 3;                        //how fast to face the "Pushable" object you're holding/pulling
     public float checkRadius = 0.5f;                            //how big a radius to check above the players head, to see if anything is in the way of your pickup
     [Range(0.1f, 1f)]                                           //new weight of a carried object, 1 means no change, 0.1 means 10% of its original weight													
@@ -78,9 +80,9 @@ public class PlayerObjectInteraction : MonoBehaviour
         //when we press grab button, throw object if we're holding one
         if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj)
         {
-            if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + 0.1f)
+            if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + throwCooldownTime)
                 ThrowPickup();
-            else if (heldObj.tag == "Player" && Time.time > timeOfPickup + 0.1f)    //NOTE: can combine with above 'if' ---Added for player to pick up another player
+            else if (heldObj.tag == "Player" && Time.time > timeOfPickup + throwCooldownTime)    //NOTE: can combine with above 'if' ---Added for player to pick up another player
                 ThrowPickup();
             else if (heldObj.tag == "Pushable")
                 DropPickup();
