@@ -377,6 +377,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             //throwForcePlayer
             Debug.Log("Throwing player....");
             heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+            heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
         }
         else
         {
