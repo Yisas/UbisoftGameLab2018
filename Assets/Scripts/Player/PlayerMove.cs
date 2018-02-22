@@ -101,9 +101,14 @@ public class PlayerMove : MonoBehaviour
         screenMovementForward = screenMovementSpace * Vector3.forward;
         screenMovementRight = screenMovementSpace * Vector3.right;
 
-        //get movement input, set direction to move in
-        float horizontalInput = Input.GetAxisRaw("Horizontal " + playerID);
-        float verticalInput = Input.GetAxisRaw("Vertical " + playerID);
+        //get movement input, set direction to move in. Movement inputs stay at zero if you're being held, otherwise they get processed
+        float horizontalInput = 0;
+        float verticalInput = 0;
+        if (!isBeingHeld)
+        {
+            horizontalInput = Input.GetAxisRaw("Horizontal " + playerID);
+            verticalInput = Input.GetAxisRaw("Vertical " + playerID);
+        }
 
         direction = (screenMovementForward * verticalInput) + (screenMovementRight * horizontalInput);
 
