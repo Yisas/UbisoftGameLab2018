@@ -252,7 +252,8 @@ public class PlayerObjectInteraction : MonoBehaviour
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
             AddJoint();
-            playerMove.setJumping(false);   //Bottom player cannot jump
+            playerMove.CanJump = false;   //Bottom player cannot jump
+            heldObj.GetComponent<PlayerMove>().IsBeingHeld = true;
 
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
             heldObjectRigidbody.mass *= weightChange;
@@ -314,7 +315,8 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             heldObj.transform.position = dropBox.transform.position;
             heldObjectRigidbody.mass /= weightChange;
-            playerMove.setJumping(true);
+            heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
+            playerMove.CanJump = true;
         }
 
         heldObjectRigidbody.interpolation = objectDefInterpolation;
@@ -361,7 +363,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
         }
         heldObj = null;
-        playerMove.setJumping(true);    //Added: lets the bottom player jump again
+        playerMove.CanJump = true;    //Added: lets the bottom player jump again
         timeOfThrow = Time.time;
     }
 
@@ -373,7 +375,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
         heldObj.GetComponent<Rigidbody>().mass /= weightChange;
         heldObj = null;
-        playerMove.setJumping(true);
+        playerMove.CanJump = true;
         timeOfThrow = Time.time;
     }
 

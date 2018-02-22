@@ -33,16 +33,16 @@ public class PlayerMove : MonoBehaviour
 
     //jumping
     public Vector3 jumpForce = new Vector3(0, 13, 0);       //normal jump force
-    public Vector3 secondJumpForce = new Vector3(0, 13, 0); //the force of a 2nd consecutive jump
-    public Vector3 thirdJumpForce = new Vector3(0, 13, 0);  //the force of a 3rd consecutive jump
+    [Tooltip("Jump force while being held by another player, in order to jump off")]
+    public Vector3 jumpForceWhileCarried = new Vector3(0, 3, 20);
     public float jumpDelay = 0.1f;                          //how fast you need to jump after hitting the ground, to do the next type of jump
     public float jumpLeniancy = 0.17f;                      //how early before hitting the ground you can press jump, and still have it work
-    //NOTE: adding:
-    public bool isJumping;
 
     // States
-    private int onJump;
     private bool grounded;
+    //NOTE: adding:
+    private bool canJump = true;
+    private bool isBeingHeld = false;
 
     // Movement data
     private float airPressTime, groundedCount, curAccel, curDecel, curRotateSpeed, slope;
@@ -83,9 +83,6 @@ public class PlayerMove : MonoBehaviour
         floorCheckers = new Transform[floorChecks.childCount];
         for (int i = 0; i < floorCheckers.Length; i++)
             floorCheckers[i] = floorChecks.GetChild(i);
-
-        //Added
-        isJumping = true;
     }
 
     //get state of player, values and input
@@ -103,9 +100,14 @@ public class PlayerMove : MonoBehaviour
         screenMovementForward = screenMovementSpace * Vector3.forward;
         screenMovementRight = screenMovementSpace * Vector3.right;
 
-        //get movement input, set direction to move in
-        float horizontalInput = Input.GetAxisRaw("Horizontal " + playerID);
-        float verticalInput = Input.GetAxisRaw("Vertical " + playerID);
+        //get movement input, set direction to move in. Movement inputs stay at zero if you're being held, otherwise they get processed
+        float horizontalInput = 0;
+        float verticalInput = 0;
+        if (!isBeingHeld)
+        {
+            horizontalInput = Input.GetAxisRaw("Horizontal " + playerID);
+            verticalInput = Input.GetAxisRaw("Vertical " + playerID);
+        }
 
         direction = (screenMovementForward * verticalInput) + (screenMovementRight * horizontalInput);
 
@@ -124,7 +126,7 @@ public class PlayerMove : MonoBehaviour
     {
         //are we grounded
         grounded = IsGrounded();
-        
+
         //move, rotate, manage speed
         characterMotor.MoveTo(moveDirection, curAccel, 0.7f, true);
 
@@ -189,7 +191,7 @@ public class PlayerMove : MonoBehaviour
                         Vector3 slide = new Vector3(0f, -slideAmount, 0f);
                         GetComponent<Rigidbody>().AddForce(slide, ForceMode.Force);
                     }
-                        
+
                     //moving platforms
                     // TODO: double check this implementation
                     if (hit.transform.tag == "MovingPlatform" || hit.transform.tag == "Pushable")
@@ -236,15 +238,10 @@ public class PlayerMove : MonoBehaviour
             //and we press jump, or we pressed jump justt before hitting the ground
             if (Input.GetButtonDown("Jump " + playerID) || airPressTime + jumpLeniancy > Time.time)
             {
-                //increment our jump type if we haven't been on the ground for long
-                onJump = (groundedCount < jumpDelay) ? Mathf.Min(2, onJump + 1) : 0;
-                //execute the correct jump (like in mario64, jumping 3 times quickly will do higher jumps)
-                if (onJump == 0)
+                if (!isBeingHeld)
                     Jump(jumpForce);
-                else if (onJump == 1)
-                    Jump(secondJumpForce);
-                else if (onJump == 2)
-                    Jump(thirdJumpForce);
+                else
+                    Jump(jumpForceWhileCarried);
             }
         }
     }
@@ -252,13 +249,12 @@ public class PlayerMove : MonoBehaviour
     //push player at jump force
     public void Jump(Vector3 jumpVelocity)
     {
-        if (!isJumping)  //Added.
+        if (!canJump)  //Added.
         {
             Debug.Log("should not be jumping");
             return;
         }
 
-        isJumping = true;
         if (jumpSound)
         {
             // TODO: add clip volume change as attribute, not hardcoded. Single get
@@ -266,19 +262,13 @@ public class PlayerMove : MonoBehaviour
             GetComponent<AudioSource>().clip = jumpSound;
             GetComponent<AudioSource>().Play();
         }
+
         GetComponent<Rigidbody>().velocity = new Vector3(GetComponent<Rigidbody>().velocity.x, 0f, GetComponent<Rigidbody>().velocity.z);
         GetComponent<Rigidbody>().AddRelativeForce(jumpVelocity, ForceMode.Impulse);
         airPressTime = 0f;
-    }
 
-    //NOTE: added.
-    public void setJumping(bool jump)
-    {
-        isJumping = jump;
-    }
-    public bool getJumping()
-    {
-        return isJumping;
+        // Stop being held after jumping
+        IsBeingHeld = false;
     }
 
     public void ToogleRestrictMovementToOneAxis()
@@ -296,12 +286,53 @@ public class PlayerMove : MonoBehaviour
         return restrictMovementToOneAxis;
     }
 
-    // Getters
+    // Public attribute visibility methods
+
     public int PlayerID
     {
         get
         {
             return playerID;
+        }
+    }
+
+    public bool IsBeingHeld
+    {
+        get
+        {
+            return isBeingHeld;
+        }
+        set
+        {
+            isBeingHeld = value;
+
+            Rigidbody rb = GetComponent<Rigidbody>();
+            // If you are now being held...
+            if (isBeingHeld)
+            {
+                //... unrestrict rotation freezes
+                //... by wiping constraints set by CharacterMotor...
+                rb.constraints = RigidbodyConstraints.None;
+                //... and adding the ones necessary when being carried through a FixedJoint logic
+                rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            }
+            else
+            {
+                //... put back rotation constraints
+                rb.constraints = RigidbodyConstraints.FreezeRotation;
+            }
+        }
+    }
+
+    public bool CanJump
+    {
+        get
+        {
+            return canJump;
+        }
+        set
+        {
+            canJump = value;
         }
     }
 }
