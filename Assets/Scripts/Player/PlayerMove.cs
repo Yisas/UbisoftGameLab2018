@@ -38,7 +38,7 @@ public class PlayerMove : MonoBehaviour
     public float jumpDelay = 0.1f;                          //how fast you need to jump after hitting the ground, to do the next type of jump
     public float jumpLeniancy = 0.17f;                      //how early before hitting the ground you can press jump, and still have it work
     //NOTE: adding:
-    public bool isJumping;
+    public bool canJump;
 
     // States
     private int onJump;
@@ -85,7 +85,7 @@ public class PlayerMove : MonoBehaviour
             floorCheckers[i] = floorChecks.GetChild(i);
 
         //Added
-        isJumping = true;
+        canJump = true;
     }
 
     //get state of player, values and input
@@ -252,13 +252,13 @@ public class PlayerMove : MonoBehaviour
     //push player at jump force
     public void Jump(Vector3 jumpVelocity)
     {
-        if (!isJumping)  //Added.
+        if (!canJump)  //Added.
         {
             Debug.Log("should not be jumping");
             return;
         }
 
-        isJumping = true;
+        canJump = true;
         if (jumpSound)
         {
             // TODO: add clip volume change as attribute, not hardcoded. Single get
@@ -272,13 +272,13 @@ public class PlayerMove : MonoBehaviour
     }
 
     //NOTE: added.
-    public void setJumping(bool jump)
+    public void setCanJump(bool canJump)
     {
-        isJumping = jump;
+        this.canJump = canJump;
     }
-    public bool getJumping()
+    public bool getCanJump()
     {
-        return isJumping;
+        return canJump;
     }
 
     public void ToogleRestrictMovementToOneAxis()
