@@ -307,6 +307,22 @@ public class PlayerMove : MonoBehaviour
             isBeingHeld = value;
             // When you're being held, you can't jump
             CanJump = !value;
+
+            Rigidbody rb = GetComponent<Rigidbody>();
+            // If you are now being held...
+            if (isBeingHeld)
+            {
+                //... unrestrict rotation freezes
+                //... by wiping constraints set by CharacterMotor...
+                rb.constraints = RigidbodyConstraints.None;
+                //... and adding the ones necessary when being carried through a FixedJoint logic
+                rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            }
+            else
+            {
+                //... put back rotation constraints
+                rb.constraints = RigidbodyConstraints.FreezeRotation;
+            }
         }
     }
 
