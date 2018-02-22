@@ -33,15 +33,12 @@ public class PlayerMove : MonoBehaviour
 
     //jumping
     public Vector3 jumpForce = new Vector3(0, 13, 0);       //normal jump force
-    public Vector3 secondJumpForce = new Vector3(0, 13, 0); //the force of a 2nd consecutive jump
-    public Vector3 thirdJumpForce = new Vector3(0, 13, 0);  //the force of a 3rd consecutive jump
     [Tooltip("Jump force while being held by another player, in order to jump off")]
     public Vector3 jumpForceWhileCarried = new Vector3(0, 3, 20);
     public float jumpDelay = 0.1f;                          //how fast you need to jump after hitting the ground, to do the next type of jump
     public float jumpLeniancy = 0.17f;                      //how early before hitting the ground you can press jump, and still have it work
 
     // States
-    private int onJump;
     private bool grounded;
     //NOTE: adding:
     private bool canJump = true;
@@ -129,7 +126,7 @@ public class PlayerMove : MonoBehaviour
     {
         //are we grounded
         grounded = IsGrounded();
-        
+
         //move, rotate, manage speed
         characterMotor.MoveTo(moveDirection, curAccel, 0.7f, true);
 
@@ -194,7 +191,7 @@ public class PlayerMove : MonoBehaviour
                         Vector3 slide = new Vector3(0f, -slideAmount, 0f);
                         GetComponent<Rigidbody>().AddForce(slide, ForceMode.Force);
                     }
-                        
+
                     //moving platforms
                     // TODO: double check this implementation
                     if (hit.transform.tag == "MovingPlatform" || hit.transform.tag == "Pushable")
@@ -241,18 +238,10 @@ public class PlayerMove : MonoBehaviour
             //and we press jump, or we pressed jump justt before hitting the ground
             if (Input.GetButtonDown("Jump " + playerID) || airPressTime + jumpLeniancy > Time.time)
             {
-                //increment our jump type if we haven't been on the ground for long
-                onJump = (groundedCount < jumpDelay) ? Mathf.Min(2, onJump + 1) : 0;
-                //execute the correct jump (like in mario64, jumping 3 times quickly will do higher jumps)
-                if (onJump == 0)
-                    if (!isBeingHeld)
-                        Jump(jumpForce);
-                    else
-                        Jump(jumpForceWhileCarried);
-                else if (onJump == 1)
-                    Jump(secondJumpForce);
-                else if (onJump == 2)
-                    Jump(thirdJumpForce);
+                if (!isBeingHeld)
+                    Jump(jumpForce);
+                else
+                    Jump(jumpForceWhileCarried);
             }
         }
     }
