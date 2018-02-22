@@ -163,7 +163,9 @@ public class PlayerObjectInteraction : MonoBehaviour
             //pickup
             if (other.tag == "Pickup" && heldObj == null && timeOfThrow + 0.2f < Time.time)
             {
-                LiftPickup(other);
+                ResettableObject resettableObject = other.GetComponent<ResettableObject>();
+                if(resettableObject != null && !resettableObject.IsHeld)                
+                    LiftPickup(other);
                 return;
             }
             //grab
@@ -232,6 +234,13 @@ public class PlayerObjectInteraction : MonoBehaviour
             gizmoColor = Color.red;
             print("Can't lift object here. If nothing is above the player, make sure triggers are set to layer index 2 (ignore raycast by default)");
         }
+
+        // If the object is a pickup set the boolean that its currently being held
+        ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
+        if (resettableObject != null && heldObj.CompareTag("Pickup"))
+        {
+            resettableObject.IsHeld = true;
+        }
     }
 
     private void DropPickup()
@@ -240,6 +249,11 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             heldObj.transform.position = dropBox.transform.position;
             heldObj.GetComponent<Rigidbody>().mass /= weightChange;
+
+            // If the object is a pickup set the boolean that its currently being held                
+            ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
+            if(resettableObject != null)
+                resettableObject.IsHeld = false;
         }
 
         heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
@@ -264,6 +278,13 @@ public class PlayerObjectInteraction : MonoBehaviour
 
     public void ThrowPickup()
     {
+        // If the object is a pickup set the boolean that its currently being held
+        ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
+        if (resettableObject != null && heldObj.CompareTag("Pickup"))
+        {           
+            resettableObject.IsHeld = false;
+        }
+
         if (throwSound)
         {
             // TODO: undo hardcoded volume, multiple get etc.
