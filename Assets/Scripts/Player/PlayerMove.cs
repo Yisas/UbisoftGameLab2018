@@ -34,7 +34,7 @@ public class PlayerMove : MonoBehaviour
     //jumping
     public Vector3 jumpForce = new Vector3(0, 13, 0);       //normal jump force
     [Tooltip("Jump force while being held by another player, in order to jump off")]
-    public Vector3 jumpForceWhileCarried = new Vector3(0, 3, 20);
+    public Vector3 jumpForceWhileCarried = new Vector3(0, 2, 4);
     public float jumpDelay = 0.1f;                          //how fast you need to jump after hitting the ground, to do the next type of jump
     public float jumpLeniancy = 0.17f;                      //how early before hitting the ground you can press jump, and still have it work
 
