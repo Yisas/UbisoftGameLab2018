@@ -4,8 +4,6 @@ using UnityEngine;
 
 public static class MovementUtilitySeek{
 
-    private const float minHeight = 2.0f;
-
     /**
      * Moves and rotates the character towards the target position.
      */
@@ -32,7 +30,7 @@ public static class MovementUtilitySeek{
                 seekVelocity = seekVelocity.normalized * character.velocityMax;
             }
 
-            if (characterPosition.y + seekVelocity.y * Time.deltaTime < minHeight)
+            if (characterPosition.y + seekVelocity.y * Time.deltaTime < character.minimumHeight)
             {
                 character.transform.position = new Vector3(characterPosition.x + seekVelocity.x * Time.deltaTime
                     , characterPosition.y, characterPosition.z + seekVelocity.z * Time.deltaTime);

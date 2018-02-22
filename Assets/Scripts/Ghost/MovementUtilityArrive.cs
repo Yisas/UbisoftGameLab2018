@@ -4,8 +4,6 @@ using UnityEngine;
 
 public static class MovementUtilityArrive {
 
-    private const float minHeight = 2.0f;
-
     /**
     * Moves and rotates the character towards the target position.
     */
@@ -64,7 +62,7 @@ public static class MovementUtilityArrive {
         }
 
         // Make sure character stays above ground
-        if (characterPosition.y + velocity.y * Time.deltaTime < minHeight)
+        if (characterPosition.y + velocity.y * Time.deltaTime < character.minimumHeight)
         {
             character.transform.position = new Vector3(characterPosition.x + velocity.x * Time.deltaTime
                 , characterPosition.y, characterPosition.z + velocity.z * Time.deltaTime);
