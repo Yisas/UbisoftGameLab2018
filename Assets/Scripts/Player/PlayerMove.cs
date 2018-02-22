@@ -256,7 +256,7 @@ public class PlayerMove : MonoBehaviour
             return;
         }
 
-        // Stop being held after jumping (will set canJump to true as a side effect)
+        // Stop being held after jumping
         IsBeingHeld = false;
 
         if (jumpSound)
@@ -305,8 +305,6 @@ public class PlayerMove : MonoBehaviour
         set
         {
             isBeingHeld = value;
-            // When you're being held, you can't jump
-            CanJump = !value;
 
             Rigidbody rb = GetComponent<Rigidbody>();
             // If you are now being held...
