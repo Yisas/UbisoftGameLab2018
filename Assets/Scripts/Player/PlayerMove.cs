@@ -37,12 +37,13 @@ public class PlayerMove : MonoBehaviour
     public Vector3 thirdJumpForce = new Vector3(0, 13, 0);  //the force of a 3rd consecutive jump
     public float jumpDelay = 0.1f;                          //how fast you need to jump after hitting the ground, to do the next type of jump
     public float jumpLeniancy = 0.17f;                      //how early before hitting the ground you can press jump, and still have it work
-    //NOTE: adding:
-    public bool canJump;
 
     // States
     private int onJump;
     private bool grounded;
+    //NOTE: adding:
+    private bool canJump = true;
+    private bool isBeingHeld = false;
 
     // Movement data
     private float airPressTime, groundedCount, curAccel, curDecel, curRotateSpeed, slope;
@@ -83,9 +84,6 @@ public class PlayerMove : MonoBehaviour
         floorCheckers = new Transform[floorChecks.childCount];
         for (int i = 0; i < floorCheckers.Length; i++)
             floorCheckers[i] = floorChecks.GetChild(i);
-
-        //Added
-        canJump = true;
     }
 
     //get state of player, values and input
@@ -258,7 +256,9 @@ public class PlayerMove : MonoBehaviour
             return;
         }
 
-        canJump = true;
+        // Stop being held after jumping (will set canJump to true as a side effect)
+        IsBeingHeld = false;
+
         if (jumpSound)
         {
             // TODO: add clip volume change as attribute, not hardcoded. Single get
@@ -269,16 +269,6 @@ public class PlayerMove : MonoBehaviour
         GetComponent<Rigidbody>().velocity = new Vector3(GetComponent<Rigidbody>().velocity.x, 0f, GetComponent<Rigidbody>().velocity.z);
         GetComponent<Rigidbody>().AddRelativeForce(jumpVelocity, ForceMode.Impulse);
         airPressTime = 0f;
-    }
-
-    //NOTE: added.
-    public void setCanJump(bool canJump)
-    {
-        this.canJump = canJump;
-    }
-    public bool getCanJump()
-    {
-        return canJump;
     }
 
     public void ToogleRestrictMovementToOneAxis()
@@ -296,12 +286,39 @@ public class PlayerMove : MonoBehaviour
         return restrictMovementToOneAxis;
     }
 
-    // Getters
+    // Public attribute visibility methods
+
     public int PlayerID
     {
         get
         {
             return playerID;
+        }
+    }
+
+    public bool IsBeingHeld
+    {
+        get
+        {
+            return isBeingHeld;
+        }
+        set
+        {
+            isBeingHeld = value;
+            // When you're being held, you can't jump
+            CanJump = !value;
+        }
+    }
+
+    public bool CanJump
+    {
+        get
+        {
+            return canJump;
+        }
+        set
+        {
+            canJump = value;
         }
     }
 }
