@@ -20,7 +20,10 @@ public class PlayerObjectInteraction : MonoBehaviour
     public GameObject grabBox;                                  //objects inside this trigger box can be picked up by the player (think of this as your reach)
     public GameObject dropBox;                                  //positions where the player's objects will begin dropping
     public float gap = 0.5f;                                    //how high above player to hold objects
-    public Vector3 throwForce = new Vector3(0, 5, 7);           //the throw force of the player
+    public Vector3 throwForce = new Vector3(0, 5, 7);           //the throw force of the player on the ojects
+    public Vector3 throwForcePlayer = new Vector3(0, 10, 20);   //Added: the throw force of the player on the player
+    [Tooltip("Amount of time it takes before the player can use the 'throw' button again")]
+    public float throwCooldownTime = 0.1f;                      
     public float rotateToBlockSpeed = 3;                        //how fast to face the "Pushable" object you're holding/pulling
     public float checkRadius = 0.5f;                            //how big a radius to check above the players head, to see if anything is in the way of your pickup
     [Range(0.1f, 1f)]                                           //new weight of a carried object, 1 means no change, 0.1 means 10% of its original weight													
@@ -77,33 +80,53 @@ public class PlayerObjectInteraction : MonoBehaviour
         //when we press grab button, throw object if we're holding one
         if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj)
         {
-            if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + 0.1f)
+            if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + throwCooldownTime)
+                ThrowPickup();
+            else if (heldObj.tag == "Player" && Time.time > timeOfPickup + throwCooldownTime)    //NOTE: can combine with above 'if' ---Added for player to pick up another player
                 ThrowPickup();
             else if (heldObj.tag == "Pushable")
                 DropPickup();
+        }
 
+        //NOTE: Added--Now set the heldObj so that when it jumps it gets of the bottom player:                                                   
+        if (heldObj != null && heldObj.tag == "Player" && Input.GetButton("Jump " + heldObj.GetComponent<PlayerMove>().PlayerID))
+        {
+            PlayerDrop();
         }
 
         if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj == null && canPushButton)
         {
             PushButton();
-
             // TODO: huh?
             return;
         }
 
         //set animation value for arms layer
         if (animator)
-            if (heldObj && heldObj.tag == "Pickup")
-                animator.SetBool("HoldingPickup", true);
+        {
+            if (heldObj)
+            {
+                // --------- Holding animations ---------
+                if (heldObj.tag == "Pickup")
+                    animator.SetBool("HoldingPickup", true);
+                else if(heldObj.tag.StartsWith("Player"))
+                    //**TODO NOTE: Add Animation for picking up the player. 
+                    animator.SetBool("HoldingPickup", true);
+                else
+                    animator.SetBool("HoldingPickup", false);
+
+                // --------- Pushing animations ---------
+                if (heldObj && heldObj.tag == "Pushable")
+                    animator.SetBool("HoldingPushable", true);
+                else
+                    animator.SetBool("HoldingPushable", false);
+            }
             else
+            {
                 animator.SetBool("HoldingPickup", false);
-
-        if (heldObj && heldObj.tag == "Pushable")
-            animator.SetBool("HoldingPushable", true);
-        else
-            animator.SetBool("HoldingPushable", false);
-
+                animator.SetBool("HoldingPushable", false);
+            }
+        }
         //when grab is released, let go of any pushable objects were holding
         if (Input.GetButtonDown("Drop " + playerMove.PlayerID) && heldObj != null)
         {
@@ -174,6 +197,12 @@ public class PlayerObjectInteraction : MonoBehaviour
                 GrabPushable(other);
                 return;
             }
+            //NOTE: Added to pickup the player:
+            if (other.tag == "Player" && heldObj == null && timeOfThrow + 0.2f < Time.time)
+            {
+                PickupPlayer(other);    //Created new function.
+                return;
+            }
         }
     }
 
@@ -206,6 +235,42 @@ public class PlayerObjectInteraction : MonoBehaviour
             Debug.LogError("Unasignsed PushableObject component");
     }
 
+    //NOTE: Added this function to lift above its head
+    private void PickupPlayer(Collider other)
+    {
+        //Debug.Log("Player Pickup triggered !!!");
+        Mesh otherMesh = other.GetComponent<MeshFilter>().mesh;
+        holdPos = transform.position;
+        holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + gap;
+
+        //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
+        if (!Physics.CheckSphere(holdPos, checkRadius, 2))
+        {
+            gizmoColor = Color.green;
+            heldObj = other.gameObject;
+            Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+            objectDefInterpolation = heldObjectRigidbody.interpolation;
+            heldObjectRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+            heldObj.transform.position = holdPos;
+            heldObj.transform.rotation = transform.rotation;
+            AddJoint();
+            playerMove.CanJump = false;   //Bottom player cannot jump
+            heldObj.GetComponent<PlayerMove>().IsBeingHeld = true;
+
+            //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
+            heldObjectRigidbody.mass *= weightChange;
+            //make sure we don't immediately throw object after picking it up
+            timeOfPickup = Time.time;
+        }
+        //if not print to console (look in scene view for sphere gizmo to see whats stopping the pickup)
+        else
+        {
+            gizmoColor = Color.red;
+            print("Can't lift object here. If nothing is above the player, make sure triggers are set to layer index 2 (ignore raycast by default)");
+        }
+
+    }
+
     private void LiftPickup(Collider other)
     {
         //get where to move item once its picked up
@@ -218,13 +283,14 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             gizmoColor = Color.green;
             heldObj = other.gameObject;
-            objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
-            heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+            Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+            objectDefInterpolation = heldObjectRigidbody.interpolation;
+            heldObjectRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
             AddJoint();
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            heldObj.GetComponent<Rigidbody>().mass *= weightChange;
+            heldObjectRigidbody.mass *= weightChange;
             //make sure we don't immediately throw object after picking it up
             timeOfPickup = Time.time;
         }
@@ -245,10 +311,12 @@ public class PlayerObjectInteraction : MonoBehaviour
 
     public void DropPickup()
     {
+        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+
         if (heldObj.tag == "Pickup")
         {
             heldObj.transform.position = dropBox.transform.position;
-            heldObj.GetComponent<Rigidbody>().mass /= weightChange;
+            heldObjectRigidbody.mass /= weightChange;
 
             // If the object is a pickup set the boolean that its currently being held                
             ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
@@ -256,7 +324,16 @@ public class PlayerObjectInteraction : MonoBehaviour
                 resettableObject.IsHeld = false;
         }
 
-        heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
+        //NOTE: Added the bottom player allow and drop the top player
+        if (heldObj.tag == "Player")
+        {
+            heldObj.transform.position = dropBox.transform.position;
+            heldObjectRigidbody.mass /= weightChange;
+            heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
+            playerMove.CanJump = true;
+        }
+
+        heldObjectRigidbody.interpolation = objectDefInterpolation;
         Destroy(joint);
         playerMove.rotateSpeed = defRotateSpeed;
         playerMove.SetRestrictMovementToOneAxis(false);
@@ -272,8 +349,6 @@ public class PlayerObjectInteraction : MonoBehaviour
 
         heldObj = null;
         timeOfThrow = Time.time;
-
-
     }
 
     public void ThrowPickup()
@@ -293,10 +368,35 @@ public class PlayerObjectInteraction : MonoBehaviour
             audioSource.Play();
         }
         Destroy(joint);
+        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+        heldObjectRigidbody.interpolation = objectDefInterpolation;
+        heldObjectRigidbody.mass /= weightChange;
+        //Note Added:
+        if (heldObj.tag == "Player")
+        {
+            //throwForcePlayer
+            Debug.Log("Throwing player....");
+            heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+        }
+        else
+        {
+            Debug.Log("Throwing block....");
+            heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
+        }
+        heldObj = null;
+        playerMove.CanJump = true;    //Added: lets the bottom player jump again
+        timeOfThrow = Time.time;
+    }
+
+    //Adding:
+    //If the top player jumps while being held it will break the joint and reset both the players.
+    public void PlayerDrop()
+    {
+        Destroy(joint);
         heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
         heldObj.GetComponent<Rigidbody>().mass /= weightChange;
-        heldObj.GetComponent<Rigidbody>().AddRelativeForce(throwForce, ForceMode.VelocityChange);
         heldObj = null;
+        playerMove.CanJump = true;
         timeOfThrow = Time.time;
     }
 
