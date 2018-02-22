@@ -24,7 +24,15 @@ public class ResettableObject : MonoBehaviour {
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Deadzone"))
+        {
+            if(gameObject.CompareTag("Player"))
+            {
+                PlayerObjectInteraction playerInteraction = gameObject.GetComponent<PlayerObjectInteraction>();
+                if(playerInteraction != null && playerInteraction.heldObj != null)
+                    playerInteraction.DropPickup();
+            }
             Reset();
+        }
     }
 
     public void Reset()

@@ -243,7 +243,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         }
     }
 
-    private void DropPickup()
+    public void DropPickup()
     {
         if (heldObj.tag == "Pickup")
         {
