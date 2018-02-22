@@ -35,6 +35,8 @@ public class PlayerMove : MonoBehaviour
     public Vector3 jumpForce = new Vector3(0, 13, 0);       //normal jump force
     public Vector3 secondJumpForce = new Vector3(0, 13, 0); //the force of a 2nd consecutive jump
     public Vector3 thirdJumpForce = new Vector3(0, 13, 0);  //the force of a 3rd consecutive jump
+    [Tooltip("Jump force while being held by another player, in order to jump off")]
+    public Vector3 jumpForceWhileCarried = new Vector3(0, 3, 20);
     public float jumpDelay = 0.1f;                          //how fast you need to jump after hitting the ground, to do the next type of jump
     public float jumpLeniancy = 0.17f;                      //how early before hitting the ground you can press jump, and still have it work
 
@@ -243,7 +245,10 @@ public class PlayerMove : MonoBehaviour
                 onJump = (groundedCount < jumpDelay) ? Mathf.Min(2, onJump + 1) : 0;
                 //execute the correct jump (like in mario64, jumping 3 times quickly will do higher jumps)
                 if (onJump == 0)
-                    Jump(jumpForce);
+                    if (!isBeingHeld)
+                        Jump(jumpForce);
+                    else
+                        Jump(jumpForceWhileCarried);
                 else if (onJump == 1)
                     Jump(secondJumpForce);
                 else if (onJump == 2)
@@ -261,9 +266,6 @@ public class PlayerMove : MonoBehaviour
             return;
         }
 
-        // Stop being held after jumping
-        IsBeingHeld = false;
-
         if (jumpSound)
         {
             // TODO: add clip volume change as attribute, not hardcoded. Single get
@@ -271,9 +273,13 @@ public class PlayerMove : MonoBehaviour
             GetComponent<AudioSource>().clip = jumpSound;
             GetComponent<AudioSource>().Play();
         }
+
         GetComponent<Rigidbody>().velocity = new Vector3(GetComponent<Rigidbody>().velocity.x, 0f, GetComponent<Rigidbody>().velocity.z);
         GetComponent<Rigidbody>().AddRelativeForce(jumpVelocity, ForceMode.Impulse);
         airPressTime = 0f;
+
+        // Stop being held after jumping
+        IsBeingHeld = false;
     }
 
     public void ToogleRestrictMovementToOneAxis()
