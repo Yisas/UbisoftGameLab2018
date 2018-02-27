@@ -217,6 +217,8 @@ public class PlayerObjectInteraction : MonoBehaviour
     private void GrabPushable(Collider other)
     {
         heldObj = other.gameObject;
+        Vector3 touchedPoint = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
+        playerMove.transform.LookAt(touchedPoint);
         objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
         heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
         AddJoint();
