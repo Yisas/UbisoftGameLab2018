@@ -5,8 +5,8 @@ using UnityEngine;
 public static class MovementUtilityArrive {
 
     /**
-         * Moves and rotates the character towards the target position.
-         */
+    * Moves and rotates the character towards the target position.
+    */
     public static void SteerArrive(Movable character, Vector3 targetPosition)
     {
         Vector3 characterPosition = character.transform.position;
@@ -54,13 +54,24 @@ public static class MovementUtilityArrive {
         //{
         //    seekVelocity = seekVelocity.normalized * character.velocityMax;
         //}
+
         Vector3 velocity = targetVelocity;
         if (velocity.magnitude > character.velocityMax)
         {
             velocity = velocity.normalized * character.velocityMax;
         }
-        character.transform.position = new Vector3(characterPosition.x + velocity.x * Time.deltaTime
-            , characterPosition.y + velocity.y * Time.deltaTime, characterPosition.z + velocity.z * Time.deltaTime);
+
+        // Make sure character stays above ground
+        if (characterPosition.y + velocity.y * Time.deltaTime < character.minimumHeight)
+        {
+            character.transform.position = new Vector3(characterPosition.x + velocity.x * Time.deltaTime
+                , characterPosition.y, characterPosition.z + velocity.z * Time.deltaTime);
+        }
+        else
+        {
+            character.transform.position = new Vector3(characterPosition.x + velocity.x * Time.deltaTime
+                , characterPosition.y + velocity.y * Time.deltaTime, characterPosition.z + velocity.z * Time.deltaTime);
+        }
         character.velocity = velocity;
 
         // Rotate towards the target

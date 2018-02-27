@@ -6,6 +6,7 @@ public class GhostObjectInteraction : MonoBehaviour {
 
     public AudioClip pickUpSound;
     public GameObject dropBox;
+    public GameObject grabBox;
 
     internal GameObject heldObj;
 
@@ -19,14 +20,17 @@ public class GhostObjectInteraction : MonoBehaviour {
     private FixedJoint joint;
     private AudioSource audioSource;
     private float timeOfPickup;
+    private Rigidbody heldObjectRb;
+    private Movable movableAI;
 
     void Awake () {
         audioSource = GetComponent<AudioSource>();
+        movableAI = GetComponent<Movable>();
     }
 	
 	// Update is called once per frame
 	void Update () {
-		
+        matchVelocities();
 	}
 
     public void LiftPickup(Collider other)
@@ -39,13 +43,14 @@ public class GhostObjectInteraction : MonoBehaviour {
         if (!Physics.CheckSphere(holdPos, radiusAboveHead, 2))
         {
             heldObj = other.gameObject;
-            objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
-            heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+            heldObjectRb = heldObj.GetComponent<Rigidbody>();
+            objectDefInterpolation = heldObjectRb.interpolation;
+            heldObjectRb.interpolation = RigidbodyInterpolation.Interpolate;
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
             AddJoint();
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            heldObj.GetComponent<Rigidbody>().mass *= weightChange;
+            heldObjectRb.mass *= weightChange;
             //make sure we don't immediately throw object after picking it up
             timeOfPickup = Time.time;
         }
@@ -56,15 +61,19 @@ public class GhostObjectInteraction : MonoBehaviour {
         {
             resettableObject.IsHeld = true;
         }
+        heldObjectRb = heldObj.GetComponent<Rigidbody>();
     }
 
     public void GrabObject(Collider other)
     {
         heldObj = other.gameObject;
-        objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
-        heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+        heldObj.transform.position = grabBox.transform.position;
+        heldObjectRb = heldObj.GetComponent<Rigidbody>();
+        heldObjectRb.velocity = Vector3.zero;
+        objectDefInterpolation = heldObjectRb.interpolation;
+        heldObjectRb.interpolation = RigidbodyInterpolation.Interpolate;
         AddJoint();
-
+        
         //If the object is a pickup set the boolean that its currently being held
         ResettableObject resettableObject = other.GetComponent<ResettableObject>();
         if (resettableObject != null && resettableObject.CompareTag("Pickup"))
@@ -75,15 +84,6 @@ public class GhostObjectInteraction : MonoBehaviour {
 
     public void DropPickup()
     {
-        if (heldObj.tag == "Pickup")
-        {
-            heldObj.transform.position = dropBox.transform.position;
-            heldObj.GetComponent<Rigidbody>().mass /= weightChange;
-        }
-
-        heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
-        Destroy(joint);
-
         // If the object is a pickup set the boolean that its currently being held
         ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
         if (resettableObject != null && resettableObject.CompareTag("Pickup"))
@@ -91,7 +91,20 @@ public class GhostObjectInteraction : MonoBehaviour {
             resettableObject.IsHeld = false;
         }
 
+        if (heldObj.tag == "Pickup")
+        {
+            heldObj.transform.position = dropBox.transform.position;
+           // heldObjectRb.mass /= weightChange;
+        }
+
+        heldObjectRb.interpolation = objectDefInterpolation;
+        Destroy(joint);
+
+
+
         heldObj = null;
+        heldObjectRb.velocity = Vector3.zero;
+        heldObjectRb = null;
     }
 
     //connect player and pickup/pushable object via a physics joint
@@ -108,6 +121,14 @@ public class GhostObjectInteraction : MonoBehaviour {
             }
             joint = heldObj.AddComponent<FixedJoint>();
             joint.connectedBody = GetComponent<Rigidbody>();
+        }
+    }
+
+    private void matchVelocities()
+    {
+        if(heldObjectRb != null)
+        {
+            heldObjectRb.velocity = movableAI.velocity;
         }
     }
 

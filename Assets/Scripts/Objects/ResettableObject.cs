@@ -13,7 +13,7 @@ public class ResettableObject : MonoBehaviour {
     private bool isOnPressurePlate;
     private bool isHeld;
     // Distance from the original position for the object to be considered moved
-    private const float distanceMovedThreshold = 10.0f;
+    private const float distanceMovedThreshold = 5.0f;
 
     // Use this for initialization
     void Start () {
@@ -24,7 +24,15 @@ public class ResettableObject : MonoBehaviour {
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Deadzone"))
+        {
+            if(gameObject.CompareTag("Player"))
+            {
+                PlayerObjectInteraction playerInteraction = gameObject.GetComponent<PlayerObjectInteraction>();
+                if(playerInteraction != null && playerInteraction.heldObj != null)
+                    playerInteraction.DropPickup();
+            }
             Reset();
+        }
     }
 
     public void Reset()

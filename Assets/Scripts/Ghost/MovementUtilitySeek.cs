@@ -29,8 +29,17 @@ public static class MovementUtilitySeek{
             {
                 seekVelocity = seekVelocity.normalized * character.velocityMax;
             }
-            character.transform.position = new Vector3(characterPosition.x + seekVelocity.x * Time.deltaTime
-                , characterPosition.y + seekVelocity.y * Time.deltaTime, characterPosition.z + seekVelocity.z * Time.deltaTime);
+
+            if (characterPosition.y + seekVelocity.y * Time.deltaTime < character.minimumHeight)
+            {
+                character.transform.position = new Vector3(characterPosition.x + seekVelocity.x * Time.deltaTime
+                    , characterPosition.y, characterPosition.z + seekVelocity.z * Time.deltaTime);
+            }
+            else
+            {
+                character.transform.position = new Vector3(characterPosition.x + seekVelocity.x * Time.deltaTime
+                    , characterPosition.y + seekVelocity.y * Time.deltaTime, characterPosition.z + seekVelocity.z * Time.deltaTime);
+            }
             character.velocity = seekVelocity;
 
             // Rotate towards the target
