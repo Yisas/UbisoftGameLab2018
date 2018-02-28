@@ -101,7 +101,7 @@ public class GhostObjectInteraction : MonoBehaviour {
         Destroy(joint);
 
 
-
+        heldObj.layer = 0;
         heldObj = null;
         heldObjectRb.velocity = Vector3.zero;
         heldObjectRb = null;
@@ -121,6 +121,7 @@ public class GhostObjectInteraction : MonoBehaviour {
             }
             joint = heldObj.AddComponent<FixedJoint>();
             joint.connectedBody = GetComponent<Rigidbody>();
+            heldObj.layer = gameObject.layer;
         }
     }
 
