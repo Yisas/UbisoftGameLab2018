@@ -321,6 +321,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             heldObjectRigidbody.mass /= weightChange;
 
             heldObj.GetComponent<FixedJoint>().connectedBody = null;
+            heldObj.layer = 0; //Default layer
 
             // If the object is a pickup set the boolean that its currently being held                
             ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
@@ -419,6 +420,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             }
             joint = heldObj.AddComponent<FixedJoint>();
             joint.connectedBody = GetComponent<Rigidbody>();
+            heldObj.layer = gameObject.layer;
         }
     }
 
