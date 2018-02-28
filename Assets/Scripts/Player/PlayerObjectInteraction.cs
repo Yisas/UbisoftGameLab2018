@@ -271,7 +271,7 @@ public class PlayerObjectInteraction : MonoBehaviour
     private void PickupPlayer(Collider other)
     {
         //Debug.Log("Player Pickup triggered !!!");
-        Mesh otherMesh = other.GetComponent<MeshFilter>().mesh;
+        Collider otherMesh = other.GetComponent<Collider>();
         holdPos = transform.position;
         holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + gap;
 
@@ -456,6 +456,11 @@ public class PlayerObjectInteraction : MonoBehaviour
                 audioSource.clip = pickUpSound;
                 audioSource.Play();
             }
+            if (joint)
+            {
+                Destroy(joint);
+            }
+
             joint = heldObj.AddComponent<FixedJoint>();
             joint.connectedBody = GetComponent<Rigidbody>();
             heldObj.layer = gameObject.layer;
