@@ -320,6 +320,8 @@ public class PlayerObjectInteraction : MonoBehaviour
             heldObj.transform.position = dropBox.transform.position;
             heldObjectRigidbody.mass /= weightChange;
 
+            heldObj.GetComponent<FixedJoint>().connectedBody = null;
+
             // If the object is a pickup set the boolean that its currently being held                
             ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
             if(resettableObject != null)
