@@ -217,6 +217,8 @@ public class PlayerObjectInteraction : MonoBehaviour
     private void GrabPushable(Collider other)
     {
         heldObj = other.gameObject;
+        Vector3 touchedPoint = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
+        playerMove.transform.LookAt(touchedPoint);
         objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
         heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
         AddJoint();
@@ -226,7 +228,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         //stop player rotating in direction of movement, so they can face the block theyre pulling
         playerMove.rotateSpeed = 0;
 
-        playerMove.SetRestrictMovementToOneAxis(true);
+        playerMove.SetRestrictMovementToTwoAxis(true);
 
         PushableObject po = other.GetComponent<PushableObject>();
         if (po)
@@ -336,7 +338,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         heldObjectRigidbody.interpolation = objectDefInterpolation;
         Destroy(joint);
         playerMove.rotateSpeed = defRotateSpeed;
-        playerMove.SetRestrictMovementToOneAxis(false);
+        playerMove.SetRestrictMovementToTwoAxis(false);
 
         if (heldObj.tag == "Pushable")
         {
@@ -377,6 +379,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             //throwForcePlayer
             Debug.Log("Throwing player....");
             heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+            heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
         }
         else
         {

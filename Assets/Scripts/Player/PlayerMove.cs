@@ -12,6 +12,7 @@ public class PlayerMove : MonoBehaviour
     // Camera interactions
     public float cameraDelayTimerBeforeRespawn;
     private bool restrictMovementToOneAxis = false;
+    private bool restrictMovementToTwoAxis = false;
 
     //setup
     public Transform mainCam, floorChecks;      //main camera, and floorChecks object. FloorChecks are raycasted down from to check the player is grounded.
@@ -109,6 +110,18 @@ public class PlayerMove : MonoBehaviour
             verticalInput = Input.GetAxisRaw("Vertical " + playerID);
         }
 
+        //two axis movement, one or the other
+        if (restrictMovementToTwoAxis)
+        {
+            if (Mathf.Abs(horizontalInput) > Mathf.Abs(verticalInput))
+            {
+                verticalInput = 0;
+            }
+            else
+            {
+                horizontalInput = 0;
+            }
+        }
         direction = (screenMovementForward * verticalInput) + (screenMovementRight * horizontalInput);
 
         if (restrictMovementToOneAxis)
@@ -132,7 +145,9 @@ public class PlayerMove : MonoBehaviour
 
         if (!restrictMovementToOneAxis)
             if (rotateSpeed != 0 && direction.magnitude != 0)
+            {
                 characterMotor.RotateToDirection(moveDirection, curRotateSpeed * 5, true);
+            }
 
         characterMotor.ManageSpeed(curDecel, maxSpeed + movingObjSpeed.magnitude, true);
         //set animation values
@@ -269,6 +284,21 @@ public class PlayerMove : MonoBehaviour
 
         // Stop being held after jumping
         IsBeingHeld = false;
+    }
+
+    public void ToogleRestrictMovementToTwoAxis()
+    {
+        restrictMovementToTwoAxis = !restrictMovementToTwoAxis;
+    }
+
+    public void SetRestrictMovementToTwoAxis(bool value)
+    {
+        restrictMovementToTwoAxis = value;
+    }
+
+    public bool isRestrictedMovementToTwoAxis()
+    {
+        return restrictMovementToTwoAxis;
     }
 
     public void ToogleRestrictMovementToOneAxis()

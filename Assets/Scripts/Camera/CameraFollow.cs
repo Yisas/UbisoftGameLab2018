@@ -15,13 +15,15 @@ public class CameraFollow : MonoBehaviour
     public float minDistance = 5;                               //how close camera can move to player, when avoiding clipping with walls
     public float yAxisPeakTilt = 4;                             //how high can get the tilt regarding the player (ex: looking down)
     public float yAxisBottomTilt = 2;                           //how close to the ground the camera can go, this distance is regarding player position
-    public float closeUpMultiplier = 0.1f;                      //how fast or strongth are the close-ups
+    public float closeUpMultiplier = 0.4f;                      //how fast or strongth are the close-ups
     public float verticalOffsetMultiplier = 10f;                //modifier so that the camera is not too low
 
     private Transform followTarget;
     private Vector3 defTargetOffset;
     private bool camColliding;
-    private Transform lastTransform;
+
+    private Transform lastCollided;
+    private float startingTargetY;
 
     //setup objects
     void Awake()
@@ -33,6 +35,40 @@ public class CameraFollow : MonoBehaviour
 
         if (!target)
             Debug.LogError("'CameraFollow script' has no target assigned to it", transform);
+    }
+
+    private void Start()
+    {
+        startingTargetY = target.position.y;
+    }
+
+    void Update()
+    {
+        RaycastHit[] hits;
+
+        float distanceToPLayer = Vector3.Distance(transform.position, target.position);
+
+        // you can also use CapsuleCastAll()
+        // TODO: setup your layermask it improve performance and filter your hits.
+        hits = Physics.RaycastAll(transform.position, transform.forward, distanceToPLayer);
+        foreach (RaycastHit hit in hits)
+        {
+            if (startingTargetY > hit.point.y
+                && target.position.y > hit.point.y) continue;
+
+            Renderer R = hit.collider.GetComponent<Renderer>();
+            if (R == null)
+                continue; // no renderer attached? go to next hit
+                          // TODO: maybe implement here a check for GOs that should not be affected like the player
+
+
+            AutoTransparent AT = R.GetComponent<AutoTransparent>();
+            if (AT == null) // if no script is attached, attach one
+            {
+                AT = R.gameObject.AddComponent<AutoTransparent>();
+            }
+            AT.BeTransparent(); // get called every frame to reset the falloff
+        }
     }
 
     //run our camera functions each frame
@@ -52,7 +88,7 @@ public class CameraFollow : MonoBehaviour
         if (!other.isTrigger)
         {
             camColliding = true;
-            lastTransform = other.transform;
+            lastCollided = other.transform;
         }
     }
 
@@ -81,19 +117,24 @@ public class CameraFollow : MonoBehaviour
             {
                 //Fixing most occurences of bouncing, don't do a harsh close-up unless the character is moving
                 //Also treat differently collision against floor than against all other type of collision
-                if (target.GetComponent<Rigidbody>().velocity.magnitude > Vector3.zero.magnitude 
-                    && (lastTransform.position.y < target.position.y))
+                if (target.GetComponent<Rigidbody>().velocity.magnitude > Vector3.zero.magnitude)
                 {
-                    targetOffset *= closeUpMultiplier;
-                }
-                else
-                {
-                    targetOffset *= 0.99f;
+                    if (lastCollided.position.y < target.position.y)
+                    {
+                        targetOffset *= closeUpMultiplier;
+                    }
+
+                    else
+                    {
+                        targetOffset *= 0.99f;
+                    }
                 }
             }
         }
         else
+        {
             targetOffset *= 1.01f;
+        }
 
         if (targetOffset.magnitude > defTargetOffset.magnitude)
             targetOffset = defTargetOffset;
@@ -102,7 +143,7 @@ public class CameraFollow : MonoBehaviour
     //move camera smoothly toward its target
     void SmoothFollow()
     {
-        if (playerMove.isRestrictedMovementToOneAxis())
+        if (playerMove.isRestrictedMovementToOneAxis() || playerMove.isRestrictedMovementToTwoAxis())
         {
             transform.position = backCameraPosition.position;
             return;
