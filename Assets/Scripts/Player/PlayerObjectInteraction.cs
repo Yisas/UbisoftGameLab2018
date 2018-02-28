@@ -89,9 +89,10 @@ public class PlayerObjectInteraction : MonoBehaviour
             }
             if (subChangeMass)
             {
-                //heldObj.GetComponent<Rigidbody>().mass /= weightChange;
+                //heldObj.GetComponent<Rigidbody>().mass /= weightChange;                
                 Debug.Log("subChange LATEUPDATE");
                 heldObj.GetComponent<Rigidbody>().mass = 1.0f;
+                heldObj = null;
                 subChangeMass = false;
             }
         }
@@ -434,7 +435,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         subChangeMass = true;
         //heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
 
-        heldObj = null;
+        //heldObj = null;
         playerMove.CanJump = true;
         timeOfThrow = Time.time;
     }
