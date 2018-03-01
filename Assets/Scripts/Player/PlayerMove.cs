@@ -13,6 +13,7 @@ public class PlayerMove : MonoBehaviour
     public float cameraDelayTimerBeforeRespawn;
     private bool restrictMovementToOneAxis = false;
     private bool restrictMovementToTwoAxis = false;
+    private bool restrictToBackCamera = false;
 
     //setup
     public Transform mainCam, floorChecks;      //main camera, and floorChecks object. FloorChecks are raycasted down from to check the player is grounded.
@@ -303,6 +304,16 @@ public class PlayerMove : MonoBehaviour
     public bool isRestrictedMovementToTwoAxis()
     {
         return restrictMovementToTwoAxis;
+    }
+
+    public void SetRestrictToBackCamera(bool value)
+    {
+        restrictToBackCamera = value;
+    }
+
+    public bool isRestrictToBackCamera()
+    {
+        return restrictToBackCamera;
     }
 
     public void ToogleRestrictMovementToOneAxis()

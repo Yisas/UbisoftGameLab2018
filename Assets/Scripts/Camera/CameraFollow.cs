@@ -143,7 +143,7 @@ public class CameraFollow : MonoBehaviour
     //move camera smoothly toward its target
     void SmoothFollow()
     {
-        if (playerMove.isRestrictedMovementToOneAxis() || playerMove.isRestrictedMovementToTwoAxis())
+        if (playerMove.isRestrictToBackCamera())
         {
             transform.position = backCameraPosition.position;
             return;

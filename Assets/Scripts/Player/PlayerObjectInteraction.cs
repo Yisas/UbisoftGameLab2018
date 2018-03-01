@@ -258,7 +258,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         //stop player rotating in direction of movement, so they can face the block theyre pulling
         playerMove.rotateSpeed = 0;
 
-        playerMove.SetRestrictMovementToTwoAxis(true);
+        playerMove.SetRestrictToBackCamera(true);
 
         PushableObject po = other.GetComponent<PushableObject>();
         if (po)
@@ -374,7 +374,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         heldObjectRigidbody.interpolation = objectDefInterpolation;
         Destroy(joint);
         playerMove.rotateSpeed = defRotateSpeed;
-        playerMove.SetRestrictMovementToTwoAxis(false);
+        playerMove.SetRestrictToBackCamera(false);
 
         if (heldObj.tag == "Pushable")
         {
