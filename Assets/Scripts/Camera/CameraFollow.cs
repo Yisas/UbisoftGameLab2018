@@ -44,6 +44,12 @@ public class CameraFollow : MonoBehaviour
 
     void Update()
     {
+        if (target)
+        {
+            SmoothLookAt();
+            SmoothFollow();
+        }
+
         RaycastHit[] hits;
 
         float distanceToPLayer = Vector3.Distance(transform.position, target.position);
