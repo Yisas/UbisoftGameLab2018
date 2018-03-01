@@ -13,6 +13,7 @@ public class PlayerMove : MonoBehaviour
     public float cameraDelayTimerBeforeRespawn;
     private bool restrictMovementToOneAxis = false;
     private bool restrictMovementToTwoAxis = false;
+    private bool restrictToBackCamera = false;
 
     //setup
     public Transform mainCam, floorChecks;      //main camera, and floorChecks object. FloorChecks are raycasted down from to check the player is grounded.
@@ -35,7 +36,7 @@ public class PlayerMove : MonoBehaviour
     //jumping
     public Vector3 jumpForce = new Vector3(0, 13, 0);       //normal jump force
     [Tooltip("Jump force while being held by another player, in order to jump off")]
-    public Vector3 jumpForceWhileCarried = new Vector3(0, 2, 4);
+    public Vector3 jumpForceWhileCarried; //= new Vector3(0, 2, 4);
     public float jumpDelay = 0.1f;                          //how fast you need to jump after hitting the ground, to do the next type of jump
     public float jumpLeniancy = 0.17f;                      //how early before hitting the ground you can press jump, and still have it work
 
@@ -256,7 +257,11 @@ public class PlayerMove : MonoBehaviour
                 if (!isBeingHeld)
                     Jump(jumpForce);
                 else
+                {
+                    Debug.Log("[PlayerMove Class] Player ID: " + playerID + "\n -----JumpForceWhileCarried: "+ jumpForceWhileCarried + "(mag= " + jumpForceWhileCarried.magnitude + " )" 
+                                + " Mass of Player: " + GetComponent<Rigidbody>().mass);
                     Jump(jumpForceWhileCarried);
+                }
             }
         }
     }
@@ -299,6 +304,16 @@ public class PlayerMove : MonoBehaviour
     public bool isRestrictedMovementToTwoAxis()
     {
         return restrictMovementToTwoAxis;
+    }
+
+    public void SetRestrictToBackCamera(bool value)
+    {
+        restrictToBackCamera = value;
+    }
+
+    public bool isRestrictToBackCamera()
+    {
+        return restrictToBackCamera;
     }
 
     public void ToogleRestrictMovementToOneAxis()
