@@ -11,8 +11,8 @@ public class TestPlayerMove : NetworkBehaviour {
         if (!isLocalPlayer)
             return;
 
-        float x = Input.GetAxis("Horizontal 1");
-        float z = Input.GetAxis("Vertical 1");
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
         transform.Translate(x, 0, z);
     }
 

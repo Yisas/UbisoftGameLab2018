@@ -123,8 +123,8 @@ public class PlayerMove : NetworkBehaviour
         float verticalInput = 0;
         if (!isBeingHeld)
         {
-            horizontalInput = Input.GetAxisRaw("Horizontal " + playerID);
-            verticalInput = Input.GetAxisRaw("Vertical " + playerID);
+            horizontalInput = Input.GetAxisRaw("Horizontal");
+            verticalInput = Input.GetAxisRaw("Vertical");
         }
 
         //two axis movement, one or the other
@@ -261,14 +261,14 @@ public class PlayerMove : NetworkBehaviour
             GetComponent<AudioSource>().Play();
         }
         //if we press jump in the air, save the time
-        if (Input.GetButtonDown("Jump " + playerID) && !grounded)
+        if (Input.GetButtonDown("Jump") && !grounded)
             airPressTime = Time.time;
 
         //if were on ground within slope limit
         if (grounded && slope < slopeLimit)
         {
             //and we press jump, or we pressed jump justt before hitting the ground
-            if (Input.GetButtonDown("Jump " + playerID) || airPressTime + jumpLeniancy > Time.time)
+            if (Input.GetButtonDown("Jump") || airPressTime + jumpLeniancy > Time.time)
             {
                 if (!isBeingHeld)
                     Jump(jumpForce);

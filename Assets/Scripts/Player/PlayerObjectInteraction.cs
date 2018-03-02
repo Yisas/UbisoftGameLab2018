@@ -102,7 +102,7 @@ public class PlayerObjectInteraction : MonoBehaviour
     void Update()
     {
         //when we press grab button, throw object if we're holding one
-        if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj)
+        if (Input.GetButtonDown("Grab") && heldObj)
         {
             if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + throwCooldownTime)
                 ThrowPickup();
@@ -115,6 +115,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         }
 
         //NOTE: Added--Now set the heldObj so that when it jumps it gets of the bottom player:                                                   
+        // TODO: input handling detection of second player?
         if (heldObj != null && heldObj.tag == "Player" && Input.GetButton("Jump " + heldObj.GetComponent<PlayerMove>().PlayerID))
         {
             Debug.Log("Update()\n---PID: " + heldObj.GetComponent<PlayerMove>().PlayerID + " isBeingHeld? " + heldObj.GetComponent<PlayerMove>().IsBeingHeld.ToString().ToUpper()
@@ -122,7 +123,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             PlayerDrop();
         }
 
-        if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj == null && canPushButton)
+        if (Input.GetButtonDown("Grab") && heldObj == null && canPushButton)
         {
             PushButton();
             // TODO: huh?
@@ -156,7 +157,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             }
         }
         //when grab is released, let go of any pushable objects were holding
-        if (Input.GetButtonDown("Drop " + playerMove.PlayerID) && heldObj != null)
+        if (Input.GetButtonDown("Drop") && heldObj != null)
         {
             DropPickup();
         }
@@ -209,7 +210,7 @@ public class PlayerObjectInteraction : MonoBehaviour
     void OnTriggerStay(Collider other)
     {
         //if grab is pressed and an object is inside the players "grabBox" trigger
-        if (Input.GetButton("Grab " + playerMove.PlayerID))
+        if (Input.GetButton("Grab"))
         {
             //pickup
             if (other.tag == "Pickup" && heldObj == null && timeOfThrow + 0.2f < Time.time)

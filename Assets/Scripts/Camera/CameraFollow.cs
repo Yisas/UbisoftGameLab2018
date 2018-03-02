@@ -165,10 +165,10 @@ public class CameraFollow : MonoBehaviour
         followTarget.Translate(targetOffset, Space.Self);
 
         //rotate the followTarget around the target with input
-        float axis = Input.GetAxis("CamHorizontal " + playerID) * inputRotationSpeed * Time.deltaTime;
+        float axis = Input.GetAxis("CamHorizontal") * inputRotationSpeed * Time.deltaTime;
         followTarget.RotateAround(target.position, Vector3.up, axis);
 
-        float axis2 = Input.GetAxis("CamVertical " + playerID) * inputRotationSpeed * Time.deltaTime;
+        float axis2 = Input.GetAxis("CamVertical") * inputRotationSpeed * Time.deltaTime;
 
         //If it haven't reached the peak
         if (transform.position.y < target.position.y + yAxisPeakTilt)
