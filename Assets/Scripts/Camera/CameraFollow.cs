@@ -3,7 +3,6 @@
 public class CameraFollow : MonoBehaviour
 {
     // GGJ addition
-    public Transform backCameraPosition;
     public int playerID;
     private PlayerMove playerMove;
 
@@ -22,6 +21,7 @@ public class CameraFollow : MonoBehaviour
     private Vector3 defTargetOffset;
     private Transform lastCollided;
     private float startingTargetY;
+    private Transform backCameraPosition;                       // Over the shoulder position of the camera for when the player is push/pulling blocks
 
     // State variables
     private bool camColliding;
@@ -37,15 +37,11 @@ public class CameraFollow : MonoBehaviour
         followTarget = new GameObject().transform;  //create empty gameObject as camera target, this will follow and rotate around the player
         followTarget.name = "Camera Target";
         defTargetOffset = targetOffset;
+        startingTargetY = target.position.y;
 
         if (!target)
             Debug.LogError("'CameraFollow script' has no target assigned to it", transform);
 
-    }
-
-    private void Start()
-    {
-        startingTargetY = target.position.y;
     }
 
     void Update()
@@ -54,41 +50,41 @@ public class CameraFollow : MonoBehaviour
         {
             SmoothLookAt();
             SmoothFollow();
-        }
 
-        RaycastHit[] hits;
+            RaycastHit[] hits;
 
-        float distanceToPLayer = Vector3.Distance(transform.position, target.position);
+            float distanceToPLayer = Vector3.Distance(transform.position, target.position);
 
-        // you can also use CapsuleCastAll()
-        // TODO: setup your layermask it improve performance and filter your hits.
-        hits = Physics.RaycastAll(transform.position, transform.forward, distanceToPLayer);
-        foreach (RaycastHit hit in hits)
-        {
-            if (startingTargetY > hit.point.y
-                && target.position.y > hit.point.y) continue;
-
-            Renderer R = hit.collider.GetComponent<Renderer>();
-            if (R == null)
-                continue; // no renderer attached? go to next hit
-                          // TODO: maybe implement here a check for GOs that should not be affected like the player
-
-
-            AutoTransparent AT = R.GetComponent<AutoTransparent>();
-            if (AT == null) // if no script is attached, attach one
+            // you can also use CapsuleCastAll()
+            // TODO: setup your layermask it improve performance and filter your hits.
+            hits = Physics.RaycastAll(transform.position, transform.forward, distanceToPLayer);
+            foreach (RaycastHit hit in hits)
             {
-                AT = R.gameObject.AddComponent<AutoTransparent>();
+                if (startingTargetY > hit.point.y
+                    && target.position.y > hit.point.y) continue;
+
+                Renderer R = hit.collider.GetComponent<Renderer>();
+                if (R == null)
+                    continue; // no renderer attached? go to next hit
+                              // TODO: maybe implement here a check for GOs that should not be affected like the player
+
+
+                AutoTransparent AT = R.GetComponent<AutoTransparent>();
+                if (AT == null) // if no script is attached, attach one
+                {
+                    AT = R.gameObject.AddComponent<AutoTransparent>();
+                }
+                AT.BeTransparent(); // get called every frame to reset the falloff
             }
-            AT.BeTransparent(); // get called every frame to reset the falloff
         }
     }
 
     //run our camera functions each frame
     void LateUpdate()
     {
-        AdjustCamera();
         if (target)
         {
+            AdjustCamera();
             SmoothLookAt();
             SmoothFollow();
         }
@@ -149,7 +145,9 @@ public class CameraFollow : MonoBehaviour
         }
 
         if (targetOffset.magnitude > defTargetOffset.magnitude)
+        {
             targetOffset = defTargetOffset;
+        }
     }
 
     //move camera smoothly toward its target
