@@ -46,6 +46,8 @@ public class PlayerObjectInteraction : MonoBehaviour
     private float timeOfPickup, timeOfThrow, defRotateSpeed;
     private bool canPushButton = false;
 
+    private float originalMass;
+
     // Private references
     private PlayerMove playerMove;
     private CharacterMotor characterMotor;
@@ -75,13 +77,15 @@ public class PlayerObjectInteraction : MonoBehaviour
         if (animator)
             animator.SetLayerWeight(armsAnimationLayer, 1);
 
+        originalMass = GetComponent<Rigidbody>().mass;
+
     }
 
     void LateUpdate()
     {
         if (heldObj != null)
         {
-            if (addChangeMass )
+            if (addChangeMass)
             {
                 heldObj.GetComponent<Rigidbody>().mass *= weightChange;
                 Debug.Log("addChange LATEUPDATE");
@@ -91,7 +95,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             {
                 //heldObj.GetComponent<Rigidbody>().mass /= weightChange;                
                 Debug.Log("subChange LATEUPDATE");
-                heldObj.GetComponent<Rigidbody>().mass = 1.0f;
+                heldObj.GetComponent<Rigidbody>().mass = originalMass;
                 heldObj = null;
                 subChangeMass = false;
             }
@@ -386,7 +390,10 @@ public class PlayerObjectInteraction : MonoBehaviour
                 Debug.LogError("Unasignsed PushableObject component");
         }
 
-        heldObj = null;
+        // Player heldobj reference handled in LateUpdate
+        if(heldObj.tag != "Player")
+            heldObj = null;
+
         timeOfThrow = Time.time;
     }
 
