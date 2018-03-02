@@ -362,8 +362,6 @@ public class PlayerObjectInteraction : MonoBehaviour
             ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
             if (resettableObject != null)
                 resettableObject.IsHeld = false;
-
-            heldObj = null;
         }
 
         //NOTE: Added the bottom player allow and drop the top player
@@ -390,6 +388,10 @@ public class PlayerObjectInteraction : MonoBehaviour
             else
                 Debug.LogError("Unasignsed PushableObject component");
         }
+
+        // Player heldobj reference handled in LateUpdate
+        if(heldObj.tag != "Player")
+            heldObj = null;
 
         timeOfThrow = Time.time;
     }
