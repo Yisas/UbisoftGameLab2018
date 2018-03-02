@@ -13,6 +13,8 @@ public class PlayerMove : NetworkBehaviour
     public float cameraDelayTimerBeforeRespawn;
     public Transform backCameraPosition;
     private bool restrictMovementToOneAxis = false;
+    private bool restrictMovementToTwoAxis = false;
+    private bool restrictToBackCamera = false;
 
     //setup
     public Transform mainCam, floorChecks;      //main camera, and floorChecks object. FloorChecks are raycasted down from to check the player is grounded.
@@ -34,14 +36,16 @@ public class PlayerMove : NetworkBehaviour
 
     //jumping
     public Vector3 jumpForce = new Vector3(0, 13, 0);       //normal jump force
-    public Vector3 secondJumpForce = new Vector3(0, 13, 0); //the force of a 2nd consecutive jump
-    public Vector3 thirdJumpForce = new Vector3(0, 13, 0);  //the force of a 3rd consecutive jump
+    [Tooltip("Jump force while being held by another player, in order to jump off")]
+    public Vector3 jumpForceWhileCarried; //= new Vector3(0, 2, 4);
     public float jumpDelay = 0.1f;                          //how fast you need to jump after hitting the ground, to do the next type of jump
     public float jumpLeniancy = 0.17f;                      //how early before hitting the ground you can press jump, and still have it work
 
     // States
-    private int onJump;
     private bool grounded;
+    //NOTE: adding:
+    private bool canJump = true;
+    private bool isBeingHeld = false;
 
     // Movement data
     private float airPressTime, groundedCount, curAccel, curDecel, curRotateSpeed, slope;
@@ -114,10 +118,27 @@ public class PlayerMove : NetworkBehaviour
         screenMovementForward = screenMovementSpace * Vector3.forward;
         screenMovementRight = screenMovementSpace * Vector3.right;
 
-        //get movement input, set direction to move in
-        float horizontalInput = Input.GetAxisRaw("Horizontal " + playerID);
-        float verticalInput = Input.GetAxisRaw("Vertical " + playerID);
+        //get movement input, set direction to move in. Movement inputs stay at zero if you're being held, otherwise they get processed
+        float horizontalInput = 0;
+        float verticalInput = 0;
+        if (!isBeingHeld)
+        {
+            horizontalInput = Input.GetAxisRaw("Horizontal " + playerID);
+            verticalInput = Input.GetAxisRaw("Vertical " + playerID);
+        }
 
+        //two axis movement, one or the other
+        if (restrictMovementToTwoAxis)
+        {
+            if (Mathf.Abs(horizontalInput) > Mathf.Abs(verticalInput))
+            {
+                verticalInput = 0;
+            }
+            else
+            {
+                horizontalInput = 0;
+            }
+        }
         direction = (screenMovementForward * verticalInput) + (screenMovementRight * horizontalInput);
 
         if (restrictMovementToOneAxis)
@@ -135,13 +156,15 @@ public class PlayerMove : NetworkBehaviour
     {
         //are we grounded
         grounded = IsGrounded();
-        
+
         //move, rotate, manage speed
         characterMotor.MoveTo(moveDirection, curAccel, 0.7f, true);
 
         if (!restrictMovementToOneAxis)
             if (rotateSpeed != 0 && direction.magnitude != 0)
+            {
                 characterMotor.RotateToDirection(moveDirection, curRotateSpeed * 5, true);
+            }
 
         characterMotor.ManageSpeed(curDecel, maxSpeed + movingObjSpeed.magnitude, true);
         //set animation values
@@ -200,7 +223,7 @@ public class PlayerMove : NetworkBehaviour
                         Vector3 slide = new Vector3(0f, -slideAmount, 0f);
                         GetComponent<Rigidbody>().AddForce(slide, ForceMode.Force);
                     }
-                        
+
                     //moving platforms
                     // TODO: double check this implementation
                     if (hit.transform.tag == "MovingPlatform" || hit.transform.tag == "Pushable")
@@ -247,15 +270,14 @@ public class PlayerMove : NetworkBehaviour
             //and we press jump, or we pressed jump justt before hitting the ground
             if (Input.GetButtonDown("Jump " + playerID) || airPressTime + jumpLeniancy > Time.time)
             {
-                //increment our jump type if we haven't been on the ground for long
-                onJump = (groundedCount < jumpDelay) ? Mathf.Min(2, onJump + 1) : 0;
-                //execute the correct jump (like in mario64, jumping 3 times quickly will do higher jumps)
-                if (onJump == 0)
+                if (!isBeingHeld)
                     Jump(jumpForce);
-                else if (onJump == 1)
-                    Jump(secondJumpForce);
-                else if (onJump == 2)
-                    Jump(thirdJumpForce);
+                else
+                {
+                    Debug.Log("[PlayerMove Class] Player ID: " + playerID + "\n -----JumpForceWhileCarried: "+ jumpForceWhileCarried + "(mag= " + jumpForceWhileCarried.magnitude + " )" 
+                                + " Mass of Player: " + GetComponent<Rigidbody>().mass);
+                    Jump(jumpForceWhileCarried);
+                }
             }
         }
     }
@@ -263,6 +285,12 @@ public class PlayerMove : NetworkBehaviour
     //push player at jump force
     public void Jump(Vector3 jumpVelocity)
     {
+        if (!canJump)  //Added.
+        {
+            Debug.Log("should not be jumping");
+            return;
+        }
+
         if (jumpSound)
         {
             // TODO: add clip volume change as attribute, not hardcoded. Single get
@@ -270,9 +298,38 @@ public class PlayerMove : NetworkBehaviour
             GetComponent<AudioSource>().clip = jumpSound;
             GetComponent<AudioSource>().Play();
         }
+
         GetComponent<Rigidbody>().velocity = new Vector3(GetComponent<Rigidbody>().velocity.x, 0f, GetComponent<Rigidbody>().velocity.z);
         GetComponent<Rigidbody>().AddRelativeForce(jumpVelocity, ForceMode.Impulse);
         airPressTime = 0f;
+
+        // Stop being held after jumping
+        IsBeingHeld = false;
+    }
+
+    public void ToogleRestrictMovementToTwoAxis()
+    {
+        restrictMovementToTwoAxis = !restrictMovementToTwoAxis;
+    }
+
+    public void SetRestrictMovementToTwoAxis(bool value)
+    {
+        restrictMovementToTwoAxis = value;
+    }
+
+    public bool isRestrictedMovementToTwoAxis()
+    {
+        return restrictMovementToTwoAxis;
+    }
+
+    public void SetRestrictToBackCamera(bool value)
+    {
+        restrictToBackCamera = value;
+    }
+
+    public bool isRestrictToBackCamera()
+    {
+        return restrictToBackCamera;
     }
 
     public void ToogleRestrictMovementToOneAxis()
@@ -290,7 +347,8 @@ public class PlayerMove : NetworkBehaviour
         return restrictMovementToOneAxis;
     }
 
-    // Getters
+    // Public attribute visibility methods
+
     public int PlayerID
     {
         get
@@ -300,6 +358,46 @@ public class PlayerMove : NetworkBehaviour
         set
         {
             playerID = value;
+        }
+    }
+
+    public bool IsBeingHeld
+    {
+        get
+        {
+            return isBeingHeld;
+        }
+        set
+        {
+            isBeingHeld = value;
+
+            Rigidbody rb = GetComponent<Rigidbody>();
+            // If you are now being held...
+            if (isBeingHeld)
+            {
+                //... unrestrict rotation freezes
+                //... by wiping constraints set by CharacterMotor...
+                rb.constraints = RigidbodyConstraints.None;
+                //... and adding the ones necessary when being carried through a FixedJoint logic
+                rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            }
+            else
+            {
+                //... put back rotation constraints
+                rb.constraints = RigidbodyConstraints.FreezeRotation;
+            }
+        }
+    }
+
+    public bool CanJump
+    {
+        get
+        {
+            return canJump;
+        }
+        set
+        {
+            canJump = value;
         }
     }
 }
