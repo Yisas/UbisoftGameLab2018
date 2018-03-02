@@ -17,7 +17,7 @@ public class PlayerMove : NetworkBehaviour
     private bool restrictToBackCamera = false;
 
     //setup
-    public Transform mainCam, floorChecks;      //main camera, and floorChecks object. FloorChecks are raycasted down from to check the player is grounded.
+    public Transform floorChecks;                         //FloorChecks are raycasted down from to check the player is grounded.
     public Animator animator;                   //object with animation controller on, which you want to animate
     public AudioClip jumpSound;                 //play when jumping
     public AudioClip landSound;                 //play when landing on ground
@@ -52,6 +52,7 @@ public class PlayerMove : NetworkBehaviour
     private Vector3 direction, moveDirection, screenMovementForward, screenMovementRight, movingObjSpeed;
 
     // Private references
+    private Transform mainCam;
     private Transform[] floorCheckers;
     private Quaternion screenMovementSpace;
     private CharacterMotor characterMotor;
