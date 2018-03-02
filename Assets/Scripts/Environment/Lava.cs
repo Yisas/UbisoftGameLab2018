@@ -1,12 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Lava : MonoBehaviour {
 
-    private CameraFollow cameraFollow;
-    private bool cameraDeactivated = false;
-    private float cameraFollowTime= 0;
+    // These dictionaries have parallel keys corresponding to the player ID
+    private Dictionary<int, CameraFollow> cameraFollowDict;
+    private Dictionary<int, bool> cameraDeactivatedDict;
+    private Dictionary<int, float> cameraFollowTimeDict;
+
+    private void Start()
+    {
+        cameraFollowDict = new Dictionary<int, CameraFollow>();
+        cameraDeactivatedDict = new Dictionary<int, bool>();
+        cameraFollowTimeDict = new Dictionary<int, float>();
+    }
 
     private void OnTriggerStay(Collider other)
     {
@@ -15,29 +24,44 @@ public class Lava : MonoBehaviour {
             // Deactivate camera follow
             int playerID = other.GetComponent<PlayerMove>().PlayerID;
 
-            cameraFollow = GameObject.Find("Player " + playerID + " Camera").GetComponent<CameraFollow>();
+            // Get player's camera then deactivate it
+            if (!cameraFollowDict.ContainsKey(playerID))
+                cameraFollowDict.Add(playerID, GameObject.Find("Player " + playerID + " Camera").GetComponent<CameraFollow>());
 
-            cameraFollow.enabled = false;
+            cameraFollowDict[playerID].enabled = false;
 
-            cameraDeactivated = true;
+            // Keep track that the camera is disabled
+            if (!cameraDeactivatedDict.ContainsKey(playerID))
+                cameraDeactivatedDict.Add(playerID, true);
+            else
+                cameraDeactivatedDict[playerID] = true;
 
-            cameraFollowTime = other.GetComponent<PlayerMove>().cameraDelayTimerBeforeRespawn;
+            // Update the time before camera is reenabled
+            if (!cameraFollowTimeDict.ContainsKey(playerID))
+                cameraFollowTimeDict.Add(playerID, other.GetComponent<PlayerMove>().cameraDelayTimerBeforeRespawn);
+            else
+                cameraFollowTimeDict[playerID] = other.GetComponent<PlayerMove>().cameraDelayTimerBeforeRespawn;
+
         }
     }
 
     private void Update()
     {
-        if (cameraDeactivated)
+        // Attempt to reenable any disabled cameras
+        int index;
+        foreach (KeyValuePair<int, CameraFollow> cameraFollow in cameraFollowDict)
         {
-            cameraFollowTime -= Time.deltaTime;
-
-            if(cameraFollowTime <= 0)
+            index = cameraFollow.Key;
+            if (cameraDeactivatedDict[index])
             {
-                cameraDeactivated = false;
+                cameraFollowTimeDict[index] -= Time.deltaTime;
 
-                cameraFollow.enabled = true;
+                if (cameraFollowTimeDict[index] <= 0)
+                {
+                    cameraDeactivatedDict[index] = false;
 
-                cameraFollow = null;
+                    cameraFollow.Value.enabled = true;
+                }
             }
         }
     }
