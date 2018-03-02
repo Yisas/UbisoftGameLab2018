@@ -158,25 +158,33 @@ public class PlayerMove : NetworkBehaviour
         //are we grounded
         grounded = IsGrounded();
 
-        //move, rotate, manage speed
-        characterMotor.MoveTo(moveDirection, curAccel, 0.7f, true);
+        // Perform movement operations only for local instance of player. Movement for non-local player is handled
+        // on their instance and networked over
+        if (isLocalPlayer)
+        {
+            //move, rotate, manage speed
+            characterMotor.MoveTo(moveDirection, curAccel, 0.7f, true);
 
-        if (!restrictMovementToOneAxis)
-            if (rotateSpeed != 0 && direction.magnitude != 0)
-            {
-                characterMotor.RotateToDirection(moveDirection, curRotateSpeed * 5, true);
-            }
+            if (!restrictMovementToOneAxis)
+                if (rotateSpeed != 0 && direction.magnitude != 0)
+                {
+                    characterMotor.RotateToDirection(moveDirection, curRotateSpeed * 5, true);
+                }
 
-        characterMotor.ManageSpeed(curDecel, maxSpeed + movingObjSpeed.magnitude, true);
-        //set animation values
+            characterMotor.ManageSpeed(curDecel, maxSpeed + movingObjSpeed.magnitude, true);
+        }
+
+        // Update animator
         if (animator)
         {
             animator.SetFloat("DistanceToTarget", characterMotor.DistanceToTarget);
             animator.SetBool("Grounded", grounded);
             animator.SetFloat("YVelocity", GetComponent<Rigidbody>().velocity.y);
         }
+        else
+            Debug.LogWarning("Animator missing on player " + playerID);
 
-        // Adding footsteps audio GGJ2018:
+        // Play footsteps
         if (grounded && runSound && !GetComponent<AudioSource>().isPlaying && GetComponent<Rigidbody>().velocity.magnitude > 0)
         {
             // TODO: add clip volume change as attribute, not hardcoded
