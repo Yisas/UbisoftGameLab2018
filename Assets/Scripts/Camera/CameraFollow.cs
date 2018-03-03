@@ -15,20 +15,21 @@ public class CameraFollow : MonoBehaviour
     public float minDistance = 5;                               //how close camera can move to player, when avoiding clipping with walls
     public float yAxisPeakTilt = 4;                             //how high can get the tilt regarding the player (ex: looking down)
     public float yAxisBottomTilt = 2;                           //how close to the ground the camera can go, this distance is regarding player position
-    public float closeUpMultiplier = 0.4f;                      //how fast or strongth are the close-ups
-    public float verticalOffsetMultiplier = 10f;                //modifier so that the camera is not too low
 
+    public float verticalOffsetMultiplier = 10f;                //modifier so that the camera is not too low
+    public float closeUpMultiplier = 0.4f;                      //how fast or strongth are the close-ups
     private Transform followTarget;
     private Vector3 defTargetOffset;
     private bool camColliding;
 
     private Transform lastCollided;
     private float startingTargetY;
+    public bool closingUp = false;
 
     //setup objects
     void Awake()
     {
-        playerMove = target.GetComponent<PlayerMove>();
+        playerMove = target.parent.GetComponent<PlayerMove>();
         followTarget = new GameObject().transform;  //create empty gameObject as camera target, this will follow and rotate around the player
         followTarget.name = "Camera Target";
         defTargetOffset = targetOffset;
@@ -56,7 +57,7 @@ public class CameraFollow : MonoBehaviour
 
         // you can also use CapsuleCastAll()
         // TODO: setup your layermask it improve performance and filter your hits.
-        hits = Physics.RaycastAll(transform.position, transform.forward, distanceToPLayer);
+        hits = Physics.RaycastAll(transform.position-transform.forward+transform.up, transform.forward, distanceToPLayer);
         foreach (RaycastHit hit in hits)
         {
             if (startingTargetY > hit.point.y
@@ -118,12 +119,14 @@ public class CameraFollow : MonoBehaviour
         //move cam in/out
         if (camColliding == true)
         {
+            //closingUp = false;
+
             //If it's colliding against something and the character is not static get camera closer
             if (targetOffset.magnitude > minDistance)
             {
                 //Fixing most occurences of bouncing, don't do a harsh close-up unless the character is moving
                 //Also treat differently collision against floor than against all other type of collision
-                if (target.GetComponent<Rigidbody>().velocity.magnitude > Vector3.zero.magnitude)
+                if (target.parent.GetComponent<Rigidbody>().velocity.magnitude > Vector3.zero.magnitude)
                 {
                     if (lastCollided.position.y < target.position.y)
                     {
@@ -139,11 +142,13 @@ public class CameraFollow : MonoBehaviour
         }
         else
         {
-            targetOffset *= 1.01f;
+            if(!closingUp)
+                targetOffset *= 1.01f;
         }
 
+
         if (targetOffset.magnitude > defTargetOffset.magnitude)
-            targetOffset = defTargetOffset;
+            targetOffset =  defTargetOffset;
     }
 
     //move camera smoothly toward its target
@@ -166,6 +171,7 @@ public class CameraFollow : MonoBehaviour
 
         float axis2 = Input.GetAxis("CamVertical " + playerID) * inputRotationSpeed * Time.deltaTime;
 
+
         //If it haven't reached the peak
         if (transform.position.y < target.position.y + yAxisPeakTilt)
         {
@@ -173,11 +179,16 @@ public class CameraFollow : MonoBehaviour
             if (transform.position.y > target.position.y + yAxisBottomTilt)
             {
                 followTarget.RotateAround(target.position + transform.up * verticalOffsetMultiplier, transform.right, -axis2);
+
+                //closingUp = false;
+                //transform.LookAt(target.position);
+                //targetOffset *= (axis2 * Time.deltaTime);
             }
             else //Camera under the shoulders threshold
             {
                 if (axis2 < 0)
                 {
+                    //closingUp = false;
                     followTarget.RotateAround(target.position + transform.up * verticalOffsetMultiplier, transform.right, -axis2);
                 }
             }
@@ -185,8 +196,17 @@ public class CameraFollow : MonoBehaviour
         else if (-axis2 <= 0) //It can only go down when reaches peak
         {
             followTarget.RotateAround(target.position + transform.up * verticalOffsetMultiplier, transform.right, -axis2);
+            transform.LookAt(target.position+Vector3.up*10);
+            targetOffset *= 0.99f;
+            yAxisPeakTilt *= 0.99f;
+            closingUp = true;
         }
 
-        transform.position = Vector3.Lerp(transform.position, followTarget.position, followSpeed * Time.deltaTime);
+        Vector3 nextFramePosition = Vector3.Lerp(transform.position, followTarget.position, followSpeed * Time.deltaTime);
+
+        //where should the camera be next frame?
+        Vector3 direction = nextFramePosition - target.position;
+        //raycast to this position
+        transform.position = nextFramePosition;
     }
 }
