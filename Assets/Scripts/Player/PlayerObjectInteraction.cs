@@ -125,15 +125,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 DropPickup();
         }
 
-        //NOTE: Added--Now set the heldObj so that when it jumps it gets of the bottom player:                                                   
-        // TODO: input handling detection of second player?
-        if (heldObj != null && heldObj.tag == "Player" && Input.GetButton("Jump " + heldObj.GetComponent<PlayerMove>().PlayerID))
-        {
-            Debug.Log("Update()\n---PID: " + heldObj.GetComponent<PlayerMove>().PlayerID + " isBeingHeld? " + heldObj.GetComponent<PlayerMove>().IsBeingHeld.ToString().ToUpper()
-                        + "[PID" + heldObj.GetComponent<PlayerMove>().PlayerID + " has Jumped]");
-            PlayerDrop();
-        }
-
         if (Input.GetButtonDown("Grab") && heldObj == null && canPushButton)
         {
             PushButton();
@@ -466,17 +457,20 @@ public class PlayerObjectInteraction : NetworkBehaviour
     //If the top player jumps while being held it will break the joint and reset both the players.
     public void PlayerDrop()
     {
-        Debug.Log("PlayerDrop()\n----PID on Top: " + heldObj.GetComponent<PlayerMove>().PlayerID + " AND isBeingHeld? " + heldObj.GetComponent<PlayerMove>().IsBeingHeld);
+        if (heldObj != null && heldObj.tag == "Player")
+        {
+            Debug.Log("PlayerDrop()\n----PID on Top: " + heldObj.GetComponent<PlayerMove>().PlayerID + " AND isBeingHeld? " + heldObj.GetComponent<PlayerMove>().IsBeingHeld);
 
-        Destroy(joint);
-        heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
-        //heldObj.GetComponent<Rigidbody>().mass /= weightChange;
-        subChangeMass = true;
-        //heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
+            Destroy(joint);
+            heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
+            //heldObj.GetComponent<Rigidbody>().mass /= weightChange;
+            subChangeMass = true;
+            //heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
 
-        //heldObj = null;
-        playerMove.CanJump = true;
-        timeOfThrow = Time.time;
+            //heldObj = null;
+            playerMove.CanJump = true;
+            timeOfThrow = Time.time;
+        }
     }
     #endregion
 

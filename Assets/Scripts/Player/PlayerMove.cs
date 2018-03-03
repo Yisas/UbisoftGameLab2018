@@ -286,6 +286,7 @@ public class PlayerMove : NetworkBehaviour
                     Debug.Log("[PlayerMove Class] Player ID: " + playerID + "\n -----JumpForceWhileCarried: "+ jumpForceWhileCarried + "(mag= " + jumpForceWhileCarried.magnitude + " )" 
                                 + " Mass of Player: " + GetComponent<Rigidbody>().mass);
                     Jump(jumpForceWhileCarried);
+                    GameObject.Find("Player " + (playerID == 1 ? 2 : 1)).GetComponent<PlayerObjectInteraction>().PlayerDrop();
                 }
             }
         }
