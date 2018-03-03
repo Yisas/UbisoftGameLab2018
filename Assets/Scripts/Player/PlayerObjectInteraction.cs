@@ -42,6 +42,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private FixedJoint joint;
     private Color gizmoColor;
     private ResetButton resetButton = null;
+    private PlayerMove otherPlayer = null;
 
     // State attributes
     private float timeOfPickup, timeOfThrow, defRotateSpeed;
@@ -290,10 +291,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
             Debug.LogError("Unasignsed PushableObject component");
     }
 
-    //NOTE: Added this function to lift above its head
     private void PickupPlayer(Collider other)
     {
-        //Debug.Log("Player Pickup triggered !!!");
         Collider otherMesh = other.GetComponent<Collider>();
         holdPos = transform.position;
         holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + gap;
@@ -313,7 +312,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = true;
 
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            //heldObjectRigidbody.mass *= weightChange;
+            //mass change was delegated to late update using flags
             addChangeMass = true;
             //make sure we don't immediately throw object after picking it up
             timeOfPickup = Time.time;
@@ -325,6 +324,22 @@ public class PlayerObjectInteraction : NetworkBehaviour
             print("Can't lift object here. If nothing is above the player, make sure triggers are set to layer index 2 (ignore raycast by default)");
         }
 
+        // Networking logic: this function now needs to be executed by the opposite version of this player instance
+        if(isLocalPlayer)
+            RpcPickupPlayer(playerMove.PlayerID);
+    }
+
+    [ClientRpc]
+    private void RpcPickupPlayer(int targetPlayerID)
+    {
+        if(otherPlayer == null)
+        {
+            FindOtherPlayer();
+        }
+
+        // Execution already happened in local player at this point, so we avoid circular referencing
+        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
+            PickupPlayer(otherPlayer.GetComponent<Collider>());
     }
 
     private void LiftPickup(Collider other)
@@ -392,6 +407,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
             subChangeMass = true;
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
             playerMove.CanJump = true;
+
+            // Networking logic: this function now needs to be executed by the opposite version of this player instance
+            if (isLocalPlayer)
+                RpcDropPickup(playerMove.PlayerID);
         }
 
         heldObjectRigidbody.interpolation = objectDefInterpolation;
@@ -413,6 +432,14 @@ public class PlayerObjectInteraction : NetworkBehaviour
             heldObj = null;
 
         timeOfThrow = Time.time;
+    }
+
+    [ClientRpc]
+    private void RpcDropPickup(int targetPlayerID)
+    {
+        // Execution already happened in local player at this point, so we avoid circular referencing
+        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
+            DropPickup();
     }
 
     public void ThrowPickup()
@@ -442,6 +469,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
             Debug.Log("Throwing player....");
             heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
+
+            // Networking logic: this function now needs to be executed by the opposite version of this player instance
+            if (isLocalPlayer)
+                RpcThrowPickup(playerMove.PlayerID);
+
         }
         else
         {
@@ -451,6 +483,14 @@ public class PlayerObjectInteraction : NetworkBehaviour
         heldObj = null;
         playerMove.CanJump = true;    //Added: lets the bottom player jump again
         timeOfThrow = Time.time;
+    }
+
+    [ClientRpc]
+    private void RpcThrowPickup(int targetPlayerID)
+    {
+        // Execution already happened in local player at this point, so we avoid circular referencing
+        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
+            ThrowPickup();
     }
 
     //Adding:
@@ -470,7 +510,19 @@ public class PlayerObjectInteraction : NetworkBehaviour
             //heldObj = null;
             playerMove.CanJump = true;
             timeOfThrow = Time.time;
+
+            // Networking logic: this function now needs to be executed by the opposite version of this player instance
+            if (isLocalPlayer)
+                RpcPlayerDrop(playerMove.PlayerID);
         }
+    }
+
+    [ClientRpc]
+    private void RpcPlayerDrop(int targetPlayerID)
+    {
+        // Execution already happened in local player at this point, so we avoid circular referencing
+        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
+            PlayerDrop();
     }
     #endregion
 
@@ -494,6 +546,19 @@ public class PlayerObjectInteraction : NetworkBehaviour
             joint = heldObj.AddComponent<FixedJoint>();
             joint.connectedBody = GetComponent<Rigidbody>();
             heldObj.layer = gameObject.layer;
+        }
+    }
+
+    private void FindOtherPlayer()
+    {
+        PlayerMove[] players = GameObject.FindObjectsOfType<PlayerMove>();
+        foreach (PlayerMove player in players)
+        {
+            if (player != playerMove)
+            {
+                otherPlayer = player;
+                break;
+            }
         }
     }
 
