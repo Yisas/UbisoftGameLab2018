@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 //this allows the player to pick up/throw, and also pull certain objects
 //you need to add the tags "Pickup" or "Pushable" to these objects
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(PlayerMove))]
-public class PlayerObjectInteraction : MonoBehaviour
+public class PlayerObjectInteraction : NetworkBehaviour
 {
     // Audio
     public AudioClip pickUpSound;                               //sound when you pickup/grab an object
@@ -81,6 +82,7 @@ public class PlayerObjectInteraction : MonoBehaviour
 
     }
 
+    #region Updates
     void LateUpdate()
     {
         if (heldObj != null)
@@ -105,6 +107,11 @@ public class PlayerObjectInteraction : MonoBehaviour
     //throwing/dropping
     void Update()
     {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
         //when we press grab button, throw object if we're holding one
         if (Input.GetButtonDown("Grab") && heldObj)
         {
@@ -141,23 +148,40 @@ public class PlayerObjectInteraction : MonoBehaviour
             {
                 // --------- Holding animations ---------
                 if (heldObj.tag == "Pickup")
+                {
                     animator.SetBool("HoldingPickup", true);
+                    RpcUpdateClientAnimator("HoldingPickup", true);
+                }
                 else if (heldObj.tag.StartsWith("Player"))
-                    //**TODO NOTE: Add Animation for picking up the player. 
+                //**TODO NOTE: Add Animation for picking up the player. 
+                {
                     animator.SetBool("HoldingPickup", true);
+                    RpcUpdateClientAnimator("HoldingPickup", true);
+                }
                 else
+                {
                     animator.SetBool("HoldingPickup", false);
+                    RpcUpdateClientAnimator("HoldingPickup", false);
+                }
 
                 // --------- Pushing animations ---------
                 if (heldObj && heldObj.tag == "Pushable")
+                {
                     animator.SetBool("HoldingPushable", true);
+                    RpcUpdateClientAnimator("HoldingPushable", true);
+                }
                 else
+                {
                     animator.SetBool("HoldingPushable", false);
+                    RpcUpdateClientAnimator("HoldingPushable", false);
+                }
             }
             else
             {
                 animator.SetBool("HoldingPickup", false);
                 animator.SetBool("HoldingPushable", false);
+                RpcUpdateClientAnimator("HoldingPickup", false);
+                RpcUpdateClientAnimator("HoldingPushable", false);
             }
         }
         //when grab is released, let go of any pushable objects were holding
@@ -165,9 +189,10 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             DropPickup();
         }
-
     }
+    #endregion
 
+    #region Collision
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
@@ -240,6 +265,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             }
         }
     }
+    #endregion
 
     public void PushButton()
     {
@@ -249,6 +275,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             Debug.LogError("Button reference is missing dude!");
     }
 
+    #region Interactions
     private void GrabPushable(Collider other)
     {
         heldObj = other.gameObject;
@@ -391,7 +418,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         }
 
         // Player heldobj reference handled in LateUpdate
-        if(heldObj.tag != "Player")
+        if (heldObj.tag != "Player")
             heldObj = null;
 
         timeOfThrow = Time.time;
@@ -451,6 +478,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         playerMove.CanJump = true;
         timeOfThrow = Time.time;
     }
+    #endregion
 
     //connect player and pickup/pushable object via a physics joint
     private void AddJoint()
@@ -472,6 +500,20 @@ public class PlayerObjectInteraction : MonoBehaviour
             joint = heldObj.AddComponent<FixedJoint>();
             joint.connectedBody = GetComponent<Rigidbody>();
             heldObj.layer = gameObject.layer;
+        }
+    }
+
+    /// <summary>
+    /// Send message to non-local player client
+    /// </summary>
+    /// <param name="animatorAttributeName"></param>
+    /// <param name="value"></param>
+    [ClientRpc]
+    private void RpcUpdateClientAnimator(string animatorAttributeName, bool value)
+    {
+        if (animator)
+        {
+            animator.SetBool(animatorAttributeName, value);
         }
     }
 
