@@ -142,38 +142,61 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 if (heldObj.tag == "Pickup")
                 {
                     animator.SetBool("HoldingPickup", true);
-                    RpcUpdateClientAnimator("HoldingPickup", true);
+                    if (isServer)
+                        RpcUpdateClientAnimator("HoldingPickup", true);
+                    else
+                        CmdUpdateClientAnimator("HoldingPickup", true);
                 }
                 else if (heldObj.tag.StartsWith("Player"))
                 //**TODO NOTE: Add Animation for picking up the player. 
                 {
                     animator.SetBool("HoldingPickup", true);
-                    RpcUpdateClientAnimator("HoldingPickup", true);
+                    if (isServer)
+                        RpcUpdateClientAnimator("HoldingPickup", true);
+                    else
+                        CmdUpdateClientAnimator("HoldingPickup", true);
                 }
                 else
                 {
                     animator.SetBool("HoldingPickup", false);
-                    RpcUpdateClientAnimator("HoldingPickup", false);
+                    if (isServer)
+                        RpcUpdateClientAnimator("HoldingPickup", false);
+                    else
+                        CmdUpdateClientAnimator("HoldingPickup", false);
                 }
 
                 // --------- Pushing animations ---------
                 if (heldObj && heldObj.tag == "Pushable")
                 {
                     animator.SetBool("HoldingPushable", true);
-                    RpcUpdateClientAnimator("HoldingPushable", true);
+                    if (isServer)
+                        RpcUpdateClientAnimator("HoldingPushable", true);
+                    else
+                        CmdUpdateClientAnimator("HoldingPushable", true);
                 }
                 else
                 {
                     animator.SetBool("HoldingPushable", false);
-                    RpcUpdateClientAnimator("HoldingPushable", false);
+                    if (isServer)
+                        RpcUpdateClientAnimator("HoldingPushable", false);
+                    else
+                        CmdUpdateClientAnimator("HoldingPushable", false);
                 }
             }
             else
             {
                 animator.SetBool("HoldingPickup", false);
                 animator.SetBool("HoldingPushable", false);
-                RpcUpdateClientAnimator("HoldingPickup", false);
-                RpcUpdateClientAnimator("HoldingPushable", false);
+                if (isServer)
+                {
+                    RpcUpdateClientAnimator("HoldingPickup", false);
+                    RpcUpdateClientAnimator("HoldingPushable", false);
+                }
+                else
+                {
+                    CmdUpdateClientAnimator("HoldingPickup", false);
+                    CmdUpdateClientAnimator("HoldingPushable", false);
+                }
             }
         }
         //when grab is released, let go of any pushable objects were holding
@@ -632,12 +655,26 @@ public class PlayerObjectInteraction : NetworkBehaviour
     }
 
     /// <summary>
-    /// Send message to non-local player client
+    /// Send message to modify animator of player on client-side
     /// </summary>
     /// <param name="animatorAttributeName"></param>
     /// <param name="value"></param>
     [ClientRpc]
     private void RpcUpdateClientAnimator(string animatorAttributeName, bool value)
+    {
+        if (animator)
+        {
+            animator.SetBool(animatorAttributeName, value);
+        }
+    }
+
+    /// <summary>
+    /// Send message to modify animator of player on server-side
+    /// </summary>
+    /// <param name="animatorAttributeName"></param>
+    /// <param name="value"></param>
+    [Command]
+    private void CmdUpdateClientAnimator(string animatorAttributeName, bool value)
     {
         if (animator)
         {
