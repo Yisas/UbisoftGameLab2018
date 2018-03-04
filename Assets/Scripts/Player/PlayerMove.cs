@@ -172,6 +172,13 @@ public class PlayerMove : NetworkBehaviour
                 }
 
             characterMotor.ManageSpeed(curDecel, maxSpeed + movingObjSpeed.magnitude, true);
+
+            if (!isServer)
+            {
+                // Distance to target is Syncvared so it will update from Server to client automatically,
+                //but update from client to server needs to be a command
+                CmdUpdateDistanceToTarget(characterMotor.DistanceToTarget);
+            }
         }
 
         // Update animator
@@ -315,6 +322,12 @@ public class PlayerMove : NetworkBehaviour
 
         // Stop being held after jumping
         IsBeingHeld = false;
+    }
+
+    [Command]
+    private void CmdUpdateDistanceToTarget(float distanceToTarget)
+    {
+        characterMotor.DistanceToTarget = distanceToTarget;
     }
 
     public void ToogleRestrictMovementToTwoAxis()
