@@ -325,14 +325,31 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
 
         // Networking logic: this function now needs to be executed by the opposite version of this player instance
-        if(isLocalPlayer)
+        if (isLocalPlayer && isServer)
             RpcPickupPlayer(playerMove.PlayerID);
+        else if (isLocalPlayer && !isServer)
+            CmdPickupPlayer(playerMove.PlayerID);
     }
 
     [ClientRpc]
     private void RpcPickupPlayer(int targetPlayerID)
     {
-        if(otherPlayer == null)
+        CommonPickupPlayerCommand(targetPlayerID);
+    }
+
+    [Command]
+    private void CmdPickupPlayer(int targetPlayerID)
+    {
+        CommonPickupPlayerCommand(targetPlayerID);
+    }
+
+    /// <summary>
+    /// To be called by the networking commands to resolve the same logic from different network origins (client/server)
+    /// </summary>
+    /// <param name="targetPlayerID"></param>
+    private void CommonPickupPlayerCommand(int targetPlayerID)
+    {
+        if (otherPlayer == null)
         {
             FindOtherPlayer();
         }
@@ -409,8 +426,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
             playerMove.CanJump = true;
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
-            if (isLocalPlayer)
+            if (isLocalPlayer && isServer)
                 RpcDropPickup(playerMove.PlayerID);
+            else if (isLocalPlayer && !isServer)
+                CmdDropPickup(playerMove.PlayerID);
         }
 
         heldObjectRigidbody.interpolation = objectDefInterpolation;
@@ -436,6 +455,21 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     [ClientRpc]
     private void RpcDropPickup(int targetPlayerID)
+    {
+        CommonDropPickup(targetPlayerID);
+    }
+
+    [Command]
+    private void CmdDropPickup(int targetPlayerID)
+    {
+        CommonDropPickup(targetPlayerID);
+    }
+
+    /// <summary>
+    /// To be called by the networking commands to resolve the same logic from different network origins (client/server)
+    /// </summary>
+    /// <param name="targetPlayerID"></param>
+    private void CommonDropPickup(int targetPlayerID)
     {
         // Execution already happened in local player at this point, so we avoid circular referencing
         if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
@@ -471,8 +505,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
-            if (isLocalPlayer)
+            if (isLocalPlayer && isServer)
                 RpcThrowPickup(playerMove.PlayerID);
+            else if (isLocalPlayer && !isServer)
+                CmdThrowPickup(playerMove.PlayerID);
 
         }
         else
@@ -487,6 +523,21 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     [ClientRpc]
     private void RpcThrowPickup(int targetPlayerID)
+    {
+        CommonThrowPickup(targetPlayerID);
+    }
+
+    [Command]
+    private void CmdThrowPickup(int targetPlayerID)
+    {
+        CommonThrowPickup(targetPlayerID);
+    }
+
+    /// <summary>
+    /// To be called by the networking commands to resolve the same logic from different network origins (client/server)
+    /// </summary>
+    /// <param name="targetPlayerID"></param>
+    private void CommonThrowPickup(int targetPlayerID)
     {
         // Execution already happened in local player at this point, so we avoid circular referencing
         if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
@@ -512,18 +563,32 @@ public class PlayerObjectInteraction : NetworkBehaviour
             timeOfThrow = Time.time;
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
-            if (isLocalPlayer)
+            if (isLocalPlayer && isServer)
                 RpcPlayerDrop(playerMove.PlayerID);
+            else if (isLocalPlayer && !isServer)
+                CmdPlayerDrop(playerMove.PlayerID);
         }
     }
 
     [ClientRpc]
     private void RpcPlayerDrop(int targetPlayerID)
     {
+        CommonPlayerDrop(targetPlayerID);
+    }
+
+    [Command]
+    private void CmdPlayerDrop(int targetPlayerID)
+    {
+        CommonPlayerDrop(targetPlayerID);
+    }
+
+    private void CommonPlayerDrop(int targetPlayerID)
+    {
         // Execution already happened in local player at this point, so we avoid circular referencing
         if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
             PlayerDrop();
     }
+
     #endregion
 
     //connect player and pickup/pushable object via a physics joint
