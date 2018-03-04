@@ -24,6 +24,7 @@ public class CameraFollow : MonoBehaviour
 
     private Transform lastCollided;
     private float startingTargetY;
+    private int layerMask;
 
     //setup objects
     void Awake()
@@ -32,6 +33,7 @@ public class CameraFollow : MonoBehaviour
         followTarget = new GameObject().transform;  //create empty gameObject as camera target, this will follow and rotate around the player
         followTarget.name = "Camera Target";
         defTargetOffset = targetOffset;
+        layerMask = 1 << LayerMask.NameToLayer("SeeThrough");
 
         if (!target)
             Debug.LogError("'CameraFollow script' has no target assigned to it", transform);
@@ -52,11 +54,11 @@ public class CameraFollow : MonoBehaviour
 
         RaycastHit[] hits;
 
-        float distanceToPLayer = Vector3.Distance(transform.position, target.position);
+        float distanceToPLayer = Vector3.Distance(transform.position, target.position)*1.1f;
 
         // you can also use CapsuleCastAll()
         // TODO: setup your layermask it improve performance and filter your hits.
-        hits = Physics.RaycastAll(transform.position, transform.forward, distanceToPLayer);
+        hits = Physics.RaycastAll(transform.position-transform.forward, transform.forward, distanceToPLayer, layerMask);
         foreach (RaycastHit hit in hits)
         {
             if (startingTargetY > hit.point.y
