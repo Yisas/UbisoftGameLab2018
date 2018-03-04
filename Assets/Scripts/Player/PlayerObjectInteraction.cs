@@ -230,6 +230,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
     //pickup/grab
     void OnTriggerStay(Collider other)
     {
+        // non-local players shouldn't try to grab. Local version will call appropriate functions when grabbing
+        if (!isLocalPlayer)
+            return;
+
         //if grab is pressed and an object is inside the players "grabBox" trigger
         if (Input.GetButton("Grab"))
         {
