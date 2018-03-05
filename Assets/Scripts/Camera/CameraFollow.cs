@@ -14,17 +14,31 @@ public class CameraFollow : MonoBehaviour
     public float rotateDamping = 100;                           //how fast camera rotates to look at target
     public float minDistance = 5;                               //how close camera can move to player, when avoiding clipping with walls
     public float yAxisPeakTilt = 4;                             //how high can get the tilt regarding the player (ex: looking down)
+    private float defyAxisPeakTilt;
     public float yAxisBottomTilt = 2;                           //how close to the ground the camera can go, this distance is regarding player position
     public float closeUpMultiplier = 0.4f;                      //how fast or strongth are the close-ups
     public float verticalOffsetMultiplier = 10f;                //modifier so that the camera is not too low
-
+    public float bounceAmountOnCollision = 0.4f;
+    public float collisionDetectionOffset = 0.3f;
     private Transform followTarget;
     private Vector3 defTargetOffset;
     private bool camColliding;
 
     private Transform lastCollided;
     private float startingTargetY;
-    private int layerMask;
+    public string[] layersToSeeThrough;
+    private int layerMaskSeeThrough;
+    public string[] layersToCollide;
+    private int layerMaskCollidable;
+    private bool isZoomingIn;
+    private bool isZoomingOut;
+    private Vector3 residualVectorY;
+    public bool reboundBack;
+    public Vector3 zoomingOutTarget = new Vector3(0, -1, 0);
+    public Vector3 zoomingInTarget = new Vector3(0, 1, 0);
+
+    public float zoomInMultiplier = 0.99f;
+    public float zoomOutMultiplier = 1.1f;
 
     //setup objects
     void Awake()
@@ -33,7 +47,14 @@ public class CameraFollow : MonoBehaviour
         followTarget = new GameObject().transform;  //create empty gameObject as camera target, this will follow and rotate around the player
         followTarget.name = "Camera Target";
         defTargetOffset = targetOffset;
-        layerMask = 1 << LayerMask.NameToLayer("SeeThrough");
+
+        foreach(string layer in layersToSeeThrough)
+            layerMaskSeeThrough = 1 << LayerMask.NameToLayer(layer);
+
+        foreach (string layer in layersToCollide)
+            layerMaskCollidable = 1 << LayerMask.NameToLayer(layer);
+
+        defyAxisPeakTilt = yAxisPeakTilt;
 
         if (!target)
             Debug.LogError("'CameraFollow script' has no target assigned to it", transform);
@@ -54,11 +75,12 @@ public class CameraFollow : MonoBehaviour
 
         RaycastHit[] hits;
 
-        float distanceToPLayer = Vector3.Distance(transform.position, target.position)*1.1f;
+        //Calculate distance to player with small offset
+        float distanceToPLayer = Vector3.Distance(transform.position, target.position) * 1.1f;
 
         // you can also use CapsuleCastAll()
         // TODO: setup your layermask it improve performance and filter your hits.
-        hits = Physics.RaycastAll(transform.position-transform.forward, transform.forward, distanceToPLayer, layerMask);
+        hits = Physics.RaycastAll(transform.position - transform.forward, transform.forward, distanceToPLayer, layerMaskSeeThrough);
         foreach (RaycastHit hit in hits)
         {
             if (startingTargetY > hit.point.y
@@ -110,8 +132,29 @@ public class CameraFollow : MonoBehaviour
     //rotate smoothly toward the target
     void SmoothLookAt()
     {
-        Quaternion rotation = Quaternion.LookRotation(target.position - transform.position);
+        if (playerMove.isRestrictToBackCamera())
+        {
+            transform.LookAt(target);
+            return;
+        }
+        
+        Quaternion rotation = Quaternion.LookRotation(target.position + residualVectorY - transform.position);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotateDamping * Time.deltaTime);
+
+
+        if (!isZoomingIn)
+        {
+            if(reboundBack)
+                residualVectorY = Vector3.Slerp(residualVectorY, Vector3.zero, Time.deltaTime);
+        }
+        else if (isZoomingOut)
+        {
+            residualVectorY = Vector3.Slerp(residualVectorY, zoomingOutTarget, Time.deltaTime);
+        }
+        else
+        {
+            residualVectorY = Vector3.Slerp(residualVectorY, zoomingInTarget, Time.deltaTime);
+        }
     }
 
     //move camera when it clips walls
@@ -127,25 +170,21 @@ public class CameraFollow : MonoBehaviour
                 //Also treat differently collision against floor than against all other type of collision
                 if (target.GetComponent<Rigidbody>().velocity.magnitude > Vector3.zero.magnitude)
                 {
-                    if (lastCollided.position.y < target.position.y)
-                    {
-                        targetOffset *= closeUpMultiplier;
-                    }
-
-                    else
-                    {
-                        targetOffset *= 0.99f;
-                    }
+                    targetOffset *= zoomInMultiplier;
                 }
             }
         }
-        else
+        else if ((!isZoomingIn && reboundBack) || isZoomingOut)
         {
-            targetOffset *= 1.01f;
+            targetOffset *= zoomOutMultiplier;
+            yAxisPeakTilt *= zoomOutMultiplier;
         }
 
         if (targetOffset.magnitude > defTargetOffset.magnitude)
             targetOffset = defTargetOffset;
+
+        if (yAxisPeakTilt > defyAxisPeakTilt)
+            yAxisPeakTilt = defyAxisPeakTilt;
     }
 
     //move camera smoothly toward its target
@@ -174,21 +213,52 @@ public class CameraFollow : MonoBehaviour
             //If the camera is over the shoulders of the character
             if (transform.position.y > target.position.y + yAxisBottomTilt)
             {
-                followTarget.RotateAround(target.position + transform.up * verticalOffsetMultiplier, transform.right, -axis2);
+                followTarget.RotateAround(target.position + transform.up * verticalOffsetMultiplier + residualVectorY, transform.right, -axis2);
+                isZoomingOut = true;
             }
-            else //Camera under the shoulders threshold
+            else //Camera under the shoulders! threshold
             {
-                if (axis2 < 0)
+                if (axis2 < 0) //only if it's going up
                 {
-                    followTarget.RotateAround(target.position + transform.up * verticalOffsetMultiplier, transform.right, -axis2);
+                    followTarget.RotateAround(target.position + transform.up * verticalOffsetMultiplier + residualVectorY, transform.right, -axis2);
+                    isZoomingOut = true;
                 }
             }
+
+            if (axis2 > 0)
+            {
+                if (targetOffset.magnitude > defTargetOffset.magnitude * 0.20)
+                {
+                    targetOffset *= zoomInMultiplier;
+                    yAxisPeakTilt *= zoomInMultiplier;
+                    Quaternion rotation = Quaternion.LookRotation(target.position + residualVectorY - transform.position);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotateDamping * Time.deltaTime);
+                    isZoomingIn = true;
+                    isZoomingOut = false;
+                }
+            }
+            else isZoomingIn = false;
         }
         else if (-axis2 <= 0) //It can only go down when reaches peak
         {
             followTarget.RotateAround(target.position + transform.up * verticalOffsetMultiplier, transform.right, -axis2);
         }
 
-        transform.position = Vector3.Lerp(transform.position, followTarget.position, followSpeed * Time.deltaTime);
+        Vector3 nextFramePosition = Vector3.Lerp(transform.position, followTarget.position, followSpeed * Time.deltaTime);
+        //transform.position = futurePosition;
+        transform.position = nextFramePosition;
+
+        Vector3 direction = nextFramePosition - target.position;
+        //raycast to this position
+        RaycastHit hit;
+        if (Physics.Raycast(target.position, direction, out hit, direction.magnitude + collisionDetectionOffset, layerMaskCollidable))
+        {
+            transform.position = hit.point - direction.normalized * bounceAmountOnCollision;
+        }
+        else
+        {
+            //otherwise, move cam to intended position
+            transform.position = nextFramePosition;
+        }
     }
 }
