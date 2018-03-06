@@ -48,11 +48,11 @@ public class CameraFollow : MonoBehaviour
         followTarget.name = "Camera Target";
         defTargetOffset = targetOffset;
 
-        foreach(string layer in layersToSeeThrough)
-            layerMaskSeeThrough = 1 << LayerMask.NameToLayer(layer);
+        foreach (string layer in layersToSeeThrough)
+            layerMaskSeeThrough |= 1 << LayerMask.NameToLayer(layer);
 
         foreach (string layer in layersToCollide)
-            layerMaskCollidable = 1 << LayerMask.NameToLayer(layer);
+            layerMaskCollidable |= 1 << LayerMask.NameToLayer(layer);
 
         defyAxisPeakTilt = yAxisPeakTilt;
 
@@ -87,18 +87,33 @@ public class CameraFollow : MonoBehaviour
                 && target.position.y > hit.point.y) continue;
 
             Renderer R = hit.collider.GetComponent<Renderer>();
-            if (R == null)
-                continue; // no renderer attached? go to next hit
-                          // TODO: maybe implement here a check for GOs that should not be affected like the player
-
-
-            AutoTransparent AT = R.GetComponent<AutoTransparent>();
-            if (AT == null) // if no script is attached, attach one
+            
+            if (R != null)
             {
-                AT = R.gameObject.AddComponent<AutoTransparent>();
+                setAutoTransparentOnObject(R.gameObject);
             }
-            AT.BeTransparent(); // get called every frame to reset the falloff
+
+            Renderer[] Rchilds = hit.collider.GetComponentsInChildren<Renderer>();
+
+            if (Rchilds != null)
+            {
+                foreach (Renderer child in Rchilds)
+                    setAutoTransparentOnObject(child.gameObject);
+            }
+            else continue; // no renderer attached? go to next hit
+                           // TODO: maybe implement here a check for GOs that should not be affected like the player
+
         }
+    }
+
+    void setAutoTransparentOnObject(GameObject alphaObject)
+    {
+        AutoTransparent AT = alphaObject.GetComponent<AutoTransparent>();
+        if (AT == null) // if no script is attached, attach one
+        {
+            AT = alphaObject.gameObject.AddComponent<AutoTransparent>();
+        }
+        AT.BeTransparent(); // get called every frame to reset the falloff
     }
 
     //run our camera functions each frame
@@ -137,14 +152,14 @@ public class CameraFollow : MonoBehaviour
             transform.LookAt(target);
             return;
         }
-        
+
         Quaternion rotation = Quaternion.LookRotation(target.position + residualVectorY - transform.position);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotateDamping * Time.deltaTime);
 
 
         if (!isZoomingIn)
         {
-            if(reboundBack)
+            if (reboundBack)
                 residualVectorY = Vector3.Slerp(residualVectorY, Vector3.zero, Time.deltaTime);
         }
         else if (isZoomingOut)
