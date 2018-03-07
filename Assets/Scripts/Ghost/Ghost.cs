@@ -11,6 +11,16 @@ public class Ghost : Movable
     public float itemDropDistance;
     public Transform floorChecks;
 
+    // Environment check inspector values
+    [SerializeField]
+    private float wallAvoidanceRange = 5f;
+    [Tooltip("Timer that makes the ghost commit to moving in the wall avoiding direction for the specified time.")]
+    [SerializeField]
+    private float wallAvoidanceDuration = 2f;
+    [SerializeField]
+    private float groundedCheckRange = 0.5f;
+
+
     // Internal values hidden from inspector   
     internal bool isCarryingObject;
     public MovementState movementState;
@@ -182,14 +192,13 @@ public class Ghost : Movable
     {
         //isHittingWall = false;
         Vector3 position = transform.position;
-        float range = 5f;
         RaycastHit rayHit;
         // Begin shooting the ray ahead of the player otherwise it gets caught on the ghost's mesh
         Vector3 rayOrigin = position + transform.forward * 2.5f;
 
 
         // Cast a ray to detect walls
-        if (Physics.Raycast(rayOrigin, transform.TransformDirection(Vector3.forward), out rayHit, range))
+        if (Physics.Raycast(rayOrigin, transform.TransformDirection(Vector3.forward), out rayHit, wallAvoidanceRange))
         {
             if (rayHit.collider.CompareTag("MapBounds"))
             {
@@ -202,7 +211,7 @@ public class Ghost : Movable
             }
         }
         avoidWallTimer();
-        Debug.DrawRay(rayOrigin, transform.TransformDirection(Vector3.forward) * range, Color.blue);
+        Debug.DrawRay(rayOrigin, transform.TransformDirection(Vector3.forward) * wallAvoidanceRange, Color.blue);
     }
 
     /**
@@ -211,7 +220,6 @@ public class Ghost : Movable
     private void avoidWallTimer()
     {
         wallAvoidanceTimer += Time.deltaTime;
-        float wallAvoidanceDuration = 2f;
         if (wallAvoidanceTimer > wallAvoidanceDuration)
         {
             wallAvoidanceTimer = 0.0f;
@@ -258,14 +266,13 @@ public class Ghost : Movable
     private bool checkIfGrounded()
     {
         //get distance to ground, from centre of collider (where floorcheckers should be)
-        float dist = 0.5f;
 
         //check whats at players feet, at each floorcheckers position
         foreach (Transform check in floorCheckers)
         {
             RaycastHit hit;
             // Cast rays down to see if we hit the floor. Also cast rays up to bring us back above ground.
-            if (Physics.Raycast(check.position, Vector3.down, out hit, dist) || Physics.Raycast(check.position, Vector3.up, out hit, dist + 20f))
+            if (Physics.Raycast(check.position, Vector3.down, out hit, groundedCheckRange) || Physics.Raycast(check.position, Vector3.up, out hit, groundedCheckRange + 20f))
             {               
               return true;
             }
