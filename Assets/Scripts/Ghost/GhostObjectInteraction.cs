@@ -22,6 +22,7 @@ public class GhostObjectInteraction : MonoBehaviour {
     private float timeOfPickup;
     private Rigidbody heldObjectRb;
     private Movable movableAI;
+    private Color originalHeldObjColor;
 
     void Awake () {
         audioSource = GetComponent<AudioSource>();
@@ -62,6 +63,8 @@ public class GhostObjectInteraction : MonoBehaviour {
             resettableObject.IsHeld = true;
         }
         heldObjectRb = heldObj.GetComponent<Rigidbody>();
+
+        //reduceHeldObjectVisibility();
     }
 
     public void GrabObject(Collider other)
@@ -80,10 +83,15 @@ public class GhostObjectInteraction : MonoBehaviour {
         {
             resettableObject.IsHeld = true;
         }
+
+        //reduceHeldObjectVisibility();
     }
 
     public void DropPickup()
     {
+        // Bring back original transparency of the object
+        heldObj.GetComponent<MeshRenderer>().material.color = originalHeldObjColor;
+
         // If the object is a pickup set the boolean that its currently being held
         ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
         if (resettableObject != null && resettableObject.CompareTag("Pickup"))
@@ -94,7 +102,6 @@ public class GhostObjectInteraction : MonoBehaviour {
         if (heldObj.tag == "Pickup")
         {
             heldObj.transform.position = dropBox.transform.position;
-           // heldObjectRb.mass /= weightChange;
         }
 
         heldObjectRb.interpolation = objectDefInterpolation;
@@ -131,6 +138,15 @@ public class GhostObjectInteraction : MonoBehaviour {
         {
             heldObjectRb.velocity = movableAI.velocity;
         }
+    }
+
+    private void reduceHeldObjectVisibility()
+    {
+        // Reduce transparency of the object
+        Renderer heldObjRenderer = heldObj.GetComponent<Renderer>();
+        originalHeldObjColor = heldObjRenderer.material.color;
+        Color fadedColor = new Color(originalHeldObjColor.r, originalHeldObjColor.g, originalHeldObjColor.b, 0.1f);
+        heldObjRenderer.material.color = fadedColor;
     }
 
 }

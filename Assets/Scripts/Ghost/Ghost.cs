@@ -177,10 +177,12 @@ public class Ghost : Movable
         Vector3 position = transform.position;
         float range = 5.0f;
         RaycastHit rayHit;
+        // Begin shooting the ray ahead of the player otherwise it gets caught on the ghost's mesh
+        Vector3 rayOrigin = position + transform.forward * 2.5f;
+
 
         // Cast a ray to detect walls
-        //if (Physics.Raycast(position + (transform.right * 7), transform.forward, out ray, range) || Physics.Raycast(position - (transform.right * 7), transform.forward, out ray, range))
-        if (Physics.Raycast(position, transform.TransformDirection(Vector3.forward), out rayHit, range))
+        if (Physics.Raycast(rayOrigin, transform.TransformDirection(Vector3.forward), out rayHit, range))
         {
             if (rayHit.collider.CompareTag("MapBounds"))
             {
@@ -193,7 +195,7 @@ public class Ghost : Movable
             }
         }
         avoidWallTimer();
-        Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * range, Color.blue);
+        Debug.DrawRay(rayOrigin, transform.TransformDirection(Vector3.forward) * range, Color.blue);
     }
 
     /**
