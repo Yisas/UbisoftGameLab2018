@@ -13,8 +13,8 @@ public class buttonPrompt : MonoBehaviour{
     [SerializeField]
     Canvas Canvas_Player_2;
 
-    public enum ButtonPrompt { pressureplate, player}
-    public ButtonPrompt buttonprompt;
+    public enum ButtonPromptOn { pressureplate, player}
+    public ButtonPromptOn buttonprompt;
 
     PlayerMove player;
     int playerID;
@@ -35,27 +35,36 @@ public class buttonPrompt : MonoBehaviour{
         }
     }
 
+    void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player") 
+        {
+            playerID = other.gameObject.GetComponent<PlayerMove>().PlayerID;
+            TurnOffPrompt(); 
+        }
+    }
+
     private void TurnOnPrompt()
     {
-        if(buttonprompt == ButtonPrompt.pressureplate) 
+        if (buttonprompt == ButtonPromptOn.pressureplate)
         {
             Canvas_PresurePlate.enabled = true;
         }
-        else if(buttonprompt == ButtonPrompt.player)
-        {          
+        else if (buttonprompt == ButtonPromptOn.player)
+        {
             if (playerID == 1)
-            {                 
+            {
                 Canvas_Player_1.enabled = true;
                 if (gameObject.name == "PushablePromptTrigger")
                 {
-                    Debug.Log("here pushable");
+                    //Debug.Log("here pushable");
                 }
                 if (gameObject.name == "PickupPromptTrigger")
                 {
-                    Debug.Log("here pickupable");
+                    //Debug.Log("here pickupable");
                 }
             }
-            if(playerID == 2)
+            if (playerID == 2)
             {
                 Canvas_Player_2.enabled = true;
                 if (gameObject.name == "PushablePromptTrigger")
@@ -70,22 +79,13 @@ public class buttonPrompt : MonoBehaviour{
         }
     }
 
-    void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Player") 
-        {
-            playerID = other.gameObject.GetComponent<PlayerMove>().PlayerID;
-            TurnOffPrompt(); 
-        }
-    }
-
     private void TurnOffPrompt()
     {
-        if (buttonprompt == ButtonPrompt.pressureplate)
+        if (buttonprompt == ButtonPromptOn.pressureplate)
         {
             Canvas_PresurePlate.enabled = false;
         }
-        else if (buttonprompt == ButtonPrompt.player)
+        else if (buttonprompt == ButtonPromptOn.player)
         {         
             if (playerID == 1)
                 Canvas_Player_1.enabled = false;
