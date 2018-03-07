@@ -28,6 +28,7 @@ public class Ghost : Movable
     private Vector3 wallNormal;
     private Vector3 rayHitPosition;
     private float wallAvoidanceTimer;
+    private Cloth cloth;
 
     #region Unity Functions
     // Used for initialization
@@ -35,15 +36,8 @@ public class Ghost : Movable
     {
         pickupableList = new List<ResettableObject>();
         ghostObjectInteraction = gameObject.GetComponent<GhostObjectInteraction>();
-        // Set Movable values
-        //velocity = Vector3.zero;
-        //velocityMax = 5.0f;
-        //accelerationMax = 15.0f;
-        //fov = 90.0f;
-        //rotationSpeed = 3f;
-        //angleChangeLimit = 30.0f;
-        //timeBetweenAngleChange = 1.0f;
         targetRotation = Vector3.zero;
+        cloth = GetComponentInChildren<Cloth>();
     }
 
     // Update is called once per frame
@@ -53,6 +47,7 @@ public class Ghost : Movable
         avoidWalls();
         updateState();
         move();
+        AddVelocityToCloth();
     }
 
     void OnTriggerStay(Collider collider)
@@ -231,12 +226,22 @@ public class Ghost : Movable
         ResettableObject closestObject = null;
         float shortestDistance = float.MaxValue;
         Vector3 currentPosition = transform.position;
+        float distance; 
         foreach (ResettableObject resettableObject in objects)
         {
-            float distance = Vector3.Distance(currentPosition, resettableObject.transform.position);
+            distance = Vector3.Distance(currentPosition, resettableObject.transform.position);
             if (distance < shortestDistance)
+            {
                 closestObject = resettableObject;
+                shortestDistance = distance;
+            }
         }
         return closestObject;
+    }
+
+    // Add ghost's velocity as an external force on the cloth since the ghost doesn't use rigid body physics.
+    private void AddVelocityToCloth()
+    {
+        cloth.externalAcceleration = velocity;
     }
 }
