@@ -9,6 +9,7 @@ public class Ghost : Movable
 {    // Inspector values
     public float awarenessRadius;
     public float itemDropDistance;
+    public Transform floorChecks;
 
     // Internal values hidden from inspector   
     internal bool isCarryingObject;
@@ -29,6 +30,8 @@ public class Ghost : Movable
     private Vector3 rayHitPosition;
     private float wallAvoidanceTimer;
     private Cloth cloth;
+    private Transform[] floorCheckers;
+    private bool isGrounded;
 
     #region Unity Functions
     // Used for initialization
@@ -38,6 +41,10 @@ public class Ghost : Movable
         ghostObjectInteraction = gameObject.GetComponent<GhostObjectInteraction>();
         targetRotation = Vector3.zero;
         cloth = GetComponentInChildren<Cloth>();
+
+        floorCheckers = new Transform[floorChecks.childCount];
+        for (int i = 0; i < floorCheckers.Length; i++)
+            floorCheckers[i] = floorChecks.GetChild(i);
     }
 
     // Update is called once per frame
@@ -48,6 +55,7 @@ public class Ghost : Movable
         updateState();
         move();
         AddVelocityToCloth();
+        isGrounded = checkIfGrounded();
     }
 
     void OnTriggerStay(Collider collider)
@@ -245,5 +253,25 @@ public class Ghost : Movable
     private void AddVelocityToCloth()
     {
         cloth.externalAcceleration = velocity;
+    }
+
+    // Checks whether or not the ghost is touching the floor
+    private bool checkIfGrounded()
+    {
+        //get distance to ground, from centre of collider (where floorcheckers should be)
+        float dist = GetComponent<Collider>().bounds.extents.y;
+
+        //check whats at players feet, at each floorcheckers position
+        foreach (Transform check in floorCheckers)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(check.position, Vector3.down, out hit, dist + 0.05f))
+            {               
+              return true;
+            }
+        }
+
+        //no none of the floorchecks hit anything, we must be in the air 
+        return false;
     }
 }

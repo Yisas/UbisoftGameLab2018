@@ -90,7 +90,7 @@ public class GhostObjectInteraction : MonoBehaviour {
     public void DropPickup()
     {
         // Bring back original transparency of the object
-        heldObj.GetComponent<MeshRenderer>().material.color = originalHeldObjColor;
+        //heldObj.GetComponent<MeshRenderer>().material.color = originalHeldObjColor;
 
         // If the object is a pickup set the boolean that its currently being held
         ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
