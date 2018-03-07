@@ -30,17 +30,11 @@ public static class MovementUtilitySeek{
                 seekVelocity = seekVelocity.normalized * character.velocityMax;
             }
 
-            //if (!character.isGrounded)
-            //{
-            //    character.transform.position = new Vector3(characterPosition.x + seekVelocity.x * Time.deltaTime
-            //        , characterPosition.y, characterPosition.z + seekVelocity.z * Time.deltaTime);
-            //}
-            //else
-            //{
-                character.transform.position = new Vector3(characterPosition.x + seekVelocity.x * Time.deltaTime
-                    , characterPosition.y + seekVelocity.y * Time.deltaTime, characterPosition.z + seekVelocity.z * Time.deltaTime);
-            //}
+            character.transform.position = new Vector3(characterPosition.x + seekVelocity.x * Time.deltaTime
+                , characterPosition.y + seekVelocity.y * Time.deltaTime, characterPosition.z + seekVelocity.z * Time.deltaTime);
             character.velocity = seekVelocity;
+            if (character.isGrounded)
+                character.velocity.y = character.transform.up.y;
 
             // Rotate towards the target
             Quaternion characterRotation = character.transform.rotation;
