@@ -31,7 +31,6 @@ public class Ghost : Movable
     private float wallAvoidanceTimer;
     private Cloth cloth;
     private Transform[] floorCheckers;
-    private bool isGrounded;
 
     #region Unity Functions
     // Used for initialization
@@ -183,7 +182,7 @@ public class Ghost : Movable
     {
         //isHittingWall = false;
         Vector3 position = transform.position;
-        float range = 5.0f;
+        float range = 5f;
         RaycastHit rayHit;
         // Begin shooting the ray ahead of the player otherwise it gets caught on the ghost's mesh
         Vector3 rayOrigin = position + transform.forward * 2.5f;
@@ -212,7 +211,7 @@ public class Ghost : Movable
     private void avoidWallTimer()
     {
         wallAvoidanceTimer += Time.deltaTime;
-        float wallAvoidanceDuration = 2.0f;
+        float wallAvoidanceDuration = 2f;
         if (wallAvoidanceTimer > wallAvoidanceDuration)
         {
             wallAvoidanceTimer = 0.0f;
@@ -225,7 +224,7 @@ public class Ghost : Movable
     {
         while (movementState == MovementState.Wander)
         {
-            MovementUtilityWander.changeAngle(this);
+            MovementUtilityWander.changeDirection(this);
             yield return new WaitForSeconds(timeBetweenAngleChange);
         }
     }
@@ -259,13 +258,14 @@ public class Ghost : Movable
     private bool checkIfGrounded()
     {
         //get distance to ground, from centre of collider (where floorcheckers should be)
-        float dist = GetComponent<Collider>().bounds.extents.y;
+        float dist = 0.5f;
 
         //check whats at players feet, at each floorcheckers position
         foreach (Transform check in floorCheckers)
         {
             RaycastHit hit;
-            if (Physics.Raycast(check.position, Vector3.down, out hit, dist + 0.05f))
+            // Cast rays down to see if we hit the floor. Also cast rays up to bring us back above ground.
+            if (Physics.Raycast(check.position, Vector3.down, out hit, dist) || Physics.Raycast(check.position, Vector3.up, out hit, dist + 20f))
             {               
               return true;
             }

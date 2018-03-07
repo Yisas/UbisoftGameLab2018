@@ -16,8 +16,9 @@ public abstract class Movable : MonoBehaviour {
     // The character will slow down when entering this radius
     public float slowRadius;
     public float timeToTarget;
-    // Character stays above this height
-    public float minimumHeight;
+    public bool isGrounded;
+    public int maxHeight;
+    public float floatSpeed;
 
     internal Vector3 targetRotation;
     internal Vector3 linearVelocity;
