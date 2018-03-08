@@ -68,13 +68,13 @@ GameObject:
   - component: {fileID: 224307141059079086}
   - component: {fileID: 222203669875102578}
   - component: {fileID: 114686870430250022}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: Jump Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1081481631609784
 GameObject:
   m_ObjectHideFlags: 1
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 224007950316705032}
   - component: {fileID: 222985581065208920}
   - component: {fileID: 114968005524081336}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,8 +162,8 @@ GameObject:
   - component: {fileID: 224221166655103214}
   - component: {fileID: 222187682806186306}
   - component: {fileID: 114075098569516542}
-  m_Layer: 14
-  m_Name: Image
+  m_Layer: 9
+  m_Name: Interact Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -636,7 +636,7 @@ GameObject:
   - component: {fileID: 114268312304378238}
   - component: {fileID: 114192498615735786}
   - component: {fileID: 114837072029160006}
-  m_Layer: 14
+  m_Layer: 9
   m_Name: Canvas P2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1931,6 +1931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9d630ed547e10948a4d32f531aa0442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerCamera: {fileID: 0}
 --- !u!114 &114913782787330432
 MonoBehaviour:
   m_ObjectHideFlags: 1

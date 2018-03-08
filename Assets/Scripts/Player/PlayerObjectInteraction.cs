@@ -250,6 +250,8 @@ public class PlayerObjectInteraction : MonoBehaviour
         objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
         heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
         AddJoint();
+        //Is grabbing pushable box?
+        playerMove.IsGrabPushable = true;
         //set limits for when player will let go of object
         //joint.breakForce = holdingBreakForce;
         //joint.breakTorque = holdingBreakTorque;
@@ -362,7 +364,7 @@ public void DropPickup()
             if (resettableObject != null)
                 resettableObject.IsHeld = false;
 
-            //Is holding pickup box
+            //Is holding pickup box?
             playerMove.IsHoldingPickup = false;
         }
 
@@ -388,6 +390,9 @@ public void DropPickup()
                 po.SetIsBeingPushed(false);
             else
                 Debug.LogError("Unasignsed PushableObject component");
+
+            //Is grabbing pushable box?
+            playerMove.IsGrabPushable = false; 
         }
 
         // Player heldobj reference handled in LateUpdate

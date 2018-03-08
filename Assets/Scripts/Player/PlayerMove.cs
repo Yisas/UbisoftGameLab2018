@@ -45,6 +45,7 @@ public class PlayerMove : MonoBehaviour
     private bool canJump = true;
     private bool isBeingHeld = false;
     private bool isHoldingPickup = false;
+    private bool isGrabPushable = false;
 
     // Movement data
     private float airPressTime, groundedCount, curAccel, curDecel, curRotateSpeed, slope;
@@ -390,6 +391,18 @@ public class PlayerMove : MonoBehaviour
         set
         {
             isHoldingPickup = value;
+        }
+    }
+
+    public bool IsGrabPushable
+    {
+        get
+        {
+            return isGrabPushable;
+        }
+        set
+        {
+            isGrabPushable = value;
         }
     }
 }
