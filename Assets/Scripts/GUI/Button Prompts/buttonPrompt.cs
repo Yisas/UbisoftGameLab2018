@@ -40,6 +40,7 @@ public class buttonPrompt : MonoBehaviour{
     {
         if (other.tag == "Player") 
         {
+            player = other.gameObject.GetComponent<PlayerMove>();
             playerID = other.gameObject.GetComponent<PlayerMove>().PlayerID;
             TurnOffPrompt(); 
         }
@@ -50,7 +51,18 @@ public class buttonPrompt : MonoBehaviour{
         if (buttonprompt == ButtonPromptOn.pressureplate)
         {
             if (player.IsHoldingPickup == true)
-                Canvas_PresurePlate.enabled = true;
+            { 
+                if(playerID == 1)
+                {
+                    Canvas_PresurePlate.gameObject.layer = 12;  //"Invisible Player 2 Layer"
+                    Canvas_PresurePlate.enabled = true;
+                }
+                if (playerID == 2)
+                {
+                    Canvas_PresurePlate.gameObject.layer = 9;   //"Invisible Player 1 Layer"
+                    Canvas_PresurePlate.enabled = true;
+                }
+            }
         }
         else if (buttonprompt == ButtonPromptOn.player)
         {
@@ -85,7 +97,7 @@ public class buttonPrompt : MonoBehaviour{
     {
         if (buttonprompt == ButtonPromptOn.pressureplate)
         {
-            Canvas_PresurePlate.enabled = false;
+                Canvas_PresurePlate.enabled = false;
         }
         else if (buttonprompt == ButtonPromptOn.player)
         {         

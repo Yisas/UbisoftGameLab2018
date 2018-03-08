@@ -88,13 +88,11 @@ public class PlayerObjectInteraction : MonoBehaviour
             if (addChangeMass)
             {
                 heldObj.GetComponent<Rigidbody>().mass *= weightChange;
-                Debug.Log("addChange LATEUPDATE");
                 addChangeMass = false;
             }
             if (subChangeMass)
             {
-                //heldObj.GetComponent<Rigidbody>().mass /= weightChange;                
-                Debug.Log("subChange LATEUPDATE");
+                //heldObj.GetComponent<Rigidbody>().mass /= weightChange;0
                 heldObj.GetComponent<Rigidbody>().mass = originalMass;
                 heldObj = null;
                 subChangeMass = false;
