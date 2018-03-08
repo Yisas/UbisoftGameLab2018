@@ -16,11 +16,24 @@ public class buttonPrompt : MonoBehaviour{
     public enum ButtonPromptOn {pressureplate, player}
     public ButtonPromptOn buttonprompt;
 
+    public Image JumpImgP1;
+    public Image InteractImgP1;
+
+    public Image JumpImgP2;
+    public Image InteractImgP2;
+
     PlayerMove player;
     int playerID;
+    
 
     void Start()
     {
+        JumpImgP1.enabled = false;
+        InteractImgP1.enabled = false;
+
+        JumpImgP2.enabled = false;
+        InteractImgP2.enabled = false;
+
         Canvas_PresurePlate.enabled = false;
         Canvas_Player_1.enabled = false;
         Canvas_Player_2.enabled = false;
@@ -28,7 +41,6 @@ public class buttonPrompt : MonoBehaviour{
 
     void OnTriggerEnter(Collider other)
     {
-
         if (other.tag == "Player")
         {
             player = other.gameObject.GetComponent<PlayerMove>();
@@ -69,6 +81,17 @@ public class buttonPrompt : MonoBehaviour{
             if (playerID == 1)
             {
                 Canvas_Player_1.enabled = true;
+                if(gameObject.name == "JumpPromptTrigger")
+                {
+                    JumpImgP1.enabled = true;
+                    InteractImgP1.enabled = false;
+                }
+                if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
+                {
+                    JumpImgP1.enabled = false;
+                    InteractImgP1.enabled = true;
+                }
+                /** NOT WORKING!
                 if ((gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
                      && (player.IsGrabPushable || player.IsHoldingPickup)) // NOTE : [BUG] Does not work
                                                                                 //The other player should not be able to see the prompt if another player 
@@ -77,11 +100,23 @@ public class buttonPrompt : MonoBehaviour{
                     Debug.Log("Player 1 and Holding or Grabbing Item. Player 2 should not be able to see prompt");
                     Canvas_Player_2.enabled = false;
                 }
+                **/
             }
 
             if (playerID == 2)
             {
                 Canvas_Player_2.enabled = true;
+                if (gameObject.name == "JumpPromptTrigger")
+                {
+                    JumpImgP2.enabled = true;
+                    InteractImgP2.enabled = false;
+                }
+                if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
+                {
+                    JumpImgP2.enabled = false;
+                    InteractImgP2.enabled = true;
+                }
+                /**NOT WORKING!
                 if ((gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
                      && (player.IsGrabPushable || player.IsHoldingPickup)) // NOTE : [BUG] Does not work
                                                                               //The other player should not be able to see the prompt if another player 
@@ -90,6 +125,7 @@ public class buttonPrompt : MonoBehaviour{
                     Debug.Log("Player 1 and Holding or Grabbing Item. Player 2 should not be able to see prompt");
                     Canvas_Player_1.enabled = false;
                 }
+                **/
             }
         }
     }
