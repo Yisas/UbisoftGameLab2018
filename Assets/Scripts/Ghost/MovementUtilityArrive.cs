@@ -43,18 +43,6 @@ public static class MovementUtilityArrive {
             character.linearVelocity *= character.accelerationMax;
         }
 
-
-        // Move towards the target
-        //Vector3 velocityDirection = (targetPosition - characterPosition).normalized;
-        //Vector3 seekAcceleration = velocityDirection * character.accelerationMax;
-        //Vector3 seekVelocity = character.velocity + seekAcceleration * Time.deltaTime;
-
-        // If velocity exceeds max velocity then we normalize and then multiply by max velocity
-        //if (seekVelocity.magnitude > character.velocityMax)
-        //{
-        //    seekVelocity = seekVelocity.normalized * character.velocityMax;
-        //}
-
         Vector3 velocity = targetVelocity;
         if (velocity.magnitude > character.velocityMax)
         {
@@ -62,16 +50,16 @@ public static class MovementUtilityArrive {
         }
 
         // Make sure character stays above ground
-        if (characterPosition.y + velocity.y * Time.deltaTime < character.minimumHeight)
-        {
-            character.transform.position = new Vector3(characterPosition.x + velocity.x * Time.deltaTime
-                , characterPosition.y, characterPosition.z + velocity.z * Time.deltaTime);
-        }
-        else
-        {
+        //if (character.isGrounded)
+        //{
+        //    character.transform.position = new Vector3(characterPosition.x + velocity.x * Time.deltaTime
+        //        , characterPosition.y, characterPosition.z + velocity.z * Time.deltaTime);
+        //}
+        //else
+        //{
             character.transform.position = new Vector3(characterPosition.x + velocity.x * Time.deltaTime
                 , characterPosition.y + velocity.y * Time.deltaTime, characterPosition.z + velocity.z * Time.deltaTime);
-        }
+        //}
         character.velocity = velocity;
 
         // Rotate towards the target
