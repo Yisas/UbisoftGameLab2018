@@ -30,6 +30,7 @@ public class buttonPrompt : MonoBehaviour{
     {
         if (other.tag == "Player")
         {
+            player = other.gameObject.GetComponent<PlayerMove>();
             playerID = other.gameObject.GetComponent<PlayerMove>().PlayerID;
             TurnOnPrompt();            
         }
@@ -48,7 +49,8 @@ public class buttonPrompt : MonoBehaviour{
     {
         if (buttonprompt == ButtonPromptOn.pressureplate)
         {
-            Canvas_PresurePlate.enabled = true;
+            if (player.IsHoldingPickup == true)
+                Canvas_PresurePlate.enabled = true;
         }
         else if (buttonprompt == ButtonPromptOn.player)
         {

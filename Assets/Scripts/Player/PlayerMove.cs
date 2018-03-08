@@ -42,9 +42,9 @@ public class PlayerMove : MonoBehaviour
 
     // States
     private bool grounded;
-    //NOTE: adding:
     private bool canJump = true;
     private bool isBeingHeld = false;
+    private bool isHoldingPickup = false;
 
     // Movement data
     private float airPressTime, groundedCount, curAccel, curDecel, curRotateSpeed, slope;
@@ -271,7 +271,6 @@ public class PlayerMove : MonoBehaviour
     {
         if (!canJump)  //Added.
         {
-            Debug.Log("should not be jumping");
             return;
         }
 
@@ -378,6 +377,19 @@ public class PlayerMove : MonoBehaviour
         set
         {
             canJump = value;
+        }
+    }
+
+    //Added:
+    public bool IsHoldingPickup
+    {
+        get
+        {
+            return isHoldingPickup;
+        }
+        set
+        {
+            isHoldingPickup = value;
         }
     }
 }
