@@ -6,6 +6,7 @@ public abstract class Movable : MonoBehaviour {
     public Vector3 velocity;
     public float accelerationMax;
     public float velocityMax;
+    // Currently unimplemented
     public float fov;
     public float rotationSpeed;
     // The amount the character can rotate while wandering
@@ -18,6 +19,7 @@ public abstract class Movable : MonoBehaviour {
     public float timeToTarget;
     public bool isGrounded;
     public int maxHeight;
+    // The speed at which the ghost will float back up after being grounded.
     public float floatSpeed;
 
     internal Vector3 targetRotation;

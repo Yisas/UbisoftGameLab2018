@@ -917,9 +917,14 @@ MonoBehaviour:
   floatSpeed: 1
   awarenessRadius: 100
   itemDropDistance: 3
+  rayCastRange: 5
+  wallAvoidanceDuration: 2
+  groundedRayCastDownDistance: 0.5
+  groundedRayCastUpDistance: 20
+  avoidWallRayOriginOffset: 2.5
   floorChecks: {fileID: 4237070921455936}
-  movementState: 0
   wallAvoidDistance: 15
+  movementState: 0
 --- !u!114 &114320974744731850
 MonoBehaviour:
   m_ObjectHideFlags: 1
