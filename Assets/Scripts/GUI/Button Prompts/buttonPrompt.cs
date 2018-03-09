@@ -95,28 +95,62 @@ public class buttonPrompt : MonoBehaviour
         }
         else if (buttonprompt == ButtonPromptOn.player)
         {
-            if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
-            { 
-                if(playerID == 1)
+            //Switching the image prompts
+            if (gameObject.name == "JumpPromptTrigger")     //(A: Jumpp)
+            {
+                if (playerID == 1)
                 {
-                    //Switching the image prompts
-                    if (gameObject.name == "JumpPromptTrigger")     //(A: Jumpp)
+                    if(player.jumpPromptConter > 0)
                     {
                         JumpImgP1.enabled = true;
                         InteractImgP1.enabled = false;
+                        Canvas_Player_1.enabled = true;
                     }
-                    else    //(B: Interact)
+                    else
                     {
                         JumpImgP1.enabled = false;
-                        InteractImgP1.enabled = true;
                     }
+                }
 
+                if (playerID == 2)
+                {
+                    if(player.jumpPromptConter > 0)
+                    {
+                        JumpImgP2.enabled = true;
+                        InteractImgP2.enabled = false;
+                        Canvas_Player_2.enabled = true;
+                    }
+                    else
+                    {
+                        JumpImgP2.enabled = false;
+                    }
+                }
+            }
+            else                                            //(B: Interact)
+            {
+                if (playerID == 1)
+                {
+                    JumpImgP1.enabled = false;
+                    InteractImgP1.enabled = true;
+                }
+
+                if (playerID == 2)
+                {
+                    JumpImgP2.enabled = false;
+                    InteractImgP2.enabled = true;
+                }
+            }
+
+            if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
+            {
+                if (playerID == 1)
+                {
                     if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                     {
                         Canvas_Player_1.enabled = true;
                         isBeingControlled = true;
                     }
-                    else if(isBeingControlled == false && (player.IsGrabingPushable == false || !player.IsHoldingPickup == false))
+                    else if (isBeingControlled == false && (player.IsGrabingPushable == false || !player.IsHoldingPickup == false))
                     {
                         Canvas_Player_1.enabled = true;
                     }
@@ -124,11 +158,11 @@ public class buttonPrompt : MonoBehaviour
                     {
                         Canvas_Player_1.enabled = true;
                     }
-                    else if(isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
+                    else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
                     {
                         Canvas_Player_1.enabled = false;
-                        isBeingControlled = false; 
-                    }                   
+                        isBeingControlled = false;
+                    }
                     //dont think we need this else
                     /*else 
                     {
@@ -137,19 +171,8 @@ public class buttonPrompt : MonoBehaviour
                     }*/
                 }
 
-                if(playerID ==2)
+                if (playerID == 2)
                 {
-                    if (gameObject.name == "JumpPromptTrigger")
-                    {
-                        JumpImgP2.enabled = true;
-                        InteractImgP2.enabled = false;
-                    }
-                    else
-                    {
-                        JumpImgP2.enabled = false;
-                        InteractImgP2.enabled = true;
-                    }
-
                     if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                     {
                         isBeingControlled = true;
@@ -163,7 +186,7 @@ public class buttonPrompt : MonoBehaviour
                     {
                         Canvas_Player_2.enabled = true;
                     }
-                    else if (isBeingControlled == true && (player.IsGrabingPushable == false|| !player.IsHoldingPickup) == false)
+                    else if (isBeingControlled == true && (player.IsGrabingPushable == false || !player.IsHoldingPickup) == false)
                     {
                         Canvas_Player_2.enabled = false;
                         isBeingControlled = false;
