@@ -4,7 +4,8 @@ using
 UnityEngine.UI;
 using UnityEngine;
 
-public class buttonPrompt : MonoBehaviour{
+public class buttonPrompt : MonoBehaviour
+{
 
     [SerializeField]
     Canvas Canvas_PresurePlate;
@@ -13,7 +14,7 @@ public class buttonPrompt : MonoBehaviour{
     [SerializeField]
     Canvas Canvas_Player_2;
 
-    public enum ButtonPromptOn {pressureplate, player}
+    public enum ButtonPromptOn { pressureplate, player }
     public ButtonPromptOn buttonprompt;
 
     public Image JumpImgP1;
@@ -24,9 +25,8 @@ public class buttonPrompt : MonoBehaviour{
 
     PlayerMove player;
     int playerID;
-    
 
-    
+    private bool isBeingControlled;
 
     void Start()
     {
@@ -47,17 +47,17 @@ public class buttonPrompt : MonoBehaviour{
         {
             player = other.gameObject.GetComponent<PlayerMove>();
             playerID = other.gameObject.GetComponent<PlayerMove>().PlayerID;
-            TurnOnPrompt();            
+            TurnOnPrompt();
         }
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Player") 
+        if (other.tag == "Player")
         {
             player = other.gameObject.GetComponent<PlayerMove>();
             playerID = other.gameObject.GetComponent<PlayerMove>().PlayerID;
-            TurnOffPrompt(); 
+            TurnOffPrompt();
         }
     }
 
@@ -65,9 +65,23 @@ public class buttonPrompt : MonoBehaviour{
     {
         if (buttonprompt == ButtonPromptOn.pressureplate)  // If the prompt is appearing above the preasure plate
         {
+            /**
+            if (Player1.GetComponent<PlayerMove>().IsHoldingPickup)
+            {
+                Canvas_PresurePlate.gameObject.layer = 12;  //"Invisible Player 2 Layer
+            }
+
+            if (Player2.GetComponent<PlayerMove>().IsHoldingPickup)
+            {
+                Canvas_PresurePlate.gameObject.layer = 9;   //"Invisible Player 1 Layer"
+            }
+
+            Canvas_PresurePlate.enabled = true;
+        }*/
+
             if (player.IsHoldingPickup == true) //Checking to see if a player is holding a Pickupable block
-            { 
-                if(playerID == 1)
+            {
+                if (playerID == 1)
                 {
                     Canvas_PresurePlate.gameObject.layer = 12;  //"Invisible Player 2 Layer"                    
                 }
@@ -77,73 +91,101 @@ public class buttonPrompt : MonoBehaviour{
                 }
                 Canvas_PresurePlate.enabled = true;
             }
+
         }
         else if (buttonprompt == ButtonPromptOn.player)
         {
-            if (playerID == 1)
-            {
-                Canvas_Player_1.enabled = true;
+            if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
+            { 
+                if(playerID == 1)
+                {
+                    //Switching the image prompts
+                    if (gameObject.name == "JumpPromptTrigger")     //(A: Jumpp)
+                    {
+                        JumpImgP1.enabled = true;
+                        InteractImgP1.enabled = false;
+                    }
+                    else    //(B: Interact)
+                    {
+                        JumpImgP1.enabled = false;
+                        InteractImgP1.enabled = true;
+                    }
 
-                //Setting the correct image prompt
-                if(gameObject.name == "JumpPromptTrigger")
-                {
-                    JumpImgP1.enabled = true;
-                    InteractImgP1.enabled = false;
-                }
-                if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
-                {
-                    JumpImgP1.enabled = false;
-                    InteractImgP1.enabled = true;
-                }
-
-                 //NOT WORKING!
-                if ((gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
-                     && (player.IsGrabPushable || player.IsHoldingPickup)) // NOTE : [BUG] Does not work
-                                                                                //The other player should not be able to see the prompt if another player 
-                                                                                //holding/grabbing a Pickupable or Pushable....
-                {
-                    Debug.Log("Player 1 and Holding or Grabbing Item. Player 2 should not be able to see prompt");
-                    Canvas_Player_2.enabled = false;
-                }
-            }
-
-            if (playerID == 2)
-            {
-                Canvas_Player_2.enabled = true;
-
-                //Setting the correct image prompt
-                if (gameObject.name == "JumpPromptTrigger")
-                {
-                    JumpImgP2.enabled = true;
-                    InteractImgP2.enabled = false;
-                }
-                if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
-                {
-                    JumpImgP2.enabled = false;
-                    InteractImgP2.enabled = true;
+                    if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
+                    {
+                        Canvas_Player_1.enabled = true;
+                        isBeingControlled = true;
+                    }
+                    else if(isBeingControlled == false && (player.IsGrabingPushable == false || !player.IsHoldingPickup == false))
+                    {
+                        Canvas_Player_1.enabled = true;
+                    }
+                    else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
+                    {
+                        Canvas_Player_1.enabled = true;
+                    }
+                    else if(isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
+                    {
+                        Canvas_Player_1.enabled = false;
+                        isBeingControlled = false; 
+                    }                   
+                    //dont think we need this else
+                    /*else 
+                    {
+                        Debug.Log("P1: 5");
+                        Canvas_Player_1.enabled = true;
+                    }*/
                 }
 
-                //NOT WORKING!
-                if ((gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
-                     && (player.IsGrabPushable || player.IsHoldingPickup)) // NOTE : [BUG] Does not work
-                                                                              //The other player should not be able to see the prompt if another player 
-                                                                              //holding/grabbing a Pickupable or Pushable....
+                if(playerID ==2)
                 {
-                    Debug.Log("Player 2 and Holding or Grabbing Item. Player 1 should not be able to see prompt");
-                    Canvas_Player_1.enabled = false;
+                    if (gameObject.name == "JumpPromptTrigger")
+                    {
+                        JumpImgP2.enabled = true;
+                        InteractImgP2.enabled = false;
+                    }
+                    else
+                    {
+                        JumpImgP2.enabled = false;
+                        InteractImgP2.enabled = true;
+                    }
+
+                    if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
+                    {
+                        isBeingControlled = true;
+                        Canvas_Player_2.enabled = true;
+                    }
+                    else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
+                    {
+                        Canvas_Player_2.enabled = true;
+                    }
+                    else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
+                    {
+                        Canvas_Player_2.enabled = true;
+                    }
+                    else if (isBeingControlled == true && (player.IsGrabingPushable == false|| !player.IsHoldingPickup) == false)
+                    {
+                        Canvas_Player_2.enabled = false;
+                        isBeingControlled = false;
+                    }
+                    //dont think we need this else
+                    /*else
+                    {
+                        Debug.Log("P2: 5");
+                        Canvas_Player_2.enabled = true;
+                    }*/
                 }
             }
         }
     }
-
     private void TurnOffPrompt()
     {
         if (buttonprompt == ButtonPromptOn.pressureplate)
         {
-                Canvas_PresurePlate.enabled = false;
+            Canvas_PresurePlate.enabled = false;
         }
         else if (buttonprompt == ButtonPromptOn.player)
-        {         
+        {
             if (playerID == 1)
                 Canvas_Player_1.enabled = false;
             if (playerID == 2)
