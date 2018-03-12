@@ -643,13 +643,13 @@ public class PlayerObjectInteraction : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcPlayerDrop(int targetPlayerID)
+    public void RpcPlayerDrop(int targetPlayerID)
     {
         CommonPlayerDrop(targetPlayerID);
     }
 
     [Command]
-    private void CmdPlayerDrop(int targetPlayerID)
+    public void CmdPlayerDrop(int targetPlayerID)
     {
         CommonPlayerDrop(targetPlayerID);
     }

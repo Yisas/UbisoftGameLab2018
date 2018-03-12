@@ -290,10 +290,12 @@ public class PlayerMove : NetworkBehaviour
                     Jump(jumpForce);
                 else
                 {
-                    Debug.Log("[PlayerMove Class] Player ID: " + playerID + "\n -----JumpForceWhileCarried: "+ jumpForceWhileCarried + "(mag= " + jumpForceWhileCarried.magnitude + " )" 
+                    Debug.Log("[PlayerMove Class] Player ID: " + playerID + "\n -----JumpForceWhileCarried: " + jumpForceWhileCarried + "(mag= " + jumpForceWhileCarried.magnitude + " )"
                                 + " Mass of Player: " + GetComponent<Rigidbody>().mass);
                     Jump(jumpForceWhileCarried);
-                    GameObject.Find("Player " + (playerID == 1 ? 2 : 1)).GetComponent<PlayerObjectInteraction>().PlayerDrop();
+                    // Tell other player to drop me
+                    // TENTATIVE TODO: fix me I'm ugly. Player superType with id and FindOtherPlayer()??
+                    GetOffPlayer();
                 }
             }
         }
@@ -322,6 +324,33 @@ public class PlayerMove : NetworkBehaviour
 
         // Stop being held after jumping
         IsBeingHeld = false;
+    }
+
+    /// <summary>
+    /// Notify the carrying player that I'm jumping off of my own volition
+    /// </summary>
+    public void GetOffPlayer()
+    {
+        int otherPlayerID = playerID == 1 ? 2 : 1;
+        PlayerObjectInteraction playerHoldingMe = GameObject.Find("Player " + otherPlayerID).GetComponent<PlayerObjectInteraction>();
+        playerHoldingMe.PlayerDrop();
+
+        if (isLocalPlayer && isServer)
+            RpcGetOffPlayer();
+        else if (isLocalPlayer && !isServer)
+            CmdGetOffPlayer();
+    }
+
+    [Command]
+    private void CmdGetOffPlayer()
+    {
+        GetOffPlayer();
+    }
+
+    [ClientRpc]
+    private void RpcGetOffPlayer()
+    {
+        GetOffPlayer();
     }
 
     [Command]
@@ -409,8 +438,28 @@ public class PlayerMove : NetworkBehaviour
                 //... put back rotation constraints
                 rb.constraints = RigidbodyConstraints.FreezeRotation;
             }
+
+            // Send message to mirrors
+            if (isLocalPlayer)
+                if (isServer)
+                    RpcSetIsBeingHeld(value);
+                else
+                    CmdSetIsBeingHeld(value);
         }
     }
+
+    [Command]
+    private void CmdSetIsBeingHeld(bool isBeingHeld)
+    {
+        IsBeingHeld = isBeingHeld;
+    }
+
+    [ClientRpc]
+    private void RpcSetIsBeingHeld(bool isBeingHeld)
+    {
+        IsBeingHeld = isBeingHeld;
+    }
+
 
     public bool CanJump
     {
