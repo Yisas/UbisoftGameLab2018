@@ -382,6 +382,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         }
 
         heldObjectRigidbody.interpolation = objectDefInterpolation;
+        heldObjectRigidbody.useGravity = true;
         Destroy(joint);
         playerMove.rotateSpeed = defRotateSpeed;
         playerMove.SetRestrictToBackCamera(false);
@@ -420,8 +421,10 @@ public class PlayerObjectInteraction : MonoBehaviour
         }
         Destroy(joint);
         Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+        heldObjectRigidbody.useGravity = true;
         heldObjectRigidbody.interpolation = objectDefInterpolation;
         heldObjectRigidbody.mass /= weightChange;
+
         //Note Added:
         if (heldObj.tag == "Player")
         {
