@@ -88,6 +88,8 @@ GameObject:
   - component: {fileID: 114507385579566834}
   - component: {fileID: 54302311295314138}
   - component: {fileID: 82582006944707454}
+  - component: {fileID: 114003952779235502}
+  - component: {fileID: 114558632991920950}
   m_Layer: 14
   m_Name: Ghost
   m_TagString: Untagged
@@ -142,7 +144,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1861875874469952}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 19.43, y: 5.92, z: -14.32}
+  m_LocalPosition: {x: 12.313236, y: 5.12, z: 6.8077927}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4618300750894220}
@@ -336,6 +338,27 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &114003952779235502
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1861875874469952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TransformSyncMode: 3
+  m_SendInterval: 0.1
+  m_SyncRotationAxis: 2
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.001
+  m_VelocityThreshold: 0.0001
+  m_SnapThreshold: 5
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1
 --- !u!114 &114261684740536138
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -376,3 +399,35 @@ MonoBehaviour:
   pickUpSound: {fileID: 8300000, guid: c8393b97e8e87fd43831ac491be49d6a, type: 3}
   dropBox: {fileID: 1316759313643092}
   grabBox: {fileID: 1716002871347264}
+--- !u!114 &114558632991920950
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1861875874469952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 52
+    i1: 30
+    i2: 7
+    i3: 61
+    i4: 75
+    i5: 134
+    i6: 92
+    i7: 228
+    i8: 185
+    i9: 183
+    i10: 231
+    i11: 9
+    i12: 113
+    i13: 112
+    i14: 6
+    i15: 164
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
