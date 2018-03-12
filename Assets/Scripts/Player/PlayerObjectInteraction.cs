@@ -570,9 +570,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
         {
             //throwForcePlayer
             Debug.Log("Throwing player....");
-            heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
-            heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
-            heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+            PlayerMove heldPlayerMove = heldObj.GetComponent<PlayerMove>();
+            heldPlayerMove.UnlockMovementToOtherPlayer();
+            heldPlayerMove.IsBeingHeld = false;
+
+            if(heldPlayerMove.isLocalPlayer)
+                heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
             if (isLocalPlayer && isServer)
