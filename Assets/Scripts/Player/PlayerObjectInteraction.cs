@@ -260,18 +260,32 @@ public class PlayerObjectInteraction : NetworkBehaviour
         //if grab is pressed and an object is inside the players "grabBox" trigger
         if (Input.GetButton("Grab"))
         {
-            //pickup
-            if (other.tag == "Pickup" && heldObj == null && timeOfThrow + 0.2f < Time.time)
-            {
-                ResettableObject resettableObject = other.GetComponent<ResettableObject>();
-                if (resettableObject != null && !resettableObject.IsHeld)
-                    LiftPickup(other);
+            // Save computational time by not attempting to interact with non-valid objects
+            if(other.tag != "Pickup" && other.tag != "Pushable" && other.tag != "Player")
                 return;
-            }
-            //grab
-            if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null && timeOfThrow + 0.2f < Time.time)
+
+            // Give the object either host or client authority, depending on which player is picking it up
+            if (other.tag != "Player")
             {
-                GrabPushable(other);
+                //pickup
+                if (other.tag == "Pickup" && heldObj == null && timeOfThrow + 0.2f < Time.time)
+                {
+                    ResettableObject resettableObject = other.GetComponent<ResettableObject>();
+                    if (resettableObject != null && !resettableObject.IsHeld)
+                        LiftPickup(other);
+                }
+                //grab
+                else if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null && timeOfThrow + 0.2f < Time.time)
+                {
+                    GrabPushable(other);
+                }
+
+                // Give the object either host or client authority, depending on which player is picking it up
+                if (isServer)
+                    SetPlayerAuthorityToHeldObject(GetComponent<NetworkIdentity>(), playerMove.PlayerID, heldObj.GetComponent<NetworkIdentity>());
+                else
+                    CmdSetPlayerAuthorityToHeldObject(GetComponent<NetworkIdentity>(), playerMove.PlayerID, heldObj.GetComponent<NetworkIdentity>());
+
                 return;
             }
             //NOTE: Added to pickup the player:
@@ -422,6 +436,37 @@ public class PlayerObjectInteraction : NetworkBehaviour
         {
             resettableObject.IsHeld = true;
         }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="targetNetworkIdentity">Client to receive authority of the object</param>
+    /// <param name="playerID"></param>
+    /// <param name="netIdentityOfObj">Network identity of the gameObject that will have its player auth modified</param>
+    public void SetPlayerAuthorityToHeldObject(NetworkIdentity targetNetworkIdentity, int playerID, NetworkIdentity netIdentityOfObj)
+    {
+        if (otherPlayer == null)
+        {
+            FindOtherPlayer();
+        }
+
+        // Remove prior ownership if necessary
+        // TODO: consider removing authority (back to server) after letting go of heldObj
+        if (netIdentityOfObj.clientAuthorityOwner != null)
+            if(netIdentityOfObj.clientAuthorityOwner != targetNetworkIdentity.connectionToClient)
+            {
+                netIdentityOfObj.RemoveClientAuthority(otherPlayer.GetComponent<NetworkIdentity>().connectionToClient);
+            }
+
+        netIdentityOfObj.AssignClientAuthority((targetNetworkIdentity.connectionToClient));
+
+    }
+
+    [Command]
+    public void CmdSetPlayerAuthorityToHeldObject(NetworkIdentity networkIdentity, int playerID, NetworkIdentity objToChangeAuthNetIdentity)
+    {
+        SetPlayerAuthorityToHeldObject(networkIdentity, playerID, objToChangeAuthNetIdentity);
     }
 
     public void DropPickup()
