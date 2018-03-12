@@ -40,6 +40,8 @@ GameObject:
   - component: {fileID: 23774300660044454}
   - component: {fileID: 54193119881845712}
   - component: {fileID: 114762896118058358}
+  - component: {fileID: 114336470302469972}
+  - component: {fileID: 114727442920373878}
   m_Layer: 2
   m_Name: SphereGreen
   m_TagString: Pickup
@@ -166,6 +168,59 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &114336470302469972
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1472237939820806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 232
+    i1: 62
+    i2: 4
+    i3: 46
+    i4: 246
+    i5: 54
+    i6: 183
+    i7: 132
+    i8: 232
+    i9: 231
+    i10: 176
+    i11: 170
+    i12: 24
+    i13: 178
+    i14: 118
+    i15: 181
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 1
+--- !u!114 &114727442920373878
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1472237939820806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TransformSyncMode: 3
+  m_SendInterval: 0.1
+  m_SyncRotationAxis: 7
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.001
+  m_VelocityThreshold: 0.0001
+  m_SnapThreshold: 5
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1
 --- !u!114 &114762896118058358
 MonoBehaviour:
   m_ObjectHideFlags: 1

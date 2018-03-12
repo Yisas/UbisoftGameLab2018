@@ -24,6 +24,8 @@ GameObject:
   - component: {fileID: 23247168680341728}
   - component: {fileID: 54345489160267200}
   - component: {fileID: 114030289414341682}
+  - component: {fileID: 114484682218656862}
+  - component: {fileID: 114287218524451078}
   m_Layer: 2
   m_Name: SphereRed
   m_TagString: Pickup
@@ -177,6 +179,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23363880e037e864c8b08314ac3ab8b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114287218524451078
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1103899507769018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TransformSyncMode: 3
+  m_SendInterval: 0.1
+  m_SyncRotationAxis: 7
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.001
+  m_VelocityThreshold: 0.0001
+  m_SnapThreshold: 5
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1
+--- !u!114 &114484682218656862
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1103899507769018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 176
+    i1: 171
+    i2: 247
+    i3: 80
+    i4: 26
+    i5: 207
+    i6: 153
+    i7: 244
+    i8: 233
+    i9: 99
+    i10: 56
+    i11: 71
+    i12: 87
+    i13: 184
+    i14: 31
+    i15: 36
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 1
 --- !u!135 &135723279635857936
 SphereCollider:
   m_ObjectHideFlags: 1
