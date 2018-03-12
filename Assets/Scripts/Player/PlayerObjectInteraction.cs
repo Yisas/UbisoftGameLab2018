@@ -9,6 +9,8 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerObjectInteraction : NetworkBehaviour
 {
+    public GameObject holdPlayerPos;
+
     // Audio
     public AudioClip pickUpSound;                               //sound when you pickup/grab an object
     public AudioClip throwSound;                                //sound when you throw an object
@@ -341,20 +343,20 @@ public class PlayerObjectInteraction : NetworkBehaviour
         //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
         if (!Physics.CheckSphere(holdPos, checkRadius, 2))
         {
-            gizmoColor = Color.green;
             heldObj = other.gameObject;
             Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-            objectDefInterpolation = heldObjectRigidbody.interpolation;
-            heldObjectRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
-            AddJoint();
+
+            heldObj.GetComponent<PlayerMove>().LockMovementToOtherPlayer(holdPlayerPos.transform);
+
+
             playerMove.CanJump = false;   //Bottom player cannot jump
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = true;
 
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
             //mass change was delegated to late update using flags
-            addChangeMass = true;
+            //addChangeMass = true;
             //make sure we don't immediately throw object after picking it up
             timeOfPickup = Time.time;
         }
@@ -494,6 +496,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             heldObj.transform.position = dropBox.transform.position;
             //heldObjectRigidbody.mass /= weightChange;
             subChangeMass = true;
+            heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
             playerMove.CanJump = true;
 
@@ -573,8 +576,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
         {
             //throwForcePlayer
             Debug.Log("Throwing player....");
-            heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+            heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
+            heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
             if (isLocalPlayer && isServer)

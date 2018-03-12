@@ -709,6 +709,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1901748987976732
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4172982909682194}
+  m_Layer: 14
+  m_Name: holdPlayerPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1905659119879170
 GameObject:
   m_ObjectHideFlags: 0
@@ -916,6 +931,19 @@ Transform:
   m_Father: {fileID: 4248727670222262}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 14.1476555, y: 0.000040631414, z: 113.16391}
+--- !u!4 &4172982909682194
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1901748987976732}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.793, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4253362203094236}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4191696939202536
 Transform:
   m_ObjectHideFlags: 1
@@ -975,6 +1003,7 @@ Transform:
   - {fileID: 4871823841660324}
   - {fileID: 4794662483281434}
   - {fileID: 4696622267550600}
+  - {fileID: 4172982909682194}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -1.4350001, z: 0}
@@ -1735,6 +1764,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf834097aa74eb4e86aa91a4b6ab25b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  holdPlayerPos: {fileID: 1901748987976732}
   pickUpSound: {fileID: 8300000, guid: 6fed4bf326ed3a341a2c8aee9d090cef, type: 3}
   throwSound: {fileID: 8300000, guid: 6746d2e394654c24eb9b9e386cb14de7, type: 3}
   boxCollideSound: {fileID: 8300000, guid: 221c59d396d0c184796e72bc20f7b42d, type: 3}

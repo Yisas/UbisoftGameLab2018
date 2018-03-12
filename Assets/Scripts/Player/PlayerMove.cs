@@ -46,6 +46,7 @@ public class PlayerMove : NetworkBehaviour
     //NOTE: adding:
     private bool canJump = true;
     private bool isBeingHeld = false;
+    private bool isSyncingToTransform = false;
 
     // Movement data
     private float airPressTime, groundedCount, curAccel, curDecel, curRotateSpeed, slope;
@@ -56,6 +57,7 @@ public class PlayerMove : NetworkBehaviour
     private Transform[] floorCheckers;
     private Quaternion screenMovementSpace;
     private CharacterMotor characterMotor;
+    private Transform transformToSyncTo;
 
     //setup
     void Awake()
@@ -102,6 +104,12 @@ public class PlayerMove : NetworkBehaviour
     //get state of player, values and input
     void Update()
     {
+        if (isSyncingToTransform && transformToSyncTo)
+        {
+            transform.position = transformToSyncTo.position;
+            transform.rotation = transformToSyncTo.rotation;
+        }
+
         if (!isLocalPlayer)
         {
             return;
@@ -335,6 +343,8 @@ public class PlayerMove : NetworkBehaviour
         PlayerObjectInteraction playerHoldingMe = GameObject.Find("Player " + otherPlayerID).GetComponent<PlayerObjectInteraction>();
         playerHoldingMe.PlayerDrop();
 
+        UnlockMovementToOtherPlayer();
+
         if (isLocalPlayer && isServer)
             RpcGetOffPlayer();
         else if (isLocalPlayer && !isServer)
@@ -351,6 +361,18 @@ public class PlayerMove : NetworkBehaviour
     private void RpcGetOffPlayer()
     {
         GetOffPlayer();
+    }
+
+    public void LockMovementToOtherPlayer(Transform transformToMatch)
+    {
+        isSyncingToTransform = true;
+        this.transformToSyncTo = transformToMatch;
+    }
+
+    public void UnlockMovementToOtherPlayer()
+    {
+        isSyncingToTransform = false;
+        transformToSyncTo = null;
     }
 
     [Command]
