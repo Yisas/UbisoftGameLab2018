@@ -282,9 +282,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
                 // Give the object either host or client authority, depending on which player is picking it up
                 if (isServer)
-                    SetPlayerAuthorityToHeldObject(GetComponent<NetworkIdentity>(), playerMove.PlayerID, heldObj.GetComponent<NetworkIdentity>());
+                    SetPlayerAuthorityToHeldObject(GetComponent<NetworkIdentity>(), playerMove.PlayerID, other.GetComponent<NetworkIdentity>());
                 else
-                    CmdSetPlayerAuthorityToHeldObject(GetComponent<NetworkIdentity>(), playerMove.PlayerID, heldObj.GetComponent<NetworkIdentity>());
+                    CmdSetPlayerAuthorityToHeldObject(GetComponent<NetworkIdentity>(), playerMove.PlayerID, other.GetComponent<NetworkIdentity>());
 
                 return;
             }
