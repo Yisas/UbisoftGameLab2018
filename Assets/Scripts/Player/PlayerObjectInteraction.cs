@@ -494,8 +494,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
         {
             Debug.Log("DropPickup()\n---and will set isBeingHeld = False");
             heldObj.transform.position = dropBox.transform.position;
-            //heldObjectRigidbody.mass /= weightChange;
-            subChangeMass = true;
             heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
             playerMove.CanJump = true;
@@ -521,9 +519,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 Debug.LogError("Unasignsed PushableObject component");
         }
 
-        // Player heldobj reference handled in LateUpdate
-        if (heldObj.tag != "Player")
-            heldObj = null;
+        heldObj = null;
 
         timeOfThrow = Time.time;
     }
@@ -569,8 +565,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
         Destroy(joint);
         Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-        heldObjectRigidbody.interpolation = objectDefInterpolation;
-        heldObjectRigidbody.mass /= weightChange;
         //Note Added:
         if (heldObj.tag == "Player")
         {
@@ -590,6 +584,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
         else
         {
             Debug.Log("Throwing block....");
+            heldObjectRigidbody.interpolation = objectDefInterpolation;
+            heldObjectRigidbody.mass /= weightChange;
             heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
         }
         heldObj = null;
@@ -630,11 +626,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
             Destroy(joint);
             heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
-            //heldObj.GetComponent<Rigidbody>().mass /= weightChange;
-            subChangeMass = true;
-            //heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
 
-            //heldObj = null;
+            heldObj = null;
             playerMove.CanJump = true;
             timeOfThrow = Time.time;
 
