@@ -180,6 +180,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4c7ab6e1180dd6748a0af4fccc93ee39, type: 2}
   m_IsPrefabParent: 0
+--- !u!223 &55345070 stripped
+Canvas:
+  m_PrefabParentObject: {fileID: 223161545756350940, guid: 39ee84df788e90b4eb6778286bc71722,
+    type: 2}
+  m_PrefabInternal: {fileID: 883952093}
 --- !u!1 &56070925
 GameObject:
   m_ObjectHideFlags: 0
@@ -272,6 +277,12 @@ BoxCollider:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: ac79453cdfd497e4fb70bd15a2766204, type: 2}
   m_PrefabInternal: {fileID: 1059577778}
+--- !u!114 &85648492 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114208472664544306, guid: 39ee84df788e90b4eb6778286bc71722,
+    type: 2}
+  m_PrefabInternal: {fileID: 883952093}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1001 &111952342
 Prefab:
   m_ObjectHideFlags: 0
@@ -309,7 +320,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4437774053002942, guid: b0abf7501acf99f4e963384757b81f24, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b0abf7501acf99f4e963384757b81f24, type: 2}
@@ -335,6 +346,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e94c47493fd114e448a5595adc153038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!223 &143033278 stripped
+Canvas:
+  m_PrefabParentObject: {fileID: 223137479529635214, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+    type: 2}
+  m_PrefabInternal: {fileID: 964300982}
 --- !u!1 &203576400
 GameObject:
   m_ObjectHideFlags: 0
@@ -442,6 +458,12 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 4.5132713, y: 3.1798623, z: 4.0000014}
   m_Center: {x: -0.000008583069, y: -1.0036047, z: 0.00000042562505}
+--- !u!114 &220064656 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114075098569516542, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+    type: 2}
+  m_PrefabInternal: {fileID: 916739167}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1001 &256229169
 Prefab:
   m_ObjectHideFlags: 0
@@ -508,6 +530,41 @@ Prefab:
       propertyPath: spreadCustomCurve.m_RotationOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114991222248965052, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 1804450743}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: Canvas_Player_1
+      value: 
+      objectReference: {fileID: 55345070}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: Canvas_Player_2
+      value: 
+      objectReference: {fileID: 1363274116}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: JumpImgP1
+      value: 
+      objectReference: {fileID: 85648492}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: JumpImgP2
+      value: 
+      objectReference: {fileID: 1658897553}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: InteractImgP1
+      value: 
+      objectReference: {fileID: 1536173699}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: InteractImgP2
+      value: 
+      objectReference: {fileID: 1658897553}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5edb4f9cb41badc4abd1db5e4d8474d8, type: 2}
   m_IsPrefabParent: 0
@@ -601,7 +658,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &317615913
 Transform:
   m_ObjectHideFlags: 0
@@ -890,9 +947,9 @@ Transform:
   m_Children:
   - {fileID: 420271261}
   - {fileID: 441216717}
+  - {fileID: 613448079}
   - {fileID: 288429852}
   - {fileID: 709252091}
-  - {fileID: 613448079}
   m_Father: {fileID: 0}
   m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1062,7 +1119,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4643200326295684, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e, type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4643200326295684, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e, type: 2}
       propertyPath: m_LocalScale.x
@@ -1089,6 +1146,41 @@ Prefab:
       propertyPath: MaxDistance
       value: 1038.0391
       objectReference: {fileID: 0}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: Canvas_PresurePlate
+      value: 
+      objectReference: {fileID: 143033278}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: Canvas_Player_1
+      value: 
+      objectReference: {fileID: 55345070}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: Canvas_Player_2
+      value: 
+      objectReference: {fileID: 1363274116}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: JumpImgP1
+      value: 
+      objectReference: {fileID: 85648492}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: InteractImgP1
+      value: 
+      objectReference: {fileID: 1536173699}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: JumpImgP2
+      value: 
+      objectReference: {fileID: 1658897553}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: InteractImgP2
+      value: 
+      objectReference: {fileID: 220064656}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e, type: 2}
   m_IsPrefabParent: 0
@@ -1351,28 +1443,41 @@ Prefab:
       propertyPath: target
       value: 
       objectReference: {fileID: 346821034}
-    - target: {fileID: 4228784975557072, guid: 5edb4f9cb41badc4abd1db5e4d8474d8, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228784975557072, guid: 5edb4f9cb41badc4abd1db5e4d8474d8, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0.21368
-      objectReference: {fileID: 0}
-    - target: {fileID: 4228784975557072, guid: 5edb4f9cb41badc4abd1db5e4d8474d8, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 82434772853667988, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
         type: 2}
-      propertyPath: spreadCustomCurve.m_RotationOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 82399312216394194, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+      propertyPath: Canvas_Player_1
+      value: 
+      objectReference: {fileID: 55345070}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
         type: 2}
-      propertyPath: spreadCustomCurve.m_RotationOrder
-      value: 0
-      objectReference: {fileID: 0}
+      propertyPath: Canvas_Player_2
+      value: 
+      objectReference: {fileID: 1363274116}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: JumpImgP1
+      value: 
+      objectReference: {fileID: 85648492}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: InteractImgP1
+      value: 
+      objectReference: {fileID: 1536173699}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: JumpImgP2
+      value: 
+      objectReference: {fileID: 1658897553}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: InteractImgP2
+      value: 
+      objectReference: {fileID: 220064656}
+    - target: {fileID: 114991222248965052, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 1804450743}
     - target: {fileID: 1994612877221726, guid: 5edb4f9cb41badc4abd1db5e4d8474d8, type: 2}
       propertyPath: m_Name
       value: PressurePlate (1)
@@ -1471,6 +1576,41 @@ Prefab:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114994325704070614, guid: 49d5bff6e55e7ac4d9fac21e72456bd2,
+        type: 2}
+      propertyPath: InteractImgP1
+      value: 
+      objectReference: {fileID: 1536173699}
+    - target: {fileID: 114994325704070614, guid: 49d5bff6e55e7ac4d9fac21e72456bd2,
+        type: 2}
+      propertyPath: InteractImgP2
+      value: 
+      objectReference: {fileID: 220064656}
+    - target: {fileID: 114994325704070614, guid: 49d5bff6e55e7ac4d9fac21e72456bd2,
+        type: 2}
+      propertyPath: Canvas_PresurePlate
+      value: 
+      objectReference: {fileID: 143033278}
+    - target: {fileID: 114994325704070614, guid: 49d5bff6e55e7ac4d9fac21e72456bd2,
+        type: 2}
+      propertyPath: Canvas_Player_1
+      value: 
+      objectReference: {fileID: 55345070}
+    - target: {fileID: 114994325704070614, guid: 49d5bff6e55e7ac4d9fac21e72456bd2,
+        type: 2}
+      propertyPath: Canvas_Player_2
+      value: 
+      objectReference: {fileID: 1363274116}
+    - target: {fileID: 114994325704070614, guid: 49d5bff6e55e7ac4d9fac21e72456bd2,
+        type: 2}
+      propertyPath: JumpImgP1
+      value: 
+      objectReference: {fileID: 85648492}
+    - target: {fileID: 114994325704070614, guid: 49d5bff6e55e7ac4d9fac21e72456bd2,
+        type: 2}
+      propertyPath: JumpImgP2
+      value: 
+      objectReference: {fileID: 1658897553}
     m_RemovedComponents:
     - {fileID: 114500934491828864, guid: 49d5bff6e55e7ac4d9fac21e72456bd2, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 49d5bff6e55e7ac4d9fac21e72456bd2, type: 2}
@@ -1589,6 +1729,31 @@ Prefab:
       propertyPath: mainCam
       value: 
       objectReference: {fileID: 1859213868}
+    - target: {fileID: 114907791520035942, guid: 39ee84df788e90b4eb6778286bc71722,
+        type: 2}
+      propertyPath: Canvas_PresurePlate
+      value: 
+      objectReference: {fileID: 143033278}
+    - target: {fileID: 114907791520035942, guid: 39ee84df788e90b4eb6778286bc71722,
+        type: 2}
+      propertyPath: Canvas_Player_2
+      value: 
+      objectReference: {fileID: 1363274116}
+    - target: {fileID: 114907791520035942, guid: 39ee84df788e90b4eb6778286bc71722,
+        type: 2}
+      propertyPath: JumpImgP2
+      value: 
+      objectReference: {fileID: 1658897553}
+    - target: {fileID: 114907791520035942, guid: 39ee84df788e90b4eb6778286bc71722,
+        type: 2}
+      propertyPath: InteractImgP2
+      value: 
+      objectReference: {fileID: 220064656}
+    - target: {fileID: 114497503758094080, guid: 39ee84df788e90b4eb6778286bc71722,
+        type: 2}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 1804450743}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 39ee84df788e90b4eb6778286bc71722, type: 2}
   m_IsPrefabParent: 0
@@ -1812,15 +1977,36 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4818952732057318, guid: 0aa4439e0afe71d499ba9d1c92bfc387, type: 2}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -180
-      objectReference: {fileID: 0}
     - target: {fileID: 114913782787330432, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
         type: 2}
       propertyPath: mainCam
       value: 
       objectReference: {fileID: 65814139}
+    - target: {fileID: 114837072029160006, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+        type: 2}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 2030650229}
+    - target: {fileID: 114593528492921884, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+        type: 2}
+      propertyPath: Canvas_PresurePlate
+      value: 
+      objectReference: {fileID: 143033278}
+    - target: {fileID: 114593528492921884, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+        type: 2}
+      propertyPath: Canvas_Player_1
+      value: 
+      objectReference: {fileID: 55345070}
+    - target: {fileID: 114593528492921884, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+        type: 2}
+      propertyPath: JumpImgP1
+      value: 
+      objectReference: {fileID: 85648492}
+    - target: {fileID: 114593528492921884, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+        type: 2}
+      propertyPath: InteractImgP1
+      value: 
+      objectReference: {fileID: 1536173699}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0aa4439e0afe71d499ba9d1c92bfc387, type: 2}
   m_IsPrefabParent: 0
@@ -1923,32 +2109,49 @@ Prefab:
       propertyPath: m_RootOrder
       value: 13
       objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1994612877221726, guid: 5edb4f9cb41badc4abd1db5e4d8474d8, type: 2}
-      propertyPath: m_Name
-      value: PressurePlate2 (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 114035538902981564, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
         type: 2}
       propertyPath: target
       value: 
       objectReference: {fileID: 346821034}
-    - target: {fileID: 82434772853667988, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
         type: 2}
-      propertyPath: spreadCustomCurve.m_RotationOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 82399312216394194, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+      propertyPath: Canvas_Player_1
+      value: 
+      objectReference: {fileID: 55345070}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
         type: 2}
-      propertyPath: spreadCustomCurve.m_RotationOrder
-      value: 0
+      propertyPath: Canvas_Player_2
+      value: 
+      objectReference: {fileID: 1363274116}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: JumpImgP1
+      value: 
+      objectReference: {fileID: 85648492}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: InteractImgP1
+      value: 
+      objectReference: {fileID: 1536173699}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: JumpImgP2
+      value: 
+      objectReference: {fileID: 1658897553}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: InteractImgP2
+      value: 
+      objectReference: {fileID: 220064656}
+    - target: {fileID: 114991222248965052, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 1804450743}
+    - target: {fileID: 1994612877221726, guid: 5edb4f9cb41badc4abd1db5e4d8474d8, type: 2}
+      propertyPath: m_Name
+      value: PressurePlate2 (1)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5edb4f9cb41badc4abd1db5e4d8474d8, type: 2}
@@ -2008,6 +2211,41 @@ Prefab:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: Canvas_PresurePlate
+      value: 
+      objectReference: {fileID: 143033278}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: Canvas_Player_1
+      value: 
+      objectReference: {fileID: 55345070}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: Canvas_Player_2
+      value: 
+      objectReference: {fileID: 1363274116}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: JumpImgP1
+      value: 
+      objectReference: {fileID: 85648492}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: InteractImgP1
+      value: 
+      objectReference: {fileID: 1536173699}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: JumpImgP2
+      value: 
+      objectReference: {fileID: 1658897553}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: InteractImgP2
+      value: 
+      objectReference: {fileID: 220064656}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e, type: 2}
   m_IsPrefabParent: 0
@@ -2168,7 +2406,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4600053668228706, guid: e83e042ef636b784e8e7b0aa18b276b5, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e83e042ef636b784e8e7b0aa18b276b5, type: 2}
@@ -3035,6 +3273,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 37c48022acbba4980a711e31de4c9566, type: 2}
   m_IsPrefabParent: 0
+--- !u!223 &1363274116 stripped
+Canvas:
+  m_PrefabParentObject: {fileID: 223275923734359866, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+    type: 2}
+  m_PrefabInternal: {fileID: 916739167}
 --- !u!1001 &1364571889
 Prefab:
   m_ObjectHideFlags: 0
@@ -3334,6 +3577,12 @@ Transform:
   m_PrefabParentObject: {fileID: 4323865327034624, guid: c00f3dde0edf24fc1bf6242aacd82c07,
     type: 2}
   m_PrefabInternal: {fileID: 1484173245}
+--- !u!114 &1536173699 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114180345463373042, guid: 39ee84df788e90b4eb6778286bc71722,
+    type: 2}
+  m_PrefabInternal: {fileID: 883952093}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &1584593786
 GameObject:
   m_ObjectHideFlags: 0
@@ -3592,6 +3841,12 @@ Transform:
   m_PrefabParentObject: {fileID: 4876861302838954, guid: 915a0c002f06a4f6aab5576711b7320d,
     type: 2}
   m_PrefabInternal: {fileID: 1764060753}
+--- !u!114 &1658897553 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114686870430250022, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+    type: 2}
+  m_PrefabInternal: {fileID: 916739167}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &1659177187
 GameObject:
   m_ObjectHideFlags: 0
@@ -4072,6 +4327,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 915a0c002f06a4f6aab5576711b7320d, type: 2}
   m_IsPrefabParent: 0
+--- !u!20 &1804450743 stripped
+Camera:
+  m_PrefabParentObject: {fileID: 2000000, guid: ac79453cdfd497e4fb70bd15a2766204,
+    type: 2}
+  m_PrefabInternal: {fileID: 811764974}
 --- !u!1001 &1830201712
 Prefab:
   m_ObjectHideFlags: 0
@@ -4487,6 +4747,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b3bef268b3c744f899ff17389df75fd8, type: 2}
   m_IsPrefabParent: 0
+--- !u!20 &2030650229 stripped
+Camera:
+  m_PrefabParentObject: {fileID: 2000000, guid: ac79453cdfd497e4fb70bd15a2766204,
+    type: 2}
+  m_PrefabInternal: {fileID: 1059577778}
 --- !u!1 &2070696529 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1789429019652326, guid: 915a0c002f06a4f6aab5576711b7320d,
