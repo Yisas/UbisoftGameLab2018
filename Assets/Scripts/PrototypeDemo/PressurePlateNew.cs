@@ -14,6 +14,10 @@ public class PressurePlateNew : DoorAnimatorBehaviour
 
     private GameObject objectOnMe = null;
 
+    //Adding new:
+    public Animation lockAnim;
+    public int lockNum;
+
     public AudioSource onSound;
     public AudioSource offSound;
 
@@ -75,8 +79,10 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             else
             {
                 objectOnMe = other.gameObject;
-            }            
+            }
 
+            //Lock Opens
+            lockAnim.Play(string.Concat("lock", lockNum, "Open"));
             Open();
         }
 
@@ -98,12 +104,15 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             isActive = true;
 
             onSound.Play();
+            
+            //Lock Opens
+            lockAnim.Play(string.Concat("lock", lockNum, "Open"));
 
             SetOpen();
 
             Door[] doors = target.GetComponentsInChildren<Door>();
             foreach (Door d in doors)
-                d.DecCount();
+                d.DecCount();                
         }
     }
 
@@ -133,6 +142,9 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             myLight.enabled = false;
             isActive = false;
 
+            //Player leave the plate the lock closes          
+            lockAnim.Play(string.Concat("lock", lockNum, "Close"));
+
             SetClosed();
             offSound.Play();
 
@@ -140,6 +152,14 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             foreach (Door d in doors)
                 d.IncCount();
         }
+        
+        //Disableing the lock animations once the main gate is open
+        //Note: its wierd a weird condition, seems like it is controdicting xD but it works
+        if (!isOpen && !doorStaysOpen)
+        {
+            lockAnim.enabled = false; 
+        }
+
 
         // If the object is a pickup set the boolean that its on a pressure plate
         ResettableObject resettableObject = other.GetComponent<ResettableObject>();

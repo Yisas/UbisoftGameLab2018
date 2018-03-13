@@ -426,13 +426,13 @@ public void DropPickup()
         if (heldObj.tag == "Player")
         {
             //throwForcePlayer
-            Debug.Log("Throwing player....");
+            //Debug.Log("Throwing player....");
             heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
         }
         else
         {
-            Debug.Log("Throwing block....");
+            //Debug.Log("Throwing block....");
             heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
             //Is holding pickup box
             playerMove.IsHoldingPickup = false;

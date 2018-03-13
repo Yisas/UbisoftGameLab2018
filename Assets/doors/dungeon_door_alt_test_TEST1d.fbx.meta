@@ -11,10 +11,10 @@ ModelImporter:
     2300000: //RootNode
     3300000: //RootNode
     4300000: lock4
-    7400000: lock4|Action
+    7400000: lock4Close
     7400002: lock4|Action.001
     7400004: lock4|Action.002
-    7400006: lock4|Action.003
+    7400006: lock4Open
     7400008: lock4|lock1Action
     9500000: //RootNode
     11100000: //RootNode
@@ -46,9 +46,37 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: lock4|Action.003
+      name: lock4Open
       takeName: lock4|Action.003
       firstFrame: 0
+      lastFrame: 40
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: lock4Close
+      takeName: lock4|Action
+      firstFrame: 40
       lastFrame: 80
       wrapMode: 0
       orientationOffsetY: 0
