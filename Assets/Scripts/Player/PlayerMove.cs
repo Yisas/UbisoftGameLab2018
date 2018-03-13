@@ -90,8 +90,6 @@ public class PlayerMove : MonoBehaviour
     //get state of player, values and input
     void Update()
     {
-       // Debug.Log("player velocity: " + GetComponent<Rigidbody>().velocity);
-        Debug.Log("player grounded: " + grounded);
         //handle jumping
         JumpCalculations();
         //adjust movement values if we're in the air or on the ground

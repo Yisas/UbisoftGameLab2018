@@ -493,11 +493,10 @@ public class PlayerObjectInteraction : MonoBehaviour
     // Checks if the box is hanging off a ledge and removes the joint if it is.
     private void checkIfBoxIsHanging()
     {
-        if(rb.velocity.y <boxHangThreshold && rb.velocity.y > -boxHangThreshold && !playerMove.Grounded)
-        {
-            if (heldObj != null && heldObj.CompareTag("Pickup"))
+        // If we've jumped and our velocity is 0 it means the box is keeping us afloat and we should drop it.
+        if((rb.velocity.y <boxHangThreshold && rb.velocity.y > -boxHangThreshold && !playerMove.Grounded)
+            && (heldObj != null && heldObj.CompareTag("Pickup")))
                 DropPickup();
-        }
     }
 }
 
