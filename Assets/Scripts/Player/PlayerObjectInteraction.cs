@@ -388,6 +388,7 @@ public void DropPickup()
 
         heldObjectRigidbody.interpolation = objectDefInterpolation;
         heldObjectRigidbody.useGravity = true;
+        heldObj.GetComponent<Collider>().isTrigger = false;
         Destroy(joint);
         playerMove.rotateSpeed = defRotateSpeed;
         playerMove.SetRestrictToBackCamera(false);
@@ -429,6 +430,7 @@ public void DropPickup()
         }
         Destroy(joint);
         Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+        heldObj.GetComponent<Collider>().isTrigger = false;
         heldObjectRigidbody.useGravity = true;
         heldObjectRigidbody.interpolation = objectDefInterpolation;
         heldObjectRigidbody.mass /= weightChange;
