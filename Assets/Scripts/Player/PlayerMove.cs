@@ -98,6 +98,11 @@ public class PlayerMove : NetworkBehaviour
         {
             mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
             mainCam.GetComponent<CameraFollow>().StartFollowingPlayer(this, backCameraPosition);
+
+            if (!isServer) //if it's not server we set the player ID to 2
+            {
+                mainCam.GetComponent<CameraFollow>().playerID = 2;
+            }
         }
     }
 
