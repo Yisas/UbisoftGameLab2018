@@ -10,6 +10,7 @@ public class Door : DoorAnimatorBehaviour
     public int pressurePlateCount;
     private int pressedCount;
 
+
     private void Start()
     {
         pressedCount = pressurePlateCount;
@@ -23,6 +24,7 @@ public class Door : DoorAnimatorBehaviour
             pressedCount = 0;
 
         displayTest.text = pressedCount.ToString();
+        //play the locks moving animation 
 
         if (pressedCount == 0)
         {
