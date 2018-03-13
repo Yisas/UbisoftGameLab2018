@@ -12,6 +12,7 @@ public class ResettableObject : MonoBehaviour {
     private bool isMoved;
     private bool isOnPressurePlate;
     private bool isHeld;
+    private bool usesGravity = true;
     // Distance from the original position for the object to be considered moved
     private const float distanceMovedThreshold = 5.0f;
 
@@ -19,6 +20,7 @@ public class ResettableObject : MonoBehaviour {
     void Start () {
         ogPosition = transform.position;
         ogRotation = transform.rotation;
+        usesGravity = GetComponent<Rigidbody>().useGravity;
 	}
 
     private void OnTriggerEnter(Collider other)
@@ -38,6 +40,7 @@ public class ResettableObject : MonoBehaviour {
     public void Reset()
     {
         GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        GetComponent<Rigidbody>().useGravity = usesGravity;
 
         transform.position = ogPosition;
         transform.rotation = ogRotation;
