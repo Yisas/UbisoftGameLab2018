@@ -1,4 +1,4 @@
-Shader "CFX/Water Wiggle" {
+Shader "Cartoon FX/Demo/Water Wiggle" {
 Properties {
 	_Color ("Main Color", Color) = (1,1,1,1)
 	_MainTex ("Base (RGB)", 2D) = "white" {}
