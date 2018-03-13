@@ -430,6 +430,7 @@ public void DropPickup()
         }
         Destroy(joint);
         Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+        heldObj.GetComponent<Collider>().isTrigger = false;
         heldObjectRigidbody.useGravity = true;
         heldObjectRigidbody.interpolation = objectDefInterpolation;
         heldObjectRigidbody.mass /= weightChange;
