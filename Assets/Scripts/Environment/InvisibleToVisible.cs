@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AutoTransparent : MonoBehaviour
+public class InvisibleToVisible : MonoBehaviour
 {
     private Shader m_OldShader = null;
     private Color m_OldColor = Color.black;
     private float m_Transparency = 0.3f;
-    private const float m_TargetTransparancy = 0.3f;
+    private const float startingTransparency = 0.0f;
 
-    private bool shouldBeTransparent = true;
     public float TargetTransparency { get; set; }
-    public float FadeInTimeout = 0.6f;
-    public float FadeOutTimeout = 0.2f;
-    public bool isStandard;
+    public float FadeInTimeout = 12f; //Set with Adaptative Level Transparency To Visible Time
+    private bool isStandard;
 
-    public void BeTransparent()
+    public float delayToFadeInTime = 10; //how long until this element starts fading in
+    private float currentWaitedTime = 0;
+
+    public void Start()
     {
         // reset the transparency;
-        m_Transparency = m_TargetTransparancy;
-        shouldBeTransparent = true;
+        m_Transparency = startingTransparency;
 
 
         if (m_OldShader == null)
@@ -38,9 +38,22 @@ public class AutoTransparent : MonoBehaviour
                 GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
             }
         }
+
+        FadeIn();
     }
 
     void Update()
+    {
+        if (currentWaitedTime < delayToFadeInTime)
+        {
+            currentWaitedTime += Time.deltaTime;
+            return;
+        }
+
+        FadeIn();
+    }
+
+    void FadeIn()
     {
         if (m_Transparency < 1.0f)
         {
@@ -62,25 +75,11 @@ public class AutoTransparent : MonoBehaviour
             GetComponent<Renderer>().material.shader = m_OldShader;
             GetComponent<Renderer>().material.color = m_OldColor;
             // And remove this script
-            
+
             Destroy(this);
         }
 
-        //Are we fading in our out?
-        if (shouldBeTransparent)
-        {
-            //Fading out
-            if (m_Transparency > TargetTransparency)
-            {
-                m_Transparency -= ((1.0f - TargetTransparency) * Time.deltaTime) / FadeOutTimeout;
-            }
-        }
-        else
-        {
-            //Fading in
-            m_Transparency += ((1.0f - TargetTransparency) * Time.deltaTime) / FadeInTimeout;
-        }
-
-        shouldBeTransparent = false;
+        //Fading in
+        m_Transparency += ((1.0f - TargetTransparency) * Time.deltaTime) / FadeInTimeout;
     }
 }
