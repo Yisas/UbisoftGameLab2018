@@ -9,7 +9,9 @@ public class DoorAnimatorBehaviour : MonoBehaviour {
     public bool isOpen = false;
     private bool firstAnimation = false;
 
-   protected void FirstAnimationCheck()
+    //Adding 03/11/2018:
+
+    protected void FirstAnimationCheck()
     {
         if (!firstAnimation)
         {
@@ -56,4 +58,6 @@ public class DoorAnimatorBehaviour : MonoBehaviour {
         isOpen = false;
         animator.SetBool("Open", isOpen);
     }
+
+    //locks moving animation
 }

@@ -92,13 +92,11 @@ public class PlayerObjectInteraction : MonoBehaviour
             if (addChangeMass)
             {
                 heldObj.GetComponent<Rigidbody>().mass *= weightChange;
-                Debug.Log("addChange LATEUPDATE");
                 addChangeMass = false;
             }
             if (subChangeMass)
             {
-                //heldObj.GetComponent<Rigidbody>().mass /= weightChange;                
-                Debug.Log("subChange LATEUPDATE");
+                //heldObj.GetComponent<Rigidbody>().mass /= weightChange;0
                 heldObj.GetComponent<Rigidbody>().mass = originalMass;
                 heldObj = null;
                 subChangeMass = false;
@@ -125,8 +123,6 @@ public class PlayerObjectInteraction : MonoBehaviour
         //NOTE: Added--Now set the heldObj so that when it jumps it gets of the bottom player:                                                   
         if (heldObj != null && heldObj.tag == "Player" && Input.GetButton("Jump " + heldObj.GetComponent<PlayerMove>().PlayerID))
         {
-            Debug.Log("Update()\n---PID: " + heldObj.GetComponent<PlayerMove>().PlayerID + " isBeingHeld? " + heldObj.GetComponent<PlayerMove>().IsBeingHeld.ToString().ToUpper()
-                        + "[PID" + heldObj.GetComponent<PlayerMove>().PlayerID + " has Jumped]");
             PlayerDrop();
         }
 
@@ -239,8 +235,6 @@ public class PlayerObjectInteraction : MonoBehaviour
             if (other.tag == "Player" && heldObj == null && timeOfThrow + 0.2f < Time.time)
             {
                 PickupPlayer(other);    //Created new function.
-                Debug.Log("OnTriggerStay()\n----PID: " + heldObj.GetComponent<PlayerMove>().PlayerID + " isBeingHeld = : " + heldObj.GetComponent<PlayerMove>().IsBeingHeld.ToString().ToUpper()
-                           + " [The player has been picked up]");
                 return;
             }
         }
@@ -262,6 +256,8 @@ public class PlayerObjectInteraction : MonoBehaviour
         objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
         heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
         AddJoint();
+        //Is grabbing pushable box?
+        playerMove.IsGrabingPushable = true;
         //set limits for when player will let go of object
         //joint.breakForce = holdingBreakForce;
         //joint.breakTorque = holdingBreakTorque;
@@ -332,6 +328,9 @@ public class PlayerObjectInteraction : MonoBehaviour
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
             AddJoint();
+            //NEW: Is holding pickup box
+            playerMove.IsHoldingPickup = true;
+
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
             heldObjectRigidbody.mass *= weightChange;
             //make sure we don't immediately throw object after picking it up
@@ -350,9 +349,11 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             resettableObject.IsHeld = true;
         }
-    }
 
-    public void DropPickup()
+
+}
+
+public void DropPickup()
     {
         Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
 
@@ -368,12 +369,14 @@ public class PlayerObjectInteraction : MonoBehaviour
             ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
             if (resettableObject != null)
                 resettableObject.IsHeld = false;
+
+            //Is holding pickup box?
+            playerMove.IsHoldingPickup = false;
         }
 
         //NOTE: Added the bottom player allow and drop the top player
         if (heldObj.tag == "Player")
         {
-            Debug.Log("DropPickup()\n---and will set isBeingHeld = False");
             heldObj.transform.position = dropBox.transform.position;
             //heldObjectRigidbody.mass /= weightChange;
             subChangeMass = true;
@@ -394,6 +397,9 @@ public class PlayerObjectInteraction : MonoBehaviour
                 po.SetIsBeingPushed(false);
             else
                 Debug.LogError("Unasignsed PushableObject component");
+
+            //Is grabbing pushable box?
+            playerMove.IsGrabingPushable = false; 
         }
 
         // Player heldobj reference handled in LateUpdate
@@ -437,6 +443,8 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             Debug.Log("Throwing block....");
             heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
+            //Is holding pickup box
+            playerMove.IsHoldingPickup = false;
         }
         heldObj = null;
         playerMove.CanJump = true;    //Added: lets the bottom player jump again
@@ -447,8 +455,6 @@ public class PlayerObjectInteraction : MonoBehaviour
     //If the top player jumps while being held it will break the joint and reset both the players.
     public void PlayerDrop()
     {
-        Debug.Log("PlayerDrop()\n----PID on Top: " + heldObj.GetComponent<PlayerMove>().PlayerID + " AND isBeingHeld? " + heldObj.GetComponent<PlayerMove>().IsBeingHeld);
-
         Destroy(joint);
         heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
         //heldObj.GetComponent<Rigidbody>().mass /= weightChange;

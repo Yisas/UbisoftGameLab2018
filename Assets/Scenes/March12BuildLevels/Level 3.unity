@@ -947,6 +947,31 @@ Prefab:
       propertyPath: mainCam
       value: 
       objectReference: {fileID: 65814139}
+    - target: {fileID: 114837072029160006, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+        type: 2}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 1059577779}
+    - target: {fileID: 114593528492921884, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+        type: 2}
+      propertyPath: Canvas_PresurePlate
+      value: 
+      objectReference: {fileID: 578691187}
+    - target: {fileID: 114593528492921884, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+        type: 2}
+      propertyPath: Canvas_Player_1
+      value: 
+      objectReference: {fileID: 1785670168}
+    - target: {fileID: 114593528492921884, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+        type: 2}
+      propertyPath: JumpImgP1
+      value: 
+      objectReference: {fileID: 1785670167}
+    - target: {fileID: 114593528492921884, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+        type: 2}
+      propertyPath: InteractImgP1
+      value: 
+      objectReference: {fileID: 1785670166}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0aa4439e0afe71d499ba9d1c92bfc387, type: 2}
   m_IsPrefabParent: 0
@@ -958,6 +983,23 @@ Transform:
 --- !u!4 &567163621 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4818952732057318, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+    type: 2}
+  m_PrefabInternal: {fileID: 567163619}
+--- !u!114 &567163622 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114075098569516542, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+    type: 2}
+  m_PrefabInternal: {fileID: 567163619}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+--- !u!114 &567163623 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114686870430250022, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
+    type: 2}
+  m_PrefabInternal: {fileID: 567163619}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+--- !u!223 &567163624 stripped
+Canvas:
+  m_PrefabParentObject: {fileID: 223275923734359866, guid: 0aa4439e0afe71d499ba9d1c92bfc387,
     type: 2}
   m_PrefabInternal: {fileID: 567163619}
 --- !u!1001 &578691186
@@ -1017,9 +1059,49 @@ Prefab:
       propertyPath: target
       value: 
       objectReference: {fileID: 1571348541}
+    - target: {fileID: 114991222248965052, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 811764975}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: Canvas_Player_1
+      value: 
+      objectReference: {fileID: 1785670168}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: Canvas_Player_2
+      value: 
+      objectReference: {fileID: 567163624}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: JumpImgP1
+      value: 
+      objectReference: {fileID: 1785670167}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: JumpImgP2
+      value: 
+      objectReference: {fileID: 567163623}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: InteractImgP1
+      value: 
+      objectReference: {fileID: 1785670166}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: InteractImgP2
+      value: 
+      objectReference: {fileID: 567163622}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5edb4f9cb41badc4abd1db5e4d8474d8, type: 2}
   m_IsPrefabParent: 0
+--- !u!223 &578691187 stripped
+Canvas:
+  m_PrefabParentObject: {fileID: 223137479529635214, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+    type: 2}
+  m_PrefabInternal: {fileID: 578691186}
 --- !u!1001 &595350959
 Prefab:
   m_ObjectHideFlags: 0
@@ -1219,23 +1301,6 @@ Transform:
   m_Father: {fileID: 1369287687}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &624786249 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1664857145387040, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
-    type: 2}
-  m_PrefabInternal: {fileID: 970058388}
---- !u!114 &624786250
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 624786249}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a33db85e3587b614ba90b338e55f1e0d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerToAppearTo: 2
 --- !u!4 &624786258 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4643200326295684, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
@@ -1866,6 +1931,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ac79453cdfd497e4fb70bd15a2766204, type: 2}
   m_IsPrefabParent: 0
+--- !u!20 &811764975 stripped
+Camera:
+  m_PrefabParentObject: {fileID: 2000000, guid: ac79453cdfd497e4fb70bd15a2766204,
+    type: 2}
+  m_PrefabInternal: {fileID: 811764974}
 --- !u!1001 &822778742
 Prefab:
   m_ObjectHideFlags: 0
@@ -1915,6 +1985,41 @@ Prefab:
       propertyPath: target
       value: 
       objectReference: {fileID: 1571348541}
+    - target: {fileID: 114991222248965052, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 811764975}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: Canvas_Player_1
+      value: 
+      objectReference: {fileID: 1785670168}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: Canvas_Player_2
+      value: 
+      objectReference: {fileID: 567163624}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: JumpImgP1
+      value: 
+      objectReference: {fileID: 1785670167}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: JumpImgP2
+      value: 
+      objectReference: {fileID: 567163623}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: InteractImgP1
+      value: 
+      objectReference: {fileID: 1785670166}
+    - target: {fileID: 114532361433401242, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
+        type: 2}
+      propertyPath: InteractImgP2
+      value: 
+      objectReference: {fileID: 567163622}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5edb4f9cb41badc4abd1db5e4d8474d8, type: 2}
   m_IsPrefabParent: 0
@@ -2196,6 +2301,41 @@ Prefab:
       propertyPath: MaxDistance
       value: 2353.462
       objectReference: {fileID: 0}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: Canvas_PresurePlate
+      value: 
+      objectReference: {fileID: 578691187}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: Canvas_Player_1
+      value: 
+      objectReference: {fileID: 1785670168}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: Canvas_Player_2
+      value: 
+      objectReference: {fileID: 567163624}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: JumpImgP1
+      value: 
+      objectReference: {fileID: 1785670167}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: JumpImgP2
+      value: 
+      objectReference: {fileID: 567163623}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: InteractImgP1
+      value: 
+      objectReference: {fileID: 1785670166}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
+      propertyPath: InteractImgP2
+      value: 
+      objectReference: {fileID: 567163622}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e, type: 2}
   m_IsPrefabParent: 0
@@ -2403,6 +2543,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ac79453cdfd497e4fb70bd15a2766204, type: 2}
   m_IsPrefabParent: 0
+--- !u!20 &1059577779 stripped
+Camera:
+  m_PrefabParentObject: {fileID: 2000000, guid: ac79453cdfd497e4fb70bd15a2766204,
+    type: 2}
+  m_PrefabInternal: {fileID: 1059577778}
 --- !u!1001 &1061885022
 Prefab:
   m_ObjectHideFlags: 0
@@ -3817,12 +3962,54 @@ Prefab:
       propertyPath: mainCam
       value: 
       objectReference: {fileID: 1859213868}
+    - target: {fileID: 114497503758094080, guid: 39ee84df788e90b4eb6778286bc71722,
+        type: 2}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 811764975}
+    - target: {fileID: 114907791520035942, guid: 39ee84df788e90b4eb6778286bc71722,
+        type: 2}
+      propertyPath: Canvas_PresurePlate
+      value: 
+      objectReference: {fileID: 578691187}
+    - target: {fileID: 114907791520035942, guid: 39ee84df788e90b4eb6778286bc71722,
+        type: 2}
+      propertyPath: Canvas_Player_2
+      value: 
+      objectReference: {fileID: 567163624}
+    - target: {fileID: 114907791520035942, guid: 39ee84df788e90b4eb6778286bc71722,
+        type: 2}
+      propertyPath: JumpImgP2
+      value: 
+      objectReference: {fileID: 567163623}
+    - target: {fileID: 114907791520035942, guid: 39ee84df788e90b4eb6778286bc71722,
+        type: 2}
+      propertyPath: InteractImgP2
+      value: 
+      objectReference: {fileID: 567163622}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 39ee84df788e90b4eb6778286bc71722, type: 2}
   m_IsPrefabParent: 0
 --- !u!4 &1785670165 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4253362203094236, guid: 39ee84df788e90b4eb6778286bc71722,
+    type: 2}
+  m_PrefabInternal: {fileID: 1785670164}
+--- !u!114 &1785670166 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114180345463373042, guid: 39ee84df788e90b4eb6778286bc71722,
+    type: 2}
+  m_PrefabInternal: {fileID: 1785670164}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+--- !u!114 &1785670167 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114208472664544306, guid: 39ee84df788e90b4eb6778286bc71722,
+    type: 2}
+  m_PrefabInternal: {fileID: 1785670164}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+--- !u!223 &1785670168 stripped
+Canvas:
+  m_PrefabParentObject: {fileID: 223161545756350940, guid: 39ee84df788e90b4eb6778286bc71722,
     type: 2}
   m_PrefabInternal: {fileID: 1785670164}
 --- !u!1001 &1830201712
