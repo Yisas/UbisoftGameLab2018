@@ -388,6 +388,7 @@ public void DropPickup()
 
         heldObjectRigidbody.interpolation = objectDefInterpolation;
         heldObjectRigidbody.useGravity = true;
+        heldObj.GetComponent<Collider>().isTrigger = false;
         Destroy(joint);
         playerMove.rotateSpeed = defRotateSpeed;
         playerMove.SetRestrictToBackCamera(false);
