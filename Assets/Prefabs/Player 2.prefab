@@ -69,7 +69,7 @@ GameObject:
   - component: {fileID: 222203669875102578}
   - component: {fileID: 114686870430250022}
   m_Layer: 9
-  m_Name: Jump Image
+  m_Name: Jump Image P2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 222187682806186306}
   - component: {fileID: 114075098569516542}
   m_Layer: 9
-  m_Name: Interact Image
+  m_Name: Interact Image P2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1347,8 +1347,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1899227055345258}
-  m_LocalRotation: {x: -0, y: 0.012523852, z: -0, w: -0.9999216}
-  m_LocalPosition: {x: -3.61, y: 0.60300004, z: -0.04}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
+  m_LocalPosition: {x: 35.43681, y: 0.767, z: 10.352798}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4906830259244268}
@@ -1362,7 +1362,7 @@ Transform:
   - {fileID: 4389737366342556}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -1.4350001, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
 --- !u!4 &4860446371735092
 Transform:
   m_ObjectHideFlags: 1
@@ -1969,7 +1969,7 @@ MonoBehaviour:
   jumpForceWhileCarried: {x: 0, y: 3.9, z: 5}
   jumpDelay: 0.1
   jumpLeniancy: 0.17
-  jumpPromptConter: 10
+  jumpPromptConter: 12
 --- !u!114 &114968005524081336
 MonoBehaviour:
   m_ObjectHideFlags: 1
