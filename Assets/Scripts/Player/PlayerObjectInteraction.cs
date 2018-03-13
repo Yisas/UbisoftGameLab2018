@@ -31,9 +31,10 @@ public class PlayerObjectInteraction : MonoBehaviour
     private bool addChangeMass;
     private bool subChangeMass;
     [Range(10f, 1000f)]
-    public float holdingBreakForce = 45, holdingBreakTorque = 45;//force and angularForce needed to break your grip on a "Pushable" object youre holding onto
+    public float holdingBreakForce = 45f, holdingBreakTorque = 45f;//force and angularForce needed to break your grip on a "Pushable" object youre holding onto
     public Animator animator;                                   //object with animation controller on, which you want to animate (usually same as in PlayerMove)
     public int armsAnimationLayer;                              //index of the animation layer for "arms"
+    public float boxHangThreshold;                              // The value the player's y velocity must be bound between before he drops the box which is keeping him attached to a ledge.
 
     [HideInInspector]
     public GameObject heldObj;
@@ -54,10 +55,13 @@ public class PlayerObjectInteraction : MonoBehaviour
     private AudioSource audioSource;
     private TriggerParent triggerParent;
     private RigidbodyInterpolation objectDefInterpolation;
+    private Rigidbody rb;
 
     //setup
     void Awake()
     {
+        rb = GetComponent<Rigidbody>();
+
         //create grabBox is none has been assigned
         if (!grabBox)
         {
@@ -164,6 +168,8 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             DropPickup();
         }
+
+        checkIfBoxIsHanging();
 
     }
 
@@ -376,6 +382,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         }
 
         heldObjectRigidbody.interpolation = objectDefInterpolation;
+        heldObjectRigidbody.useGravity = true;
         Destroy(joint);
         playerMove.rotateSpeed = defRotateSpeed;
         playerMove.SetRestrictToBackCamera(false);
@@ -414,8 +421,10 @@ public class PlayerObjectInteraction : MonoBehaviour
         }
         Destroy(joint);
         Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+        heldObjectRigidbody.useGravity = true;
         heldObjectRigidbody.interpolation = objectDefInterpolation;
         heldObjectRigidbody.mass /= weightChange;
+
         //Note Added:
         if (heldObj.tag == "Player")
         {
@@ -479,6 +488,15 @@ public class PlayerObjectInteraction : MonoBehaviour
     {
         Gizmos.color = gizmoColor;
         Gizmos.DrawSphere(holdPos, checkRadius);
+    }
+
+    // Checks if the box is hanging off a ledge and removes the joint if it is.
+    private void checkIfBoxIsHanging()
+    {
+        // If we've jumped and our velocity is 0 it means the box is keeping us afloat and we should drop it.
+        if((rb.velocity.y <boxHangThreshold && rb.velocity.y > -boxHangThreshold && !playerMove.Grounded)
+            && (heldObj != null && heldObj.CompareTag("Pickup")))
+                DropPickup();
     }
 }
 

@@ -380,4 +380,16 @@ public class PlayerMove : MonoBehaviour
             canJump = value;
         }
     }
+
+    public bool Grounded
+    {
+        get
+        {
+            return grounded;
+        }
+        set
+        {
+            grounded = value;
+        }
+    }
 }
