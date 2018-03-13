@@ -1301,23 +1301,6 @@ Transform:
   m_Father: {fileID: 1369287687}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &624786249 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1664857145387040, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
-    type: 2}
-  m_PrefabInternal: {fileID: 970058388}
---- !u!114 &624786250
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 624786249}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a33db85e3587b614ba90b338e55f1e0d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerToAppearTo: 2
 --- !u!4 &624786258 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4643200326295684, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
@@ -1932,7 +1915,7 @@ Prefab:
     - target: {fileID: 11400000, guid: ac79453cdfd497e4fb70bd15a2766204, type: 2}
       propertyPath: backCameraPosition
       value: 
-      objectReference: {fileID: 567163620}
+      objectReference: {fileID: 1578219342}
     - target: {fileID: 2000000, guid: ac79453cdfd497e4fb70bd15a2766204, type: 2}
       propertyPath: m_CullingMask.m_Bits
       value: 4294965503
@@ -3723,6 +3706,11 @@ GameObject:
   m_PrefabParentObject: {fileID: 1699426961597058, guid: e03e18ff5c943ab4c8b8a6d24d09b84b,
     type: 2}
   m_PrefabInternal: {fileID: 346821032}
+--- !u!4 &1578219342 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4666026748221386, guid: 39ee84df788e90b4eb6778286bc71722,
+    type: 2}
+  m_PrefabInternal: {fileID: 1785670164}
 --- !u!1 &1594819724
 GameObject:
   m_ObjectHideFlags: 0

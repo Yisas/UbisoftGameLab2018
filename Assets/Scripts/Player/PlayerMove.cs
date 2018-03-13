@@ -260,7 +260,7 @@ public class PlayerMove : MonoBehaviour
                     Jump(jumpForce);
                 else
                 {
-                    Debug.Log("[PlayerMove Class] Player ID: " + playerID + "\n -----JumpForceWhileCarried: "+ jumpForceWhileCarried + "(mag= " + jumpForceWhileCarried.magnitude + " )" 
+                    Debug.Log("[PlayerMove Class] Player ID: " + playerID + "\n -----JumpForceWhileCarried: " + jumpForceWhileCarried + "(mag= " + jumpForceWhileCarried.magnitude + " )"
                                 + " Mass of Player: " + GetComponent<Rigidbody>().mass);
                     Jump(jumpForceWhileCarried);
                 }
@@ -289,7 +289,7 @@ public class PlayerMove : MonoBehaviour
         airPressTime = 0f;
 
         //Jump Prompt Counter
-        if(jumpPromptConter > 0)
+        if (jumpPromptConter > 0)
             jumpPromptConter--;
 
         // Stop being held after jumping
@@ -386,7 +386,6 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    //Added:
     public bool IsHoldingPickup
     {
         get
@@ -408,6 +407,18 @@ public class PlayerMove : MonoBehaviour
         set
         {
             isGrabingPushable = value;
+        }
+    }
+
+    public bool Grounded
+    {
+        get
+        {
+            return grounded;
+        }
+        set
+        {
+            grounded = value;
         }
     }
 }
