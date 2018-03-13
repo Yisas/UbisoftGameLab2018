@@ -175,9 +175,11 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             if (boxCollideSound)
             {
-                if (other.GetComponent<AppearingObject>() && other.gameObject.layer != LayerMask.NameToLayer("Default"))
+                AppearingObject ao = other.GetComponent<AppearingObject>();
+
+                if (ao && other.gameObject.layer != LayerMask.NameToLayer("Default"))
                 {
-                    if (appearObjectSound)
+                    if (appearObjectSound && ao.playerToAppearTo == playerMove.PlayerID)
                     {
                         Instantiate(particlesObjectAppear, transform.position + transform.forward + transform.up, transform.rotation);
                         audioSource.volume = 1f;
