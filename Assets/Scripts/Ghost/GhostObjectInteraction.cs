@@ -91,16 +91,21 @@ public class GhostObjectInteraction : MonoBehaviour {
     {
         // Bring back original transparency of the object
         //heldObj.GetComponent<MeshRenderer>().material.color = originalHeldObjColor;
-
         // If the object is a pickup set the boolean that its currently being held
         ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
         if (resettableObject != null && resettableObject.CompareTag("Pickup"))
         {
             resettableObject.IsHeld = false;
-        }
 
-        if (heldObj.tag == "Pickup")
+            if(heldObj.tag == "Pickup")
+            {
+                //heldObj.transform.position = dropBox.transform.position;
+                resettableObject.Reset();
+            }
+        }
+        else
         {
+            Debug.LogWarning("Object " + heldObj.name + " dropped by ghost was missing ResettableObject script. Was that intentional?");
             heldObj.transform.position = dropBox.transform.position;
         }
 

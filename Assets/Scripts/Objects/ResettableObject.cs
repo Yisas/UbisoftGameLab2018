@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class ResettableObject : MonoBehaviour {
+public class ResettableObject : MonoBehaviour
+{
 
     private Vector3 ogPosition;
     private Quaternion ogRotation;
@@ -12,23 +13,31 @@ public class ResettableObject : MonoBehaviour {
     private bool isMoved;
     private bool isOnPressurePlate;
     private bool isHeld;
+    private bool usesGravity = true;
+    private bool isTrigger;
     // Distance from the original position for the object to be considered moved
     private const float distanceMovedThreshold = 5.0f;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         ogPosition = transform.position;
         ogRotation = transform.rotation;
-	}
+        usesGravity = GetComponent<Rigidbody>().useGravity;
+
+        Collider col = GetComponent<Collider>();
+        if (col)
+            isTrigger = GetComponent<Collider>().isTrigger;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Deadzone"))
         {
-            if(gameObject.CompareTag("Player"))
+            if (gameObject.CompareTag("Player"))
             {
                 PlayerObjectInteraction playerInteraction = gameObject.GetComponent<PlayerObjectInteraction>();
-                if(playerInteraction != null && playerInteraction.heldObj != null)
+                if (playerInteraction != null && playerInteraction.heldObj != null)
                     playerInteraction.DropPickup();
             }
             Reset();
@@ -38,6 +47,11 @@ public class ResettableObject : MonoBehaviour {
     public void Reset()
     {
         GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        GetComponent<Rigidbody>().useGravity = usesGravity;
+
+        Collider col = GetComponent<Collider>();
+        if (col)
+            col.isTrigger = isTrigger;
 
         transform.position = ogPosition;
         transform.rotation = ogRotation;

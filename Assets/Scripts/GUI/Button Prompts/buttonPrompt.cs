@@ -83,11 +83,11 @@ public class buttonPrompt : MonoBehaviour
             {
                 if (playerID == 1)
                 {
-                    Canvas_PresurePlate.gameObject.layer = 12;  //"Invisible Player 2 Layer"                    
+                    Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"                    
                 }
                 if (playerID == 2)
                 {
-                    Canvas_PresurePlate.gameObject.layer = 9;   //"Invisible Player 1 Layer"
+                    Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
                 }
                 Canvas_PresurePlate.enabled = true;
             }
