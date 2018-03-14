@@ -16,7 +16,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
 
     //Adding new:
     public Animation lockAnim;
-    public int lockNum;
+    public int LockID;
 
     public AudioSource onSound;
     public AudioSource offSound;
@@ -94,7 +94,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             }
 
             //Lock Opens
-            lockAnim.Play(string.Concat("lock", lockNum, "Open"));
+            lockAnim.Play(string.Concat("lock", LockID, "Open"));
             Open();
         }
 
@@ -118,7 +118,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             onSound.Play();
             
             //Lock Opens
-            lockAnim.Play(string.Concat("lock", lockNum, "Open"));
+            lockAnim.Play(string.Concat("lock", LockID, "Open"));
 
             SetOpen();
 
@@ -156,7 +156,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             isActive = false;
                         
             //Player leave the plate the lock closes          
-            lockAnim.Play(string.Concat("lock", lockNum, "Close"));
+            lockAnim.Play(string.Concat("lock", LockID, "Close"));
 
             SetClosed();
             offSound.Play();
