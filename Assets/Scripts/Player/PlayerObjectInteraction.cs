@@ -34,9 +34,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private bool addChangeMass;
     private bool subChangeMass;
     [Range(10f, 1000f)]
-    public float holdingBreakForce = 45, holdingBreakTorque = 45;//force and angularForce needed to break your grip on a "Pushable" object youre holding onto
+    public float holdingBreakForce = 45f, holdingBreakTorque = 45f;//force and angularForce needed to break your grip on a "Pushable" object youre holding onto
     public Animator animator;                                   //object with animation controller on, which you want to animate (usually same as in PlayerMove)
     public int armsAnimationLayer;                              //index of the animation layer for "arms"
+    public float boxHangThreshold;                              // The value the player's y velocity must be bound between before he drops the box which is keeping him attached to a ledge.
 
     [HideInInspector]
     public GameObject heldObj;
@@ -58,10 +59,13 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private AudioSource audioSource;
     private TriggerParent triggerParent;
     private RigidbodyInterpolation objectDefInterpolation;
+    private Rigidbody rb;
 
     //setup
     void Awake()
     {
+        rb = GetComponent<Rigidbody>();
+
         //create grabBox is none has been assigned
         if (!grabBox)
         {
@@ -93,13 +97,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
             if (addChangeMass)
             {
                 heldObj.GetComponent<Rigidbody>().mass *= weightChange;
-                Debug.Log("addChange LATEUPDATE");
                 addChangeMass = false;
             }
             if (subChangeMass)
             {
-                //heldObj.GetComponent<Rigidbody>().mass /= weightChange;                
-                Debug.Log("subChange LATEUPDATE");
+                //heldObj.GetComponent<Rigidbody>().mass /= weightChange;0
                 heldObj.GetComponent<Rigidbody>().mass = originalMass;
                 heldObj = null;
                 subChangeMass = false;
@@ -206,6 +208,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
         {
             DropPickup();
         }
+
+        checkIfBoxIsHanging();
     }
     #endregion
 
@@ -216,9 +220,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
         {
             if (boxCollideSound)
             {
-                if (other.GetComponent<AppearingObject>() && other.gameObject.layer != LayerMask.NameToLayer("Default"))
+                AppearingObject ao = other.GetComponent<AppearingObject>();
+
+                if (ao && other.gameObject.layer != LayerMask.NameToLayer("Default"))
                 {
-                    if (appearObjectSound)
+                    if (appearObjectSound && ao.playerToAppearTo == playerMove.PlayerID)
                     {
                         Instantiate(particlesObjectAppear, transform.position + transform.forward + transform.up, transform.rotation);
                         audioSource.volume = 1f;
@@ -263,7 +269,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if (Input.GetButton("Grab"))
         {
             // Save computational time by not attempting to interact with non-valid objects
-            if(other.tag != "Pickup" && other.tag != "Pushable" && other.tag != "Player")
+            if (other.tag != "Pickup" && other.tag != "Pushable" && other.tag != "Player")
                 return;
 
             // Give the object either host or client authority, depending on which player is picking it up
@@ -294,8 +300,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
             if (other.tag == "Player" && heldObj == null && timeOfThrow + 0.2f < Time.time)
             {
                 PickupPlayer(other);    //Created new function.
-                Debug.Log("OnTriggerStay()\n----PID: " + heldObj.GetComponent<PlayerMove>().PlayerID + " isBeingHeld = : " + heldObj.GetComponent<PlayerMove>().IsBeingHeld.ToString().ToUpper()
-                           + " [The player has been picked up]");
                 return;
             }
         }
@@ -319,6 +323,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
         objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
         heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
         AddJoint();
+        //Is grabbing pushable box?
+        playerMove.IsGrabingPushable = true;
         //set limits for when player will let go of object
         //joint.breakForce = holdingBreakForce;
         //joint.breakTorque = holdingBreakTorque;
@@ -420,6 +426,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
             AddJoint();
+            //NEW: Is holding pickup box
+            playerMove.IsHoldingPickup = true;
+
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
             heldObjectRigidbody.mass *= weightChange;
             //make sure we don't immediately throw object after picking it up
@@ -456,7 +465,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         // Remove prior ownership if necessary
         // TODO: consider removing authority (back to server) after letting go of heldObj
         if (netIdentityOfObj.clientAuthorityOwner != null)
-            if(netIdentityOfObj.clientAuthorityOwner != targetNetworkIdentity.connectionToClient)
+            if (netIdentityOfObj.clientAuthorityOwner != targetNetworkIdentity.connectionToClient)
             {
                 netIdentityOfObj.RemoveClientAuthority(otherPlayer.GetComponent<NetworkIdentity>().connectionToClient);
             }
@@ -487,12 +496,14 @@ public class PlayerObjectInteraction : NetworkBehaviour
             ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
             if (resettableObject != null)
                 resettableObject.IsHeld = false;
+
+            //Is holding pickup box?
+            playerMove.IsHoldingPickup = false;
         }
 
         //NOTE: Added the bottom player allow and drop the top player
         if (heldObj.tag == "Player")
         {
-            Debug.Log("DropPickup()\n---and will set isBeingHeld = False");
             heldObj.transform.position = dropBox.transform.position;
             heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
@@ -506,6 +517,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
 
         heldObjectRigidbody.interpolation = objectDefInterpolation;
+        heldObjectRigidbody.useGravity = true;
+        heldObj.GetComponent<Collider>().isTrigger = false;
         Destroy(joint);
         playerMove.rotateSpeed = defRotateSpeed;
         playerMove.SetRestrictToBackCamera(false);
@@ -517,6 +530,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 po.SetIsBeingPushed(false);
             else
                 Debug.LogError("Unasignsed PushableObject component");
+
+            //Is grabbing pushable box?
+            playerMove.IsGrabingPushable = false;
         }
 
         heldObj = null;
@@ -565,7 +581,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
         Destroy(joint);
         Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-        //Note Added:
+        heldObj.GetComponent<Collider>().isTrigger = false;
+        heldObjectRigidbody.useGravity = true;
+        heldObjectRigidbody.interpolation = objectDefInterpolation;
+        heldObjectRigidbody.mass /= weightChange;
+
         if (heldObj.tag == "Player")
         {
             //throwForcePlayer
@@ -574,7 +594,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             heldPlayerMove.UnlockMovementToOtherPlayer();
             heldPlayerMove.IsBeingHeld = false;
 
-            if(heldPlayerMove.isLocalPlayer)
+            if (heldPlayerMove.isLocalPlayer)
                 heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
@@ -590,6 +610,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
             heldObjectRigidbody.interpolation = objectDefInterpolation;
             heldObjectRigidbody.mass /= weightChange;
             heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
+            //Is holding pickup box
+            playerMove.IsHoldingPickup = false;
         }
         heldObj = null;
         playerMove.CanJump = true;    //Added: lets the bottom player jump again
@@ -625,8 +647,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (heldObj != null && heldObj.tag == "Player")
         {
-            Debug.Log("PlayerDrop()\n----PID on Top: " + heldObj.GetComponent<PlayerMove>().PlayerID + " AND isBeingHeld? " + heldObj.GetComponent<PlayerMove>().IsBeingHeld);
-
             Destroy(joint);
             heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
 
@@ -732,6 +752,15 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         Gizmos.color = gizmoColor;
         Gizmos.DrawSphere(holdPos, checkRadius);
+    }
+
+    // Checks if the box is hanging off a ledge and removes the joint if it is.
+    private void checkIfBoxIsHanging()
+    {
+        // If we've jumped and our velocity is 0 it means the box is keeping us afloat and we should drop it.
+        if ((rb.velocity.y < boxHangThreshold && rb.velocity.y > -boxHangThreshold && !playerMove.Grounded)
+            && (heldObj != null && heldObj.CompareTag("Pickup")))
+            DropPickup();
     }
 }
 

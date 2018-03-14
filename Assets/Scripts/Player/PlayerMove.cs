@@ -40,13 +40,15 @@ public class PlayerMove : NetworkBehaviour
     public Vector3 jumpForceWhileCarried; //= new Vector3(0, 2, 4);
     public float jumpDelay = 0.1f;                          //how fast you need to jump after hitting the ground, to do the next type of jump
     public float jumpLeniancy = 0.17f;                      //how early before hitting the ground you can press jump, and still have it work
+    public int jumpPromptConter = 10;
 
     // States
     private bool grounded;
-    //NOTE: adding:
     private bool canJump = true;
     private bool isBeingHeld = false;
     private bool isSyncingToTransform = false;
+    private bool isHoldingPickup = false;
+    private bool isGrabingPushable = false;
 
     // Movement data
     private float airPressTime, groundedCount, curAccel, curDecel, curRotateSpeed, slope;
@@ -319,7 +321,6 @@ public class PlayerMove : NetworkBehaviour
     {
         if (!canJump)  //Added.
         {
-            Debug.Log("should not be jumping");
             return;
         }
 
@@ -334,6 +335,10 @@ public class PlayerMove : NetworkBehaviour
         GetComponent<Rigidbody>().velocity = new Vector3(GetComponent<Rigidbody>().velocity.x, 0f, GetComponent<Rigidbody>().velocity.z);
         GetComponent<Rigidbody>().AddRelativeForce(jumpVelocity, ForceMode.Impulse);
         airPressTime = 0f;
+
+        //Jump Prompt Counter
+        if (jumpPromptConter > 0)
+            jumpPromptConter--;
 
         // Stop being held after jumping
         IsBeingHeld = false;
@@ -497,6 +502,42 @@ public class PlayerMove : NetworkBehaviour
         set
         {
             canJump = value;
+        }
+    }
+
+    public bool IsHoldingPickup
+    {
+        get
+        {
+            return isHoldingPickup;
+        }
+        set
+        {
+            isHoldingPickup = value;
+        }
+    }
+
+    public bool IsGrabingPushable
+    {
+        get
+        {
+            return isGrabingPushable;
+        }
+        set
+        {
+            isGrabingPushable = value;
+        }
+    }
+
+    public bool Grounded
+    {
+        get
+        {
+            return grounded;
+        }
+        set
+        {
+            grounded = value;
         }
     }
 }

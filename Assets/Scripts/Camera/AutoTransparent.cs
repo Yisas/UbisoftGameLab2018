@@ -8,11 +8,12 @@ public class AutoTransparent : MonoBehaviour
     private Color m_OldColor = Color.black;
     private float m_Transparency = 0.3f;
     private const float m_TargetTransparancy = 0.3f;
-    private const float m_FallOff = 0.1f; // returns to 100% in 0.1 sec
+
     private bool shouldBeTransparent = true;
     public float TargetTransparency { get; set; }
     public float FadeInTimeout = 0.6f;
     public float FadeOutTimeout = 0.2f;
+    public bool isStandard;
 
     public void BeTransparent()
     {
@@ -20,12 +21,22 @@ public class AutoTransparent : MonoBehaviour
         m_Transparency = m_TargetTransparancy;
         shouldBeTransparent = true;
 
+
         if (m_OldShader == null)
         {
             // Save the current shader
             m_OldShader = GetComponent<Renderer>().material.shader;
             m_OldColor = GetComponent<Renderer>().material.color;
-            GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+
+            if (GetComponent<Renderer>().material.shader.name.Contains("Standard"))
+            {
+                isStandard = true;
+                //GetComponent<Renderer>().material = new Material(GetComponent<Renderer>().material);
+            }
+            else
+            {
+                GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+            }
         }
     }
 
@@ -33,16 +44,25 @@ public class AutoTransparent : MonoBehaviour
     {
         if (m_Transparency < 1.0f)
         {
+            if (isStandard)
+            {
+                StandardShaderUtils.ChangeRenderMode(GetComponent<Renderer>().material, StandardShaderUtils.BlendMode.Fade);
+            }
             Color C = GetComponent<Renderer>().material.color;
             C.a = m_Transparency;
             GetComponent<Renderer>().material.color = C;
         }
         else
         {
+            if (isStandard)
+            {
+                StandardShaderUtils.ChangeRenderMode(GetComponent<Renderer>().material, StandardShaderUtils.BlendMode.Opaque);
+            }
             // Reset the shader
             GetComponent<Renderer>().material.shader = m_OldShader;
             GetComponent<Renderer>().material.color = m_OldColor;
             // And remove this script
+            
             Destroy(this);
         }
 
