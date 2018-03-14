@@ -21,8 +21,6 @@ public class PressurePlateNew : DoorAnimatorBehaviour
     public AudioSource onSound;
     public AudioSource offSound;
 
-    private Door DoorInfo;
-
     void Start()
     {
         myLight = GetComponent<Light>();
@@ -31,7 +29,6 @@ public class PressurePlateNew : DoorAnimatorBehaviour
         targetPositionDown = transform.position.y - 0.07f;
         targetPosition = targetPositionStart;
         isActive = false;
-        DoorInfo = GetComponent<Door>();
     }
 
     void Update()
@@ -48,17 +45,18 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             Vector3 position = transform.position;
             position.y += 0.005f;
             transform.position = position;
-        }
-    /*
-        //Debug.Log("TRIGGER EXIT--- isOpen: " + isOpen + " doorStaysOpen: " + doorStaysOpen + " isActive: " + isActive);
-        Debug.Log("DOOR INFO --: " + DoorInfo.GetComponent<Door>().lockStay);
+        }     
+        
+    }
+
+    void LateUpdate()
+    {
         //Disableing the lock animations once the main gate is open
-        //Note: its wierd a weird condition, seems like it is controdicting xD but it works
-        if (DoorInfo.GetComponent<Door>().lockStay)
+        //I dont know if it need to be in late update, but it seems to work here..
+        if (target.GetComponent<Door>().lockStay && !isActive)
         {
             lockAnim.enabled = false;
         }
-        */
 
     }
 
@@ -167,7 +165,6 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             foreach (Door d in doors)
                 d.IncCount();
         }
-        
 
 
         // If the object is a pickup set the boolean that its on a pressure plate
