@@ -185,8 +185,9 @@ public class Ghost : Movable
                 if(Vector3.Distance(transform.position, carriedObject.OriginalPosition) < itemDropDistance)
                 {
                     ghostObjectInteraction.DropPickup();
-                    carriedObject.GetComponent<Rigidbody>().useGravity = true;
-                    carriedObject.GetComponent<Collider>().isTrigger = false;
+                    // These are now handled by the reseter
+                    //carriedObject.GetComponent<Rigidbody>().useGravity = true;
+                    //carriedObject.GetComponent<Collider>().isTrigger = false;
                     carriedObject = null;
                     isCarryingObject = false;
                 }
