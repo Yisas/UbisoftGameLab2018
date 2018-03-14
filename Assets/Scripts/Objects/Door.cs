@@ -9,11 +9,13 @@ public class Door : DoorAnimatorBehaviour
     //public Text displayTest;
     public int pressurePlateCount;
     private int pressedCount;
+    public bool lockStay;
 
 
     private void Start()
     {
         pressedCount = pressurePlateCount;
+        lockStay = false;
     }
 
     public void DecCount()
@@ -29,6 +31,7 @@ public class Door : DoorAnimatorBehaviour
         if (pressedCount == 0)
         {
             SetOpen();
+            lockStay = true;
             //if(doorStaysOpen)
             //{
             //    displayTest.enabled = false;

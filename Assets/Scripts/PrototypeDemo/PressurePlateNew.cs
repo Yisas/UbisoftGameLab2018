@@ -21,6 +21,8 @@ public class PressurePlateNew : DoorAnimatorBehaviour
     public AudioSource onSound;
     public AudioSource offSound;
 
+    private Door DoorInfo;
+
     void Start()
     {
         myLight = GetComponent<Light>();
@@ -29,6 +31,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
         targetPositionDown = transform.position.y - 0.07f;
         targetPosition = targetPositionStart;
         isActive = false;
+        DoorInfo = GetComponent<Door>();
     }
 
     void Update()
@@ -46,6 +49,17 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             position.y += 0.005f;
             transform.position = position;
         }
+    /*
+        //Debug.Log("TRIGGER EXIT--- isOpen: " + isOpen + " doorStaysOpen: " + doorStaysOpen + " isActive: " + isActive);
+        Debug.Log("DOOR INFO --: " + DoorInfo.GetComponent<Door>().lockStay);
+        //Disableing the lock animations once the main gate is open
+        //Note: its wierd a weird condition, seems like it is controdicting xD but it works
+        if (DoorInfo.GetComponent<Door>().lockStay)
+        {
+            lockAnim.enabled = false;
+        }
+        */
+
     }
 
     // Pierre - Required to fix a bug with clones
@@ -127,6 +141,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+
         if (other.tag == "Player" || other.tag == "Pushable" || other.tag == "Pickup")
         {
             if(other.gameObject != objectOnMe)
@@ -141,7 +156,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             targetPosition = targetPositionStart;
             myLight.enabled = false;
             isActive = false;
-
+                        
             //Player leave the plate the lock closes          
             lockAnim.Play(string.Concat("lock", lockNum, "Close"));
 
@@ -153,12 +168,6 @@ public class PressurePlateNew : DoorAnimatorBehaviour
                 d.IncCount();
         }
         
-        //Disableing the lock animations once the main gate is open
-        //Note: its wierd a weird condition, seems like it is controdicting xD but it works
-        if (!isOpen && !doorStaysOpen)
-        {
-            lockAnim.enabled = false; 
-        }
 
 
         // If the object is a pickup set the boolean that its on a pressure plate
