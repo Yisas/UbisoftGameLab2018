@@ -266,7 +266,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         //stop player rotating in direction of movement, so they can face the block theyre pulling
         playerMove.rotateSpeed = 0;
 
-        playerMove.SetRestrictToBackCamera(true);
+        //playerMove.SetRestrictToBackCamera(true);
 
         PushableObject po = other.GetComponent<PushableObject>();
         if (po)
@@ -391,7 +391,7 @@ public void DropPickup()
         heldObj.GetComponent<Collider>().isTrigger = false;
         Destroy(joint);
         playerMove.rotateSpeed = defRotateSpeed;
-        playerMove.SetRestrictToBackCamera(false);
+        //playerMove.SetRestrictToBackCamera(false);
 
         if (heldObj.tag == "Pushable")
         {

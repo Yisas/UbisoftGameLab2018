@@ -113,25 +113,7 @@ public class PlayerMove : MonoBehaviour
             verticalInput = Input.GetAxisRaw("Vertical " + playerID);
         }
 
-        //two axis movement, one or the other
-        if (restrictMovementToTwoAxis)
-        {
-            if (Mathf.Abs(horizontalInput) > Mathf.Abs(verticalInput))
-            {
-                verticalInput = 0;
-            }
-            else
-            {
-                horizontalInput = 0;
-            }
-        }
         direction = (screenMovementForward * verticalInput) + (screenMovementRight * horizontalInput);
-
-        if (restrictMovementToOneAxis)
-        {
-            float magnitude = new Vector2(horizontalInput, verticalInput).magnitude;
-            direction = new Vector3(transform.forward.x * Mathf.Sign(direction.x) * Mathf.Sign(mainCam.forward.x), 0, transform.forward.z * Mathf.Sign(direction.z) * Mathf.Sign(mainCam.forward.z)) * (Mathf.Abs(magnitude));
-        }
 
         moveDirection = transform.position + direction;
 
