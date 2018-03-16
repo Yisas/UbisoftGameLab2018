@@ -178,6 +178,11 @@ Animation:
   m_PrefabParentObject: {fileID: 111833876182812458, guid: 2ce2c08a10c0d4cf59aa3eaa07f3544a,
     type: 2}
   m_PrefabInternal: {fileID: 65694845}
+--- !u!1 &65694848 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1144827369144128, guid: 2ce2c08a10c0d4cf59aa3eaa07f3544a,
+    type: 2}
+  m_PrefabInternal: {fileID: 65694845}
 --- !u!4 &65814139 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: ac79453cdfd497e4fb70bd15a2766204, type: 2}
@@ -1206,7 +1211,7 @@ Prefab:
         type: 2}
       propertyPath: target
       value: 
-      objectReference: {fileID: 1571348541}
+      objectReference: {fileID: 65694848}
     - target: {fileID: 114991222248965052, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
         type: 2}
       propertyPath: playerCamera
@@ -2142,7 +2147,7 @@ Prefab:
         type: 2}
       propertyPath: target
       value: 
-      objectReference: {fileID: 1571348541}
+      objectReference: {fileID: 65694848}
     - target: {fileID: 114991222248965052, guid: 5edb4f9cb41badc4abd1db5e4d8474d8,
         type: 2}
       propertyPath: playerCamera
