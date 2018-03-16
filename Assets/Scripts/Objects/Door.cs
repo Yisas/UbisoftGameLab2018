@@ -6,14 +6,16 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class Door : DoorAnimatorBehaviour
 {
-    public Text displayTest;
+    //public Text displayTest;
     public int pressurePlateCount;
     private int pressedCount;
+    public bool lockStay;
 
 
     private void Start()
     {
         pressedCount = pressurePlateCount;
+        lockStay = false;
     }
 
     public void DecCount()
@@ -23,20 +25,21 @@ public class Door : DoorAnimatorBehaviour
         if (pressedCount < 0)
             pressedCount = 0;
 
-        displayTest.text = pressedCount.ToString();
+        //displayTest.text = pressedCount.ToString();
         //play the locks moving animation 
 
         if (pressedCount == 0)
         {
             SetOpen();
-            if(doorStaysOpen)
-            {
-                displayTest.enabled = false;
-            }
-            else
-            {
-                displayTest.text = "";
-            }
+            lockStay = true;
+            //if(doorStaysOpen)
+            //{
+            //    displayTest.enabled = false;
+            //}
+            //else
+            //{
+            //    displayTest.text = "";
+            //}
         }
     }
 
@@ -47,7 +50,7 @@ public class Door : DoorAnimatorBehaviour
 
         pressedCount += 1;
 
-        displayTest.text = pressedCount.ToString();
+        //displayTest.text = pressedCount.ToString();
 
         if (pressedCount >=  pressurePlateCount)
         {

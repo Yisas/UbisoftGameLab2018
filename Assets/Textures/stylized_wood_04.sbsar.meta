@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: 833d67f571473584c8f0e33b01530213
-timeCreated: 1521161144
+guid: d167fa0b47fd547f18c450b224453675
+timeCreated: 1521169440
 licenseType: Free
 SubstanceImporter:
   externalObjects: {}
   serializedVersion: 5
   materialInstances:
   - serializedVersion: 16
-    name: pebbles lvl3-1
-    prototypeName: Cartoon_Pebbles
+    name: stylizedWood_4
+    prototypeName: stylizedWood_01
     shaderName: 
     shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-    shaderKeywords: _EMISSION _METALLICGLOSSMAP _NORMALMAP _PARALLAXMAP
+    shaderKeywords: _NORMALMAP _PARALLAXMAP
     renderQueue: -1
-    lightmapFlags: 1
+    lightmapFlags: 4
     inputs:
     - name: $outputsize
       value:
@@ -31,23 +31,7 @@ SubstanceImporter:
         scalar[3]: 0
         texture: {instanceID: 0}
         stringvalue: 
-    - name: Stone_Size
-      value:
-        scalar[0]: 0.917
-        scalar[1]: 0
-        scalar[2]: 0
-        scalar[3]: 0
-        texture: {instanceID: 0}
-        stringvalue: 
-    - name: Emboss_Intensity
-      value:
-        scalar[0]: -2.6
-        scalar[1]: 0
-        scalar[2]: 0
-        scalar[3]: 0
-        texture: {instanceID: 0}
-        stringvalue: 
-    - name: Light_Angle
+    - name: Toggle_Roughness
       value:
         scalar[0]: 1
         scalar[1]: 0
@@ -55,39 +39,7 @@ SubstanceImporter:
         scalar[3]: 0
         texture: {instanceID: 0}
         stringvalue: 
-    - name: Shape_Warp_1
-      value:
-        scalar[0]: 6
-        scalar[1]: 0
-        scalar[2]: 0
-        scalar[3]: 0
-        texture: {instanceID: 0}
-        stringvalue: 
-    - name: Shape_Warp_2
-      value:
-        scalar[0]: 6.21
-        scalar[1]: 0
-        scalar[2]: 0
-        scalar[3]: 0
-        texture: {instanceID: 0}
-        stringvalue: 
-    - name: Stone_Emboss_Highlight_Color
-      value:
-        scalar[0]: 0.820066
-        scalar[1]: 0.871092
-        scalar[2]: 0.929412
-        scalar[3]: 1
-        texture: {instanceID: 0}
-        stringvalue: 
-    - name: Stone_Emboss_Shadow_Color
-      value:
-        scalar[0]: 0.811765
-        scalar[1]: 0.690196
-        scalar[2]: 0.592157
-        scalar[3]: 1
-        texture: {instanceID: 0}
-        stringvalue: 
-    - name: Hue_Shift
+    - name: Toggle_Knots
       value:
         scalar[0]: 1
         scalar[1]: 0
@@ -95,15 +47,47 @@ SubstanceImporter:
         scalar[3]: 0
         texture: {instanceID: 0}
         stringvalue: 
-    - name: Saturation
+    - name: Knots_Offset
       value:
-        scalar[0]: 0.314
+        scalar[0]: -0.0265939
+        scalar[1]: 0.669972
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+        stringvalue: 
+    - name: Knots_Shape_Scale
+      value:
+        scalar[0]: 1
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
         texture: {instanceID: 0}
         stringvalue: 
-    - name: luminosity
+    - name: Tiling_X_Amount
+      value:
+        scalar[0]: 0.6
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+        stringvalue: 
+    - name: Tiling_Y_Amount
+      value:
+        scalar[0]: 7.8
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+        stringvalue: 
+    - name: Size_Random_X
+      value:
+        scalar[0]: 0.2
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+        stringvalue: 
+    - name: Size_Random_Y
       value:
         scalar[0]: 0.5
         scalar[1]: 0
@@ -111,33 +95,25 @@ SubstanceImporter:
         scalar[3]: 0
         texture: {instanceID: 0}
         stringvalue: 
-    - name: Contrast
+    - name: Hue
       value:
-        scalar[0]: 0.29
+        scalar[0]: 0.5
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
         texture: {instanceID: 0}
         stringvalue: 
-    - name: Depth
+    - name: Saturation
       value:
-        scalar[0]: 1
+        scalar[0]: 0.6
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
         texture: {instanceID: 0}
         stringvalue: 
-    - name: Relief
+    - name: Lightness
       value:
-        scalar[0]: 12.2
-        scalar[1]: 0
-        scalar[2]: 0
-        scalar[3]: 0
-        texture: {instanceID: 0}
-        stringvalue: 
-    - name: Normal_Intensity
-      value:
-        scalar[0]: 0.448
+        scalar[0]: 0.51
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -146,16 +122,16 @@ SubstanceImporter:
     materialInformation:
       serializedVersion: 5
       offset: {x: 0, y: 0}
-      scale: {x: 4, y: 14}
+      scale: {x: 1, y: 1}
       generateMipmaps: 1
       generateAllOutputs: 0
-      animationUpdateRate: 42
+      animationUpdateRate: 0
     materialProperties:
       serializedVersion: 3
       texEnvs:
       - _BumpMap:
           texture: {instanceID: 0}
-          scale: {x: 4, y: 14}
+          scale: {x: 1, y: 1}
           offset: {x: 0, y: 0}
       - _DetailAlbedoMap:
           texture: {instanceID: 0}
@@ -175,11 +151,11 @@ SubstanceImporter:
           offset: {x: 0, y: 0}
       - _MainTex:
           texture: {instanceID: 0}
-          scale: {x: 4, y: 14}
+          scale: {x: 1, y: 1}
           offset: {x: 0, y: 0}
       - _MetallicGlossMap:
           texture: {instanceID: 0}
-          scale: {x: 4, y: 14}
+          scale: {x: 1, y: 1}
           offset: {x: 0, y: 0}
       - _OcclusionMap:
           texture: {instanceID: 0}
@@ -187,20 +163,20 @@ SubstanceImporter:
           offset: {x: 0, y: 0}
       - _ParallaxMap:
           texture: {instanceID: 0}
-          scale: {x: 4, y: 14}
+          scale: {x: 1, y: 1}
           offset: {x: 0, y: 0}
       floats:
       - _BumpScale: 1
       - _Cutoff: 0.5
       - _DetailNormalMapScale: 1
       - _DstBlend: 0
-      - _GlossMapScale: 0
+      - _GlossMapScale: 1
       - _Glossiness: 0.5
       - _GlossyReflections: 1
       - _Metallic: 0
       - _Mode: 0
       - _OcclusionStrength: 1
-      - _Parallax: 0.08
+      - _Parallax: 0.02
       - _SmoothnessTextureChannel: 0
       - _SpecularHighlights: 1
       - _SrcBlend: 1
@@ -210,22 +186,17 @@ SubstanceImporter:
       - _Color: {r: 1, g: 1, b: 1, a: 1}
       - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     textureParameters:
-    - name: pebbles lvl3-1_baseColor
+    - name: stylizedWood_4_basecolor
       alphaSource: 6
       filterMode: 1
       aniso: 1
       wrapMode: 0
-    - name: pebbles lvl3-1_normal
+    - name: stylizedWood_4_normal
       alphaSource: 0
       filterMode: 1
       aniso: 1
       wrapMode: 0
-    - name: pebbles lvl3-1_metallic
-      alphaSource: 7
-      filterMode: 1
-      aniso: 1
-      wrapMode: 0
-    - name: pebbles lvl3-1_height
+    - name: stylizedWood_4_height
       alphaSource: 0
       filterMode: 1
       aniso: 1
@@ -233,16 +204,13 @@ SubstanceImporter:
     textureAssignments:
     - shaderProp: _MainTex
       material: {instanceID: 0}
-      baseUID: 1483058680
+      baseUID: 674922353
     - shaderProp: _BumpMap
       material: {instanceID: 0}
-      baseUID: 1483058682
-    - shaderProp: _MetallicGlossMap
-      material: {instanceID: 0}
-      baseUID: 1483058686
+      baseUID: 674922355
     - shaderProp: _ParallaxMap
       material: {instanceID: 0}
-      baseUID: 1508538780
+      baseUID: 698956929
     buildTargetSettings:
     - serializedVersion: 2
       buildTarget: 
