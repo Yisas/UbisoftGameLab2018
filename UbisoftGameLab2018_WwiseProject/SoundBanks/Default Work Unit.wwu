@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{829760F3-D9BC-4FAB-A0D6-909343DF0B44}" SchemaVersion="85">
 	<SoundBanks>
-		<WorkUnit Name="Default Work Unit" ID="{829760F3-D9BC-4FAB-A0D6-909343DF0B44}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{829760F3-D9BC-4FAB-A0D6-909343DF0B44}" PersistMode="Standalone">
+			<ChildrenList>
+				<SoundBank Name="MainSoundBank" ID="{DF1A7EB0-1BDF-4CEA-A3FD-B7C0A110DBE6}">
+					<ObjectInclusionList>
+						<ObjectRef Name="Events" ID="{A69BF0FC-D84A-487C-ABDD-56F71CB2A126}" WorkUnitID="{A69BF0FC-D84A-487C-ABDD-56F71CB2A126}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Actor-Mixer Hierarchy" ID="{5EA7BBF8-64C0-4A50-8821-A07E8BE21D68}" WorkUnitID="{5EA7BBF8-64C0-4A50-8821-A07E8BE21D68}" Filter="7" Origin="Manual"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+			</ChildrenList>
+		</WorkUnit>
 	</SoundBanks>
 </WwiseDocument>

@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{DF800232-9191-4E76-93F8-17DF18D201CD}" SchemaVersion="85">
 	<Events>
-		<WorkUnit Name="Default Work Unit" ID="{DF800232-9191-4E76-93F8-17DF18D201CD}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{DF800232-9191-4E76-93F8-17DF18D201CD}" PersistMode="Standalone">
+			<ChildrenList>
+				<Folder Name="PressurePlate" ID="{0CD3C9C2-09B3-4069-A7A2-62B39D6A63BA}" ShortID="340541235">
+					<ChildrenList>
+						<Event Name="PlateOn" ID="{D8627E1A-14C2-4DD2-8714-F08EF8769F75}">
+							<ChildrenList>
+								<Action Name="" ID="{09FB723C-DC6D-44D1-A491-C8016222B05E}" ShortID="827248650">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Plate_On" ID="{B3B96B60-2D33-4F13-BDE1-18B7C75C058A}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="PlateOff" ID="{E63A7DEA-FB3E-4C7E-991A-440AFA198FD8}">
+							<ChildrenList>
+								<Action Name="" ID="{71ECC454-E2E0-4534-B5AB-A1A639CC6D83}" ShortID="87639554">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Plate_Off" ID="{2D7E1C77-3156-4DEC-90FB-4930624BBADB}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+			</ChildrenList>
+		</WorkUnit>
 	</Events>
 </WwiseDocument>
