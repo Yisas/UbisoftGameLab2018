@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 using UnityEngine;
 
-public class buttonPrompt : MonoBehaviour
-{
+public class ButtonPromptsNetworked : NetworkBehaviour {
     [SerializeField]
     Canvas Canvas_Junk;
     [SerializeField]
@@ -80,7 +80,7 @@ public class buttonPrompt : MonoBehaviour
             }
 
         }
-        else if(buttonprompt == ButtonPromptOn.junk)
+        else if (buttonprompt == ButtonPromptOn.junk)
         {
             if (playerID == 1)
             {
@@ -99,7 +99,7 @@ public class buttonPrompt : MonoBehaviour
             {
                 if (playerID == 1)
                 {
-                    if(player.jumpPromptConter > 0)
+                    if (player.jumpPromptConter > 0)
                     {
                         JumpImgP1.enabled = true;
                         InteractImgP1.enabled = false;
@@ -113,7 +113,7 @@ public class buttonPrompt : MonoBehaviour
 
                 if (playerID == 2)
                 {
-                    if(player.jumpPromptConter > 0)
+                    if (player.jumpPromptConter > 0)
                     {
                         JumpImgP2.enabled = true;
                         InteractImgP2.enabled = false;
@@ -206,5 +206,4 @@ public class buttonPrompt : MonoBehaviour
                 Canvas_Player_2.enabled = false;
         }
     }
-
 }
