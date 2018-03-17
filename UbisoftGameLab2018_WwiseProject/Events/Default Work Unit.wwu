@@ -155,6 +155,24 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="Ghost" ID="{8F9FF3EB-7C4F-498C-BB82-1A741FCBFA00}" ShortID="1053460253">
+					<ChildrenList>
+						<Event Name="GhostLaugh" ID="{E69E8769-400A-478D-B4A8-92D245746A19}">
+							<ChildrenList>
+								<Action Name="" ID="{BDB85C89-EFE8-4629-9BE2-4900CCE7298D}" ShortID="719106812">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Ghost_Laugh" ID="{3782F0B2-C700-4BC4-BF32-066FB5FE09CD}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

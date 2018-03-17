@@ -573,6 +573,25 @@
 								<ActiveSource Name="DRAG_Wooden_Box_short" ID="{621C9110-3A31-49A0-8B29-C02DC4C5818D}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
+						<Sound Name="Ghost_Laugh" ID="{3782F0B2-C700-4BC4-BF32-066FB5FE09CD}" ShortID="371490579">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABF4A5A-E662-4958-9FBD-7915C0775311}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{C99EB93C-61DD-47C3-9A05-2495A81CEF10}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Ghost_Laugh" ID="{B38386A1-B3B1-4070-B814-EC1CD22D54C2}" ShortID="897322776">
+									<Language>SFX</Language>
+									<AudioFile>Ghost_Laugh.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Ghost_Laugh" ID="{B38386A1-B3B1-4070-B814-EC1CD22D54C2}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>
