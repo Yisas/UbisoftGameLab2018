@@ -33,6 +33,7 @@ public class PlayerMove : MonoBehaviour
     public float maxSpeed = 9;                              //maximum speed of movement in X/Z axis
     public float slopeLimit = 40, slideAmount = 35;         //maximum angle of slopes you can walk on, how fast to slide down slopes you can't
     public float movingPlatformFriction = 7.7f;             //you'll need to tweak this to get the player to stay on moving platforms properly
+    public float maxVerticalVel = 12;
 
     //jumping
     public Vector3 jumpForce = new Vector3(0, 13, 0);       //normal jump force
@@ -94,6 +95,7 @@ public class PlayerMove : MonoBehaviour
     //get state of player, values and input
     void Update()
     {
+        Debug.Log(GetComponent<Rigidbody>().velocity);
         //handle jumping
         JumpCalculations();
         //adjust movement values if we're in the air or on the ground
@@ -119,6 +121,11 @@ public class PlayerMove : MonoBehaviour
 
         moveDirection = transform.position + direction;
 
+        if(GetComponent<Rigidbody>().velocity.y > maxVerticalVel) //Preventing superman jump
+        {
+            Vector3 currVel = GetComponent<Rigidbody>().velocity;
+            GetComponent<Rigidbody>().velocity = new Vector3(currVel.x, maxVerticalVel, currVel.y);
+        }
     }
 
     //apply correct player movement (fixedUpdate for physics calculations)
