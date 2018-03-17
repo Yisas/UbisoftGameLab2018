@@ -406,7 +406,7 @@ GameObject:
   - component: {fileID: 738753714}
   - component: {fileID: 738753716}
   - component: {fileID: 738753715}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PickupPromptTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -439,7 +439,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7649da01531f883439f5efd284b2ba3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Canvas_Junk: {fileID: 0}
+  Canvas_Junk: {fileID: 903674866}
   Canvas_PresurePlate: {fileID: 449312175}
   Canvas_Player_1: {fileID: 629544478}
   Canvas_Player_2: {fileID: 376064627}
@@ -1520,6 +1520,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
         type: 2}
+      propertyPath: Canvas_Junk
+      value: 
+      objectReference: {fileID: 903674866}
+    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
+        type: 2}
       propertyPath: Canvas_PresurePlate
       value: 
       objectReference: {fileID: 449312175}
@@ -1553,11 +1558,6 @@ Prefab:
       propertyPath: InteractImgP2
       value: 
       objectReference: {fileID: 535384656}
-    - target: {fileID: 114838902879898496, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
-        type: 2}
-      propertyPath: Canvas_Junk
-      value: 
-      objectReference: {fileID: 903674866}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e, type: 2}
   m_IsPrefabParent: 0
@@ -1661,9 +1661,6 @@ MonoBehaviour:
   Canvas_Junk: {fileID: 0}
   Canvas_PresurePlate: {fileID: 0}
   Canvas_Player_1: {fileID: 0}
-  Canvas_Player_2: {fileID: 0}
   buttonprompt: 0
   JumpImgP1: {fileID: 0}
   InteractImgP1: {fileID: 0}
-  JumpImgP2: {fileID: 0}
-  InteractImgP2: {fileID: 0}
