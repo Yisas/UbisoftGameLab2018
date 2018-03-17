@@ -8,8 +8,6 @@ public class PushableObject : MonoBehaviour
     [Header("Space delta in world space that has to happen to play scraping sound")]
     public float dragNoisePlayThreshold;
 
-    public AudioSource audioSource;
-
     private float originalMass;
     private bool isBeingPushed = false;
     private Vector3 lastPosition;
@@ -28,12 +26,7 @@ public class PushableObject : MonoBehaviour
         {
             if (Mathf.Abs((transform.position - lastPosition).magnitude) >= dragNoisePlayThreshold)
             {
-                if (!audioSource.isPlaying)
-                    audioSource.Play();
-            }
-            else
-            {
-                audioSource.Stop();
+                AkSoundEngine.PostEvent("DragWoodenBox", gameObject);
             }
 
             lastPosition = transform.position;
@@ -58,7 +51,6 @@ public class PushableObject : MonoBehaviour
         {
             //rb.constraints = RigidbodyConstraints.FreezeAll;
             rb.mass = 100;
-            audioSource.Stop();
         }
         else
         {

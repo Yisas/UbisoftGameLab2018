@@ -14,9 +14,6 @@ public class PressurePlateNew : DoorAnimatorBehaviour
 
     private GameObject objectOnMe = null;
 
-    public AudioSource onSound;
-    public AudioSource offSound;
-
     void Start()
     {
         myLight = GetComponent<Light>();
@@ -56,7 +53,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             myLight.enabled = false;
             isActive = false;
 
-            offSound.Play();
+            AkSoundEngine.PostEvent("PlateOff", gameObject);
 
             SetClosed();
         }
@@ -97,7 +94,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             myLight.enabled = true;
             isActive = true;
 
-            onSound.Play();
+            AkSoundEngine.PostEvent("PlateOn", gameObject);
 
             SetOpen();
 
@@ -134,7 +131,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             isActive = false;
 
             SetClosed();
-            offSound.Play();
+            AkSoundEngine.PostEvent("PlateOff", gameObject);
 
             Door[] doors = target.GetComponentsInChildren<Door>();
             foreach (Door d in doors)

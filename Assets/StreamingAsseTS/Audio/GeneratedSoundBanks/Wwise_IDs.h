@@ -15,6 +15,7 @@ namespace AK
     {
         static const AkUniqueID APPEAROBJECT = 1354167763U;
         static const AkUniqueID BOXCOLLIDE = 1021320922U;
+        static const AkUniqueID DRAGWOODENBOX = 332159036U;
         static const AkUniqueID FOOTSTEPS = 2385628198U;
         static const AkUniqueID JUMP = 3833651337U;
         static const AkUniqueID PICKUP = 3978245845U;

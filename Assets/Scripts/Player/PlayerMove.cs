@@ -18,6 +18,10 @@ public class PlayerMove : MonoBehaviour
     public Transform mainCam, floorChecks;      //main camera, and floorChecks object. FloorChecks are raycasted down from to check the player is grounded.
     public Animator animator;                   //object with animation controller on, which you want to animate
 
+    //audio
+    // If its too big then the landing sound plays multiple times, too short and it doesn't play at all
+    public float landingSoundLength;
+
     //movement
     public float accel = 70f;                   //acceleration/deceleration in air or on the ground
     public float airAccel = 18f;
@@ -43,10 +47,6 @@ public class PlayerMove : MonoBehaviour
     private bool isBeingHeld = false;
     private bool isHoldingPickup = false;
     private bool isGrabingPushable = false;
-
-    // Audio States
-    private bool landSoundPlaying;
-    private bool footstepSoundPlaying;
 
     // Movement data
     private float airPressTime, groundedCount, curAccel, curDecel, curRotateSpeed, slope;
@@ -144,13 +144,10 @@ public class PlayerMove : MonoBehaviour
         }
 
         // Adding footsteps audio GGJ2018:
-        if (!footstepSoundPlaying && grounded && GetComponent<Rigidbody>().velocity.magnitude > 0)
+        if (grounded && GetComponent<Rigidbody>().velocity.magnitude > 0)
         {
             AkSoundEngine.PostEvent("Footsteps", gameObject);
-            footstepSoundPlaying = true;
         }
-        else
-            footstepSoundPlaying = false;
 
     }
 
@@ -222,13 +219,10 @@ public class PlayerMove : MonoBehaviour
         groundedCount = (grounded) ? groundedCount += Time.deltaTime : 0f;
 
         //play landing sound
-        if (!landSoundPlaying && groundedCount < 0.25 && groundedCount != 0 && GetComponent<Rigidbody>().velocity.y < 1)
+        if (groundedCount < landingSoundLength && groundedCount != 0 && GetComponent<Rigidbody>().velocity.y < 1)
         {
-            landSoundPlaying = true;
             AkSoundEngine.PostEvent("PlayerLand", gameObject);
         }
-        else
-            landSoundPlaying = false;
         
         //if we press jump in the air, save the time
         if (Input.GetButtonDown("Jump " + playerID) && !grounded)

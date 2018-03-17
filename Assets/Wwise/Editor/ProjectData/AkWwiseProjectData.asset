@@ -21,8 +21,8 @@ MonoBehaviour:
   autoPopulateEnabled: 1
   AuxBusWwu:
   - Guid: '{C99EB93C-61DD-47C3-9A05-2495A81CEF10}'
-    m_lastTimePart2: -1999270954
-    m_lastTimePsrt1: 831033376
+    m_lastTimePart2: -1999270946
+    m_lastTimePsrt1: -1053337979
     ParentPhysicalPath: 
     PhysicalPath: Master-Mixer Hierarchy\Default Work Unit.wwu
     List: []
@@ -48,8 +48,8 @@ MonoBehaviour:
   defaultPoolSize: 4096
   EventWwu:
   - Guid: '{DF800232-9191-4E76-93F8-17DF18D201CD}'
-    m_lastTimePart2: -1999270956
-    m_lastTimePsrt1: -134826758
+    m_lastTimePart2: -1999270948
+    m_lastTimePsrt1: 11533768
     ParentPhysicalPath: 
     PhysicalPath: Events\Default Work Unit.wwu
     List:
@@ -77,6 +77,20 @@ MonoBehaviour:
       - ElementName: Object
         ObjectType: 4
       - ElementName: BoxCollide
+        ObjectType: 3
+      maxAttenuation: 0
+      maxDuration: 0
+      minDuration: 0
+    - Guid: 2dce3ec2358c4c478d45b260867c7076
+      ID: 332159036
+      Name: DragWoodenBox
+      Path: Default Work Unit\Object\DragWoodenBox
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Object
+        ObjectType: 4
+      - ElementName: DragWoodenBox
         ObjectType: 3
       maxAttenuation: 0
       maxDuration: 0
@@ -165,20 +179,6 @@ MonoBehaviour:
       maxAttenuation: 0
       maxDuration: 0
       minDuration: 0
-    - Guid: 667292162553684892cab9ce5c6bbbdc
-      ID: 177027278
-      Name: StopFootsteps
-      Path: Default Work Unit\Player\StopFootsteps
-      PathAndIcons:
-      - ElementName: Default Work Unit
-        ObjectType: 12
-      - ElementName: Player
-        ObjectType: 4
-      - ElementName: StopFootsteps
-        ObjectType: 3
-      maxAttenuation: 0
-      maxDuration: 0
-      minDuration: 0
     - Guid: 51012bb36aa7ab4c93824d93e9df2e02
       ID: 745179803
       Name: Throw
@@ -195,6 +195,10 @@ MonoBehaviour:
       minDuration: 0
   ExpandedItems:
   - /UbisoftGameLab2018_WwiseProject
+  - /UbisoftGameLab2018_WwiseProject/Events
+  - /UbisoftGameLab2018_WwiseProject/Events/Default Work Unit
+  - /UbisoftGameLab2018_WwiseProject/Events/Default Work Unit/Player
+  - /UbisoftGameLab2018_WwiseProject/Events/Default Work Unit/PressurePlate
   language: English(US)
   lowerPoolSize: 2048
   m_lastPopulateTimePart2: 0
