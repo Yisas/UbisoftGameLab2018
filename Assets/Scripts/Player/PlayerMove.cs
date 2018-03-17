@@ -104,12 +104,12 @@ public class PlayerMove : NetworkBehaviour
             if (isServer) //if it's server set id's to 1
             {
                 mainCam.GetComponent<CameraFollow>().playerID = 1;
-                GManager.Instance.setInvisibleToVisibleWorld(GManager.invisiblePlayer1Layer); //the layers can 
+                GManager.Instance.setInvisibleToVisibleWorld(GManager.invisiblePlayer1Layer, GManager.SeeTP2NonCollidable);
             }
             else
             {
                 mainCam.GetComponent<CameraFollow>().playerID = 2;
-                GManager.Instance.setInvisibleToVisibleWorld(GManager.invisiblePlayer2Layer);
+                GManager.Instance.setInvisibleToVisibleWorld(GManager.invisiblePlayer2Layer, GManager.SeeTP1NonCollidable);
             }
         }
     }

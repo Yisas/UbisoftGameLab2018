@@ -16,6 +16,9 @@ public class GManager : MonoBehaviour
     public static int invisiblePlayer1Layer = 9;
     public static int invisiblePlayer2Layer = 12;
 
+    public static int SeeTP1NonCollidable = 20;
+    public static int SeeTP2NonCollidable = 21;
+
     private void Awake()
     {
         Instance = this;
@@ -57,7 +60,7 @@ public class GManager : MonoBehaviour
         }
     }
 
-    public void setInvisibleToVisibleWorld(int layer)
+    public void setInvisibleToVisibleWorld(int layer, int layerNoSecretToPlayer)
     {
         //Call this in a method in camera thing where filtering
         GameObject[] gos = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[]; //will return an array of all GameObjects in the scene
@@ -68,6 +71,10 @@ public class GManager : MonoBehaviour
                 go.AddComponent<InvisibleToVisible>();
                 go.GetComponent<InvisibleToVisible>().delayToFadeInTime = currentLevelFixedTime;
                 go.GetComponent<InvisibleToVisible>().FadeInTimeout = timeToMakeEverythingVisible;
+            }
+            else if (go.layer == layerNoSecretToPlayer)
+            {
+                go.GetComponent<Renderer>().enabled = false;
             }
         }
     }
