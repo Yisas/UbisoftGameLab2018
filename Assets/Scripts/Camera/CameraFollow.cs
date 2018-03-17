@@ -103,8 +103,9 @@ public class CameraFollow : MonoBehaviour
     {
         AutoTransparent AT = alphaObject.GetComponent<AutoTransparent>();
         InvisibleToVisible ITV = alphaObject.GetComponent<InvisibleToVisible>();
+        VisibleToInvisible VTI = alphaObject.GetComponent<VisibleToInvisible>();
 
-        if (ITV != null)
+        if (ITV != null || VTI != null)
         {
             return;
         }
