@@ -56,6 +56,8 @@ public class PlayerObjectInteraction : MonoBehaviour
     private TriggerParent triggerParent;
     private RigidbodyInterpolation objectDefInterpolation;
     private Rigidbody rb;
+    public float powCooldown = 0.75f;
+    private float currentPowCooldown = 0;
 
     //setup
     void Awake()
@@ -167,10 +169,18 @@ public class PlayerObjectInteraction : MonoBehaviour
 
         checkIfBoxIsHanging();
 
+        currentPowCooldown += Time.deltaTime;
     }
 
     void OnTriggerEnter(Collider other)
     {
+        if (currentPowCooldown > powCooldown && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
+            && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
+        {
+            Instantiate(particlesBoxCollide, transform.position + transform.forward*0.5f + transform.up, transform.rotation);
+            currentPowCooldown = 0;
+        }
+
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
         {
             if (boxCollideSound)
@@ -189,7 +199,6 @@ public class PlayerObjectInteraction : MonoBehaviour
                 }
                 else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
                 {
-                    Instantiate(particlesBoxCollide, transform.position + transform.forward + transform.up, transform.rotation);
                     audioSource.volume = 0.5f;
                     audioSource.clip = boxCollideSound;
                     audioSource.Play();
