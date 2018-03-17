@@ -284,9 +284,12 @@ public class PlayerObjectInteraction : MonoBehaviour
 
     private void GrabPushable(Collider other)
     {
-        heldObj = other.gameObject;
         Vector3 touchedPoint = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
+        if (touchedPoint.y > transform.position.y) return;
+
         playerMove.transform.LookAt(touchedPoint);
+
+        heldObj = other.gameObject;
         objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
         heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
         AddJoint();
@@ -393,11 +396,12 @@ public void DropPickup()
 
         if (heldObj.tag == "Pickup")
         {
+            heldObj.layer = 0; //Default layer
+
             heldObj.transform.position = dropBox.transform.position;
             heldObjectRigidbody.mass /= weightChange;
 
             heldObj.GetComponent<FixedJoint>().connectedBody = null;
-            heldObj.layer = 0; //Default layer
 
             // If the object is a pickup set the boolean that its currently being held                
             ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
@@ -427,6 +431,8 @@ public void DropPickup()
 
         if (heldObj.tag == "Pushable")
         {
+            heldObj.layer = 0; //Default layer
+
             PushableObject po = heldObj.GetComponent<PushableObject>();
             if (po)
                 po.SetIsBeingPushed(false);
