@@ -24,6 +24,21 @@ namespace AK
         static const AkUniqueID THROW = 745179803U;
     } // namespace EVENTS
 
+    namespace STATES
+    {
+        namespace PLAYERSTATEGROUP
+        {
+            static const AkUniqueID GROUP = 3567352606U;
+
+            namespace STATE
+            {
+                static const AkUniqueID IDLE = 1874288895U;
+                static const AkUniqueID MOVING = 2649703675U;
+            } // namespace STATE
+        } // namespace PLAYERSTATEGROUP
+
+    } // namespace STATES
+
     namespace BANKS
     {
         static const AkUniqueID INIT = 1355168291U;

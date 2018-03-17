@@ -17,8 +17,6 @@ public class PlayerMove : MonoBehaviour
     //setup
     public Transform mainCam, floorChecks;      //main camera, and floorChecks object. FloorChecks are raycasted down from to check the player is grounded.
     public Animator animator;                   //object with animation controller on, which you want to animate
-    public AudioClip landSound;                 //play when landing on ground
-    public AudioClip runSound;                  //play when running
 
     //movement
     public float accel = 70f;                   //acceleration/deceleration in air or on the ground
@@ -45,6 +43,10 @@ public class PlayerMove : MonoBehaviour
     private bool isBeingHeld = false;
     private bool isHoldingPickup = false;
     private bool isGrabingPushable = false;
+
+    // Audio States
+    private bool landSoundPlaying;
+    private bool footstepSoundPlaying;
 
     // Movement data
     private float airPressTime, groundedCount, curAccel, curDecel, curRotateSpeed, slope;
@@ -142,13 +144,13 @@ public class PlayerMove : MonoBehaviour
         }
 
         // Adding footsteps audio GGJ2018:
-        if (grounded && runSound && !GetComponent<AudioSource>().isPlaying && GetComponent<Rigidbody>().velocity.magnitude > 0)
+        if (!footstepSoundPlaying && grounded && GetComponent<Rigidbody>().velocity.magnitude > 0)
         {
-            // TODO: add clip volume change as attribute, not hardcoded
-            GetComponent<AudioSource>().volume = 1;
-            GetComponent<AudioSource>().clip = runSound;
-            GetComponent<AudioSource>().Play();
+            AkSoundEngine.PostEvent("Footsteps", gameObject);
+            footstepSoundPlaying = true;
         }
+        else
+            footstepSoundPlaying = false;
 
     }
 
@@ -220,12 +222,14 @@ public class PlayerMove : MonoBehaviour
         groundedCount = (grounded) ? groundedCount += Time.deltaTime : 0f;
 
         //play landing sound
-        if (groundedCount < 0.25 && groundedCount != 0 && !GetComponent<AudioSource>().isPlaying && landSound && GetComponent<Rigidbody>().velocity.y < 1)
+        if (!landSoundPlaying && groundedCount < 0.25 && groundedCount != 0 && GetComponent<Rigidbody>().velocity.y < 1)
         {
-            GetComponent<AudioSource>().volume = Mathf.Abs(GetComponent<Rigidbody>().velocity.y) / 40;
-            GetComponent<AudioSource>().clip = landSound;
-            GetComponent<AudioSource>().Play();
+            landSoundPlaying = true;
+            AkSoundEngine.PostEvent("PlayerLand", gameObject);
         }
+        else
+            landSoundPlaying = false;
+        
         //if we press jump in the air, save the time
         if (Input.GetButtonDown("Jump " + playerID) && !grounded)
             airPressTime = Time.time;

@@ -27,6 +27,20 @@
 									</ActiveSourceList>
 								</Sound>
 								<Sound Name="FOOTSTEP_Player_Run" ID="{D6C74405-22B6-4C68-90D2-337B6019665B}" ShortID="720006065">
+									<PropertyList>
+										<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
+										<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+										<Property Name="MaxSoundPerInstance" Type="int16">
+											<ValueList>
+												<Value>1</Value>
+											</ValueList>
+										</Property>
+										<Property Name="UseMaxSoundPerInstance" Type="bool">
+											<ValueList>
+												<Value>True</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABF4A5A-E662-4958-9FBD-7915C0775311}"/>
@@ -37,10 +51,30 @@
 									</ReferenceList>
 									<ChildrenList>
 										<AudioFileSource Name="FOOTSTEP_Player_Run" ID="{E3B554B8-9E59-4074-8395-85A7604F8D1C}" ShortID="1063492534">
+											<PropertyList>
+												<Property Name="FadeInDuration" Type="Real64" Value="4.05794460641395E-03"/>
+											</PropertyList>
 											<Language>SFX</Language>
 											<AudioFile>Player\footsteps\FOOTSTEP_Player_Run.wav</AudioFile>
 										</AudioFileSource>
 									</ChildrenList>
+									<StateInfo>
+										<StateGroupList>
+											<StateGroupInfo>
+												<StateGroupRef Name="PlayerStateGroup" ID="{6A5F31CF-D27A-4819-A53D-9837A4FC530C}"/>
+											</StateGroupInfo>
+										</StateGroupList>
+										<CustomStateList>
+											<CustomState>
+												<StateRef Name="Moving" ID="{C9ADA7B2-33D0-4770-ACA2-F31C136A01CC}"/>
+												<State Name="" ID="{51E4E9F7-0143-4CEF-915D-6268654B2AB6}" ShortID="550345160"/>
+											</CustomState>
+											<CustomState>
+												<StateRef Name="Idle" ID="{9383132D-B2F1-4991-AEB3-E9D270ADB96B}"/>
+												<State Name="" ID="{83230F0B-FF23-4DC2-B9F1-94678D4E2425}" ShortID="1017180787"/>
+											</CustomState>
+										</CustomStateList>
+									</StateInfo>
 									<ActiveSourceList>
 										<ActiveSource Name="FOOTSTEP_Player_Run" ID="{E3B554B8-9E59-4074-8395-85A7604F8D1C}" Platform="Linked"/>
 									</ActiveSourceList>
@@ -436,6 +470,20 @@
 							</ActiveSourceList>
 						</Sound>
 						<Sound Name="Player Land" ID="{06355480-3391-469F-89BB-2F86BFA9F961}" ShortID="995651741">
+							<PropertyList>
+								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
+								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABF4A5A-E662-4958-9FBD-7915C0775311}"/>
