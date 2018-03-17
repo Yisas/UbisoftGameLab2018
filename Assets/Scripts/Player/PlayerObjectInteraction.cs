@@ -181,7 +181,7 @@ public class PlayerObjectInteraction : MonoBehaviour
 
             if (vibrationTime <= 0)
             {
-                XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.Two : XInputDotNetPure.PlayerIndex.One, 0f, 0f);
+                XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, 0f, 0f);
             }
         }
     }
@@ -193,7 +193,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             Instantiate(particlesBoxCollide, transform.position + transform.forward * 0.5f + transform.up, transform.rotation);
             currentPowCooldown = 0;
-            XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.Two : XInputDotNetPure.PlayerIndex.One, vibrationIntensity, vibrationIntensity);
+            XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
             vibrationTime = vibrationDuration; 
         }
 
