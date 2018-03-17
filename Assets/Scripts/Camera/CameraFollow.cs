@@ -18,24 +18,20 @@ public class CameraFollow : MonoBehaviour
     public float yAxisBottomTilt = 2;                           //how close to the ground the camera can go, this distance is regarding player position
     public float closeUpMultiplier = 0.4f;                      //how fast or strongth are the close-ups
     public float verticalOffsetMultiplier = 10f;                //modifier so that the camera is not too low
-    public float bounceAmountOnCollision = 0.4f;
-    public float collisionDetectionOffset = 0.3f;
     private Transform followTarget;
     private Vector3 defTargetOffset;
-    private bool camColliding;
 
-    private Transform lastCollided;
     private float startingTargetY;
     public string[] layersToSeeThrough;
     private int layerMaskSeeThrough;
-    public string[] layersToCollide;
-    private int layerMaskCollidable;
+
     private bool isZoomingIn;
     private bool isZoomingOut;
     private Vector3 residualVectorY;
     public bool reboundBack;
     public Vector3 zoomingOutTarget = new Vector3(0, -1, 0);
     public Vector3 zoomingInTarget = new Vector3(0, 1, 0);
+    public float verticalSensitivity = 0.95f;
 
     public float zoomInMultiplier = 0.99f;
     public float zoomOutMultiplier = 1.1f;
@@ -50,9 +46,6 @@ public class CameraFollow : MonoBehaviour
 
         foreach (string layer in layersToSeeThrough)
             layerMaskSeeThrough |= 1 << LayerMask.NameToLayer(layer);
-
-        foreach (string layer in layersToCollide)
-            layerMaskCollidable |= 1 << LayerMask.NameToLayer(layer);
 
         defyAxisPeakTilt = yAxisPeakTilt;
 
@@ -110,8 +103,9 @@ public class CameraFollow : MonoBehaviour
     {
         AutoTransparent AT = alphaObject.GetComponent<AutoTransparent>();
         InvisibleToVisible ITV = alphaObject.GetComponent<InvisibleToVisible>();
+        VisibleToInvisible VTI = alphaObject.GetComponent<VisibleToInvisible>();
 
-        if (ITV != null)
+        if (ITV != null || VTI != null)
         {
             return;
         }
@@ -132,23 +126,6 @@ public class CameraFollow : MonoBehaviour
             SmoothLookAt();
             SmoothFollow();
         }
-    }
-
-    //is camera clipping walls?
-    void OnTriggerEnter(Collider other)
-    {
-        if (!other.isTrigger)
-        {
-            camColliding = true;
-            lastCollided = other.transform;
-        }
-    }
-
-    //is camera clipping walls?
-    void OnTriggerExit(Collider other)
-    {
-        if (!other.isTrigger)
-            camColliding = false;
     }
 
     //rotate smoothly toward the target
@@ -182,21 +159,7 @@ public class CameraFollow : MonoBehaviour
     //move camera when it clips walls
     void AdjustCamera()
     {
-        //move cam in/out
-        if (camColliding == true)
-        {
-            //If it's colliding against something and the character is not static get camera closer
-            if (targetOffset.magnitude > minDistance)
-            {
-                //Fixing most occurences of bouncing, don't do a harsh close-up unless the character is moving
-                //Also treat differently collision against floor than against all other type of collision
-                if (target.GetComponent<Rigidbody>().velocity.magnitude > Vector3.zero.magnitude)
-                {
-                    targetOffset *= zoomInMultiplier;
-                }
-            }
-        }
-        else if ((!isZoomingIn && reboundBack) || isZoomingOut)
+        if ((!isZoomingIn && reboundBack) || isZoomingOut)
         {
             targetOffset *= zoomOutMultiplier;
             yAxisPeakTilt *= zoomOutMultiplier;
@@ -227,7 +190,7 @@ public class CameraFollow : MonoBehaviour
         float axis = Input.GetAxis("CamHorizontal " + playerID) * inputRotationSpeed * Time.deltaTime;
         followTarget.RotateAround(target.position, Vector3.up, axis);
 
-        float axis2 = Input.GetAxis("CamVertical " + playerID) * inputRotationSpeed * Time.deltaTime;
+        float axis2 = (Input.GetAxis("CamVertical " + playerID) * inputRotationSpeed * Time.deltaTime)*verticalSensitivity;
 
         //If it haven't reached the peak
         if (transform.position.y < target.position.y + yAxisPeakTilt)
@@ -269,18 +232,5 @@ public class CameraFollow : MonoBehaviour
         Vector3 nextFramePosition = Vector3.Lerp(transform.position, followTarget.position, followSpeed * Time.deltaTime);
         //transform.position = futurePosition;
         transform.position = nextFramePosition;
-
-        Vector3 direction = nextFramePosition - target.position;
-        //raycast to this position
-        RaycastHit hit;
-        if (Physics.Raycast(target.position, direction, out hit, direction.magnitude + collisionDetectionOffset, layerMaskCollidable))
-        {
-            transform.position = hit.point - direction.normalized * bounceAmountOnCollision;
-        }
-        else
-        {
-            //otherwise, move cam to intended position
-            transform.position = nextFramePosition;
-        }
     }
 }

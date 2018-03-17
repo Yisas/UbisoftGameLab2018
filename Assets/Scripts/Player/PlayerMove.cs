@@ -21,6 +21,7 @@ public class PlayerMove : MonoBehaviour
     public AudioClip jumpSound;                 //play when jumping
     public AudioClip landSound;                 //play when landing on ground
     public AudioClip runSound;                  //play when running
+    public Transform lastFeetTouched;           //what the floorchecks last touched
 
     //movement
     public float accel = 70f;                   //acceleration/deceleration in air or on the ground
@@ -32,6 +33,7 @@ public class PlayerMove : MonoBehaviour
     public float maxSpeed = 9;                              //maximum speed of movement in X/Z axis
     public float slopeLimit = 40, slideAmount = 35;         //maximum angle of slopes you can walk on, how fast to slide down slopes you can't
     public float movingPlatformFriction = 7.7f;             //you'll need to tweak this to get the player to stay on moving platforms properly
+    public float maxVerticalVel = 12;
 
     //jumping
     public Vector3 jumpForce = new Vector3(0, 13, 0);       //normal jump force
@@ -43,6 +45,7 @@ public class PlayerMove : MonoBehaviour
 
     // States
     private bool grounded;
+    private bool fullyGrounded;
     private bool canJump = true;
     private bool isBeingHeld = false;
     private bool isHoldingPickup = false;
@@ -113,28 +116,15 @@ public class PlayerMove : MonoBehaviour
             verticalInput = Input.GetAxisRaw("Vertical " + playerID);
         }
 
-        //two axis movement, one or the other
-        if (restrictMovementToTwoAxis)
-        {
-            if (Mathf.Abs(horizontalInput) > Mathf.Abs(verticalInput))
-            {
-                verticalInput = 0;
-            }
-            else
-            {
-                horizontalInput = 0;
-            }
-        }
         direction = (screenMovementForward * verticalInput) + (screenMovementRight * horizontalInput);
-
-        if (restrictMovementToOneAxis)
-        {
-            float magnitude = new Vector2(horizontalInput, verticalInput).magnitude;
-            direction = new Vector3(transform.forward.x * Mathf.Sign(direction.x) * Mathf.Sign(mainCam.forward.x), 0, transform.forward.z * Mathf.Sign(direction.z) * Mathf.Sign(mainCam.forward.z)) * (Mathf.Abs(magnitude));
-        }
 
         moveDirection = transform.position + direction;
 
+        if(GetComponent<Rigidbody>().velocity.y > maxVerticalVel) //Preventing superman jump
+        {
+            Vector3 currVel = GetComponent<Rigidbody>().velocity;
+            GetComponent<Rigidbody>().velocity = new Vector3(currVel.x, maxVerticalVel, currVel.y);
+        }
     }
 
     //apply correct player movement (fixedUpdate for physics calculations)
@@ -142,6 +132,7 @@ public class PlayerMove : MonoBehaviour
     {
         //are we grounded
         grounded = IsGrounded();
+        fullyGrounded = IsFullyGrounded();
 
         //move, rotate, manage speed
         characterMotor.MoveTo(moveDirection, curAccel, 0.7f, true);
@@ -186,6 +177,54 @@ public class PlayerMove : MonoBehaviour
             GetComponent<Rigidbody>().velocity = Vector3.zero;
         }
     }
+
+    private bool IsFullyGrounded()
+    {
+        //get distance to ground, from centre of collider (where floorcheckers should be)
+        float dist = GetComponent<Collider>().bounds.extents.y;
+        //check whats at players feet, at each floorcheckers position
+        int groundedCount = 0;
+
+        foreach (Transform check in floorCheckers)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(check.position, Vector3.down, out hit, dist + 0.05f))
+            {
+                if (!hit.transform.GetComponent<Collider>().isTrigger)
+                {
+                    //slope control
+                    slope = Vector3.Angle(hit.normal, Vector3.up);
+                    //slide down slopes
+                    if (slope > slopeLimit && hit.transform.tag != "Pushable")
+                    {
+                        Vector3 slide = new Vector3(0f, -slideAmount, 0f);
+                        GetComponent<Rigidbody>().AddForce(slide, ForceMode.Force);
+                    }
+
+                    //moving platforms
+                    // TODO: double check this implementation
+                    if (hit.transform.tag == "MovingPlatform" || hit.transform.tag == "Pushable")
+                    {
+                        movingObjSpeed = hit.transform.GetComponent<Rigidbody>().velocity;
+                        movingObjSpeed.y = 0f;
+                        //9.5f is a magic number, if youre not moving properly on platforms, experiment with this number
+                        GetComponent<Rigidbody>().AddForce(movingObjSpeed * movingPlatformFriction * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                    }
+                    else
+                    {
+                        movingObjSpeed = Vector3.zero;
+                    }
+                    //yes our feet are on something
+                    groundedCount++;
+                    lastFeetTouched = hit.transform;
+                    continue;
+                }
+            }
+        }
+
+        return groundedCount == floorCheckers.Length;
+    }
+
 
     //returns whether we are on the ground or not
     //also: bouncing on enemies, keeping player on moving platforms and slope checking
@@ -406,6 +445,7 @@ public class PlayerMove : MonoBehaviour
         }
         set
         {
+            canJump = !value;
             isGrabingPushable = value;
         }
     }
@@ -419,6 +459,18 @@ public class PlayerMove : MonoBehaviour
         set
         {
             grounded = value;
+        }
+    }
+
+    public bool FullyGrounded
+    {
+        get
+        {
+            return fullyGrounded;
+        }
+        set
+        {
+            fullyGrounded = value;
         }
     }
 }

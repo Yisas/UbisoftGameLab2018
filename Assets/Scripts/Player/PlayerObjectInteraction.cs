@@ -23,7 +23,7 @@ public class PlayerObjectInteraction : MonoBehaviour
     public Vector3 throwForce = new Vector3(0, 5, 7);           //the throw force of the player on the ojects
     public Vector3 throwForcePlayer = new Vector3(0, 10, 20);   //Added: the throw force of the player on the player
     [Tooltip("Amount of time it takes before the player can use the 'throw' button again")]
-    public float throwCooldownTime = 0.1f;
+    private float throwCooldownTime = 0.0f;                     //No cooldown for throw
     public float rotateToBlockSpeed = 3;                        //how fast to face the "Pushable" object you're holding/pulling
     public float checkRadius = 0.5f;                            //how big a radius to check above the players head, to see if anything is in the way of your pickup
     [Range(0.1f, 1f)]                                           //new weight of a carried object, 1 means no change, 0.1 means 10% of its original weight													
@@ -56,6 +56,8 @@ public class PlayerObjectInteraction : MonoBehaviour
     private TriggerParent triggerParent;
     private RigidbodyInterpolation objectDefInterpolation;
     private Rigidbody rb;
+    public float powCooldown = 0.75f;
+    private float currentPowCooldown = 0;
 
     //setup
     void Awake()
@@ -167,10 +169,20 @@ public class PlayerObjectInteraction : MonoBehaviour
 
         checkIfBoxIsHanging();
 
+        if (currentPowCooldown < powCooldown)
+            currentPowCooldown += Time.deltaTime;
     }
 
     void OnTriggerEnter(Collider other)
     {
+        if (currentPowCooldown > powCooldown && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
+            && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
+        {
+            Instantiate(particlesBoxCollide, transform.position + transform.forward*0.5f + transform.up, transform.rotation);
+            currentPowCooldown = 0;
+            //GamePad.SetVibration(0, 1f, 1f);
+        }
+
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
         {
             if (boxCollideSound)
@@ -189,7 +201,6 @@ public class PlayerObjectInteraction : MonoBehaviour
                 }
                 else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
                 {
-                    Instantiate(particlesBoxCollide, transform.position + transform.forward + transform.up, transform.rotation);
                     audioSource.volume = 0.5f;
                     audioSource.clip = boxCollideSound;
                     audioSource.Play();
@@ -230,7 +241,14 @@ public class PlayerObjectInteraction : MonoBehaviour
             //grab
             if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null && timeOfThrow + 0.2f < Time.time)
             {
-                GrabPushable(other);
+                if (playerMove.FullyGrounded && playerMove.lastFeetTouched != other.transform)
+                {
+                    Vector3 heading = other.transform.position - playerMove.transform.position;
+                    float dot = Vector3.Dot(heading, playerMove.transform.forward);
+
+                    if(dot > 0)
+                        GrabPushable(other);
+                }
                 return;
             }
             //NOTE: Added to pickup the player:
@@ -266,7 +284,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         //stop player rotating in direction of movement, so they can face the block theyre pulling
         playerMove.rotateSpeed = 0;
 
-        playerMove.SetRestrictToBackCamera(true);
+        //playerMove.SetRestrictToBackCamera(true);
 
         PushableObject po = other.GetComponent<PushableObject>();
         if (po)
@@ -391,7 +409,7 @@ public void DropPickup()
         heldObj.GetComponent<Collider>().isTrigger = false;
         Destroy(joint);
         playerMove.rotateSpeed = defRotateSpeed;
-        playerMove.SetRestrictToBackCamera(false);
+        //playerMove.SetRestrictToBackCamera(false);
 
         if (heldObj.tag == "Pushable")
         {
