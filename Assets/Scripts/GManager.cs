@@ -5,6 +5,7 @@ using UnityEngine;
 public class GManager : MonoBehaviour
 {
     public bool resetPlayers = false;
+    public static string pickupLayer = "Pickup";
 
     // Use this for initialization
     void Start()

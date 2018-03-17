@@ -83,7 +83,8 @@ public class CameraFollow : MonoBehaviour
             
             if (R != null)
             {
-                setAutoTransparentOnObject(R.gameObject);
+                if (R.tag != GManager.pickupLayer)
+                    setAutoTransparentOnObject(R.gameObject);
             }
 
             Renderer[] Rchilds = hit.collider.GetComponentsInChildren<Renderer>();
@@ -91,7 +92,12 @@ public class CameraFollow : MonoBehaviour
             if (Rchilds != null)
             {
                 foreach (Renderer child in Rchilds)
-                    setAutoTransparentOnObject(child.gameObject);
+                {
+                    if (child.tag != GManager.pickupLayer)
+                    {
+                        setAutoTransparentOnObject(child.gameObject);
+                    }
+                }
             }
             else continue; // no renderer attached? go to next hit
                            // TODO: maybe implement here a check for GOs that should not be affected like the player
@@ -103,8 +109,9 @@ public class CameraFollow : MonoBehaviour
     {
         AutoTransparent AT = alphaObject.GetComponent<AutoTransparent>();
         InvisibleToVisible ITV = alphaObject.GetComponent<InvisibleToVisible>();
+        VisibleToInvisible VTI = alphaObject.GetComponent<VisibleToInvisible>();
 
-        if (ITV != null)
+        if (ITV != null || VTI != null)
         {
             return;
         }
