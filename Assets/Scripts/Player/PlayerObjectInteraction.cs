@@ -169,7 +169,8 @@ public class PlayerObjectInteraction : MonoBehaviour
 
         checkIfBoxIsHanging();
 
-        currentPowCooldown += Time.deltaTime;
+        if (currentPowCooldown < powCooldown)
+            currentPowCooldown += Time.deltaTime;
     }
 
     void OnTriggerEnter(Collider other)
@@ -179,6 +180,7 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             Instantiate(particlesBoxCollide, transform.position + transform.forward*0.5f + transform.up, transform.rotation);
             currentPowCooldown = 0;
+            //GamePad.SetVibration(0, 1f, 1f);
         }
 
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
