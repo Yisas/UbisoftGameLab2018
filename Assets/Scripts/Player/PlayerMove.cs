@@ -33,7 +33,7 @@ public class PlayerMove : MonoBehaviour
     public float maxSpeed = 9;                              //maximum speed of movement in X/Z axis
     public float slopeLimit = 40, slideAmount = 35;         //maximum angle of slopes you can walk on, how fast to slide down slopes you can't
     public float movingPlatformFriction = 7.7f;             //you'll need to tweak this to get the player to stay on moving platforms properly
-    public float maxVerticalVel = 12;
+    private float maxVerticalVel = 15;
 
     //jumping
     public Vector3 jumpForce = new Vector3(0, 13, 0);       //normal jump force
