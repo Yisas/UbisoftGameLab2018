@@ -101,9 +101,15 @@ public class PlayerMove : NetworkBehaviour
             mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
             mainCam.GetComponent<CameraFollow>().StartFollowingPlayer(this, backCameraPosition);
 
-            if (!isServer) //if it's not server we set the player ID to 2
+            if (isServer) //if it's server set id's to 1
+            {
+                mainCam.GetComponent<CameraFollow>().playerID = 1;
+                GManager.Instance.setInvisibleToVisibleWorld(GManager.invisiblePlayer1Layer); //the layers can 
+            }
+            else
             {
                 mainCam.GetComponent<CameraFollow>().playerID = 2;
+                GManager.Instance.setInvisibleToVisibleWorld(GManager.invisiblePlayer2Layer);
             }
         }
     }
