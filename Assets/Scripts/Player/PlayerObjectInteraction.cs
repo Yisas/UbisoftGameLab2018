@@ -230,7 +230,8 @@ public class PlayerObjectInteraction : MonoBehaviour
             //grab
             if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null && timeOfThrow + 0.2f < Time.time)
             {
-                GrabPushable(other);
+                if(playerMove.CanJump)
+                    GrabPushable(other);
                 return;
             }
             //NOTE: Added to pickup the player:

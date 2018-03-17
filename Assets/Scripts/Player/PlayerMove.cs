@@ -388,6 +388,7 @@ public class PlayerMove : MonoBehaviour
         }
         set
         {
+            canJump = !value;
             isGrabingPushable = value;
         }
     }
