@@ -116,12 +116,11 @@ MonoBehaviour:
   yAxisBottomTilt: 2
   closeUpMultiplier: 0.4
   verticalOffsetMultiplier: 10
-  bounceAmountOnCollision: 0.4
-  collisionDetectionOffset: 0.3
   layersToSeeThrough:
   - SeeThrough
   - Default
-  layersToCollide: []
+  - SeeTP1NonCollidable
+  - SeeTP2NonCollidable
   reboundBack: 0
   zoomingOutTarget: {x: 0, y: -1, z: 0}
   zoomingInTarget: {x: 0, y: 1, z: 0}

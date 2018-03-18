@@ -23,7 +23,8 @@ public class PlayerObjectInteraction : MonoBehaviour
     public Vector3 throwForce = new Vector3(0, 5, 7);           //the throw force of the player on the ojects
     public Vector3 throwForcePlayer = new Vector3(0, 10, 20);   //Added: the throw force of the player on the player
     [Tooltip("Amount of time it takes before the player can use the 'throw' button again")]
-    public float throwCooldownTime = 0.1f;
+    private float throwThrowableCooldownTime = 0.1f;            
+    public float throwPlayerCooldownTime = 0.1f;
     public float rotateToBlockSpeed = 3;                        //how fast to face the "Pushable" object you're holding/pulling
     public float checkRadius = 0.5f;                            //how big a radius to check above the players head, to see if anything is in the way of your pickup
     [Range(0.1f, 1f)]                                           //new weight of a carried object, 1 means no change, 0.1 means 10% of its original weight													
@@ -56,6 +57,11 @@ public class PlayerObjectInteraction : MonoBehaviour
     private TriggerParent triggerParent;
     private RigidbodyInterpolation objectDefInterpolation;
     private Rigidbody rb;
+    public float powCooldown = 0.75f;
+    private float currentPowCooldown = 0;
+    public float vibrationDuration = 0.5f;
+    private float vibrationTime = 0;
+    public float vibrationIntensity = 0.1f;
 
     //setup
     void Awake()
@@ -110,9 +116,11 @@ public class PlayerObjectInteraction : MonoBehaviour
         //when we press grab button, throw object if we're holding one
         if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj)
         {
-            if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + throwCooldownTime)
+            if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + throwThrowableCooldownTime)
+            {
                 ThrowPickup();
-            else if (heldObj.tag == "Player" && Time.time > timeOfPickup + throwCooldownTime)    //NOTE: can combine with above 'if' ---Added for player to pick up another player
+            }
+            else if (heldObj.tag == "Player" && Time.time > timeOfPickup + throwPlayerCooldownTime)    //NOTE: can combine with above 'if' ---Added for player to pick up another player
             {
                 ThrowPickup();
             }
@@ -167,10 +175,31 @@ public class PlayerObjectInteraction : MonoBehaviour
 
         checkIfBoxIsHanging();
 
+        if (currentPowCooldown < powCooldown)
+            currentPowCooldown += Time.deltaTime;
+
+        if (vibrationTime > 0)
+        {
+            vibrationTime -= Time.deltaTime;
+
+            if (vibrationTime <= 0)
+            {
+                XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, 0f, 0f);
+            }
+        }
     }
 
     void OnTriggerEnter(Collider other)
     {
+        if (currentPowCooldown > powCooldown && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
+            && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
+        {
+            Instantiate(particlesBoxCollide, transform.position + transform.forward * 0.5f + transform.up, transform.rotation);
+            currentPowCooldown = 0;
+            XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
+            vibrationTime = vibrationDuration; 
+        }
+
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
         {
             if (boxCollideSound)
@@ -189,7 +218,6 @@ public class PlayerObjectInteraction : MonoBehaviour
                 }
                 else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
                 {
-                    Instantiate(particlesBoxCollide, transform.position + transform.forward + transform.up, transform.rotation);
                     audioSource.volume = 0.5f;
                     audioSource.clip = boxCollideSound;
                     audioSource.Play();
@@ -230,7 +258,14 @@ public class PlayerObjectInteraction : MonoBehaviour
             //grab
             if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null && timeOfThrow + 0.2f < Time.time)
             {
-                GrabPushable(other);
+                if (playerMove.FullyGrounded && playerMove.lastFeetTouched != other.transform)
+                {
+                    Vector3 heading = other.transform.position - playerMove.transform.position;
+                    float dot = Vector3.Dot(heading, playerMove.transform.forward);
+
+                    if(dot > 0)
+                        GrabPushable(other);
+                }
                 return;
             }
             //NOTE: Added to pickup the player:
@@ -252,9 +287,12 @@ public class PlayerObjectInteraction : MonoBehaviour
 
     private void GrabPushable(Collider other)
     {
-        heldObj = other.gameObject;
         Vector3 touchedPoint = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
+        if (touchedPoint.y > transform.position.y) return;
+
         playerMove.transform.LookAt(touchedPoint);
+
+        heldObj = other.gameObject;
         objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
         heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
         AddJoint();
@@ -361,11 +399,12 @@ public void DropPickup()
 
         if (heldObj.tag == "Pickup")
         {
+            heldObj.layer = 0; //Default layer
+
             heldObj.transform.position = dropBox.transform.position;
             heldObjectRigidbody.mass /= weightChange;
 
             heldObj.GetComponent<FixedJoint>().connectedBody = null;
-            heldObj.layer = 0; //Default layer
 
             // If the object is a pickup set the boolean that its currently being held                
             ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
@@ -395,6 +434,8 @@ public void DropPickup()
 
         if (heldObj.tag == "Pushable")
         {
+            heldObj.layer = 0; //Default layer
+
             PushableObject po = heldObj.GetComponent<PushableObject>();
             if (po)
                 po.SetIsBeingPushed(false);
