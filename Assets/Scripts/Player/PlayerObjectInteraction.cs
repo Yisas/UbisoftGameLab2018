@@ -60,7 +60,7 @@ public class PlayerObjectInteraction : MonoBehaviour
     private float currentPowCooldown = 0;
     public float vibrationDuration = 0.5f;
     private float vibrationTime = 0;
-    public float vibrationIntensity = 0.5f;
+    public float vibrationIntensity = 0.1f;
 
     //setup
     void Awake()
