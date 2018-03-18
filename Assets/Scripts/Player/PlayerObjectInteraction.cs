@@ -29,8 +29,8 @@ public class PlayerObjectInteraction : MonoBehaviour
     public float checkRadius = 0.5f;                            //how big a radius to check above the players head, to see if anything is in the way of your pickup
     [Range(0.1f, 1f)]                                           //new weight of a carried object, 1 means no change, 0.1 means 10% of its original weight													
     public float weightChange = 0.3f;                           //this is so you can easily carry objects without effecting movement if you wish to
-    private bool addChangeMass = false;
-    private bool subChangeMass = false;
+    private bool addChangeMass;
+    private bool subChangeMass;
     [Range(10f, 1000f)]
     public float holdingBreakForce = 45f, holdingBreakTorque = 45f;//force and angularForce needed to break your grip on a "Pushable" object youre holding onto
     public Animator animator;                                   //object with animation controller on, which you want to animate (usually same as in PlayerMove)
@@ -337,7 +337,7 @@ public class PlayerObjectInteraction : MonoBehaviour
 
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
             //heldObjectRigidbody.mass *= weightChange;
-            //addChangeMass = true;
+            addChangeMass = true;
             //make sure we don't immediately throw object after picking it up
             timeOfPickup = Time.time;
         }
@@ -420,7 +420,7 @@ public void DropPickup()
         {
             heldObj.transform.position = dropBox.transform.position;
             //heldObjectRigidbody.mass /= weightChange;
-            //subChangeMass = true;
+            subChangeMass = true;
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
             playerMove.CanJump = true;
         }
@@ -471,7 +471,11 @@ public void DropPickup()
         }
         Destroy(joint);
         Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-        
+        heldObj.GetComponent<Collider>().isTrigger = false;
+        heldObjectRigidbody.useGravity = true;
+        heldObjectRigidbody.interpolation = objectDefInterpolation;
+        heldObjectRigidbody.mass /= weightChange;
+
         //Note Added:
         if (heldObj.tag == "Player")
         {
@@ -482,10 +486,6 @@ public void DropPickup()
         }
         else
         {
-            heldObj.GetComponent<Collider>().isTrigger = false;
-            heldObjectRigidbody.useGravity = true;
-            heldObjectRigidbody.interpolation = objectDefInterpolation;
-            heldObjectRigidbody.mass /= weightChange;
             //Debug.Log("Throwing block....");
             heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
             //Is holding pickup box
@@ -503,7 +503,7 @@ public void DropPickup()
         Destroy(joint);
         heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
         //heldObj.GetComponent<Rigidbody>().mass /= weightChange;
-        //subChangeMass = true;
+        subChangeMass = true;
         //heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
 
         //heldObj = null;
