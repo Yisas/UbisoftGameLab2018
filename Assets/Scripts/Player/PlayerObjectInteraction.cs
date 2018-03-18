@@ -26,13 +26,14 @@ public class PlayerObjectInteraction : NetworkBehaviour
     public Vector3 throwForce = new Vector3(0, 5, 7);           //the throw force of the player on the ojects
     public Vector3 throwForcePlayer = new Vector3(0, 10, 20);   //Added: the throw force of the player on the player
     [Tooltip("Amount of time it takes before the player can use the 'throw' button again")]
-    public float throwCooldownTime = 0.1f;
+    private float throwThrowableCooldownTime = 0.1f;            
+    public float throwPlayerCooldownTime = 0.1f;
     public float rotateToBlockSpeed = 3;                        //how fast to face the "Pushable" object you're holding/pulling
     public float checkRadius = 0.5f;                            //how big a radius to check above the players head, to see if anything is in the way of your pickup
     [Range(0.1f, 1f)]                                           //new weight of a carried object, 1 means no change, 0.1 means 10% of its original weight													
     public float weightChange = 0.3f;                           //this is so you can easily carry objects without effecting movement if you wish to
-    private bool addChangeMass;
-    private bool subChangeMass;
+    private bool addChangeMass = false;
+    private bool subChangeMass = false;
     [Range(10f, 1000f)]
     public float holdingBreakForce = 45f, holdingBreakTorque = 45f;//force and angularForce needed to break your grip on a "Pushable" object youre holding onto
     public Animator animator;                                   //object with animation controller on, which you want to animate (usually same as in PlayerMove)
@@ -60,6 +61,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private TriggerParent triggerParent;
     private RigidbodyInterpolation objectDefInterpolation;
     private Rigidbody rb;
+    public float powCooldown = 0.75f;
+    private float currentPowCooldown = 0;
+    public float vibrationDuration = 0.5f;
+    private float vibrationTime = 0;
+    public float vibrationIntensity = 0.1f;
 
     //setup
     void Awake()
@@ -120,9 +126,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
         //when we press grab button, throw object if we're holding one
         if (Input.GetButtonDown("Grab") && heldObj)
         {
-            if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + throwCooldownTime)
+            if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + throwThrowableCooldownTime)
+            {
                 ThrowPickup();
-            else if (heldObj.tag == "Player" && Time.time > timeOfPickup + throwCooldownTime)    //NOTE: can combine with above 'if' ---Added for player to pick up another player
+            }
+            else if (heldObj.tag == "Player" && Time.time > timeOfPickup + throwPlayerCooldownTime)    //NOTE: can combine with above 'if' ---Added for player to pick up another player
             {
                 ThrowPickup();
             }
@@ -210,12 +218,34 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
 
         checkIfBoxIsHanging();
+
+        if (currentPowCooldown < powCooldown)
+            currentPowCooldown += Time.deltaTime;
+
+        if (vibrationTime > 0)
+        {
+            vibrationTime -= Time.deltaTime;
+
+            if (vibrationTime <= 0)
+            {
+                XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, 0f, 0f);
+            }
+        }
     }
     #endregion
 
     #region Collision
     void OnTriggerEnter(Collider other)
     {
+        if (currentPowCooldown > powCooldown && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
+            && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
+        {
+            Instantiate(particlesBoxCollide, transform.position + transform.forward * 0.5f + transform.up, transform.rotation);
+            currentPowCooldown = 0;
+            XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
+            vibrationTime = vibrationDuration; 
+        }
+
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
         {
             if (boxCollideSound)
@@ -234,7 +264,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 }
                 else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
                 {
-                    Instantiate(particlesBoxCollide, transform.position + transform.forward + transform.up, transform.rotation);
                     audioSource.volume = 0.5f;
                     audioSource.clip = boxCollideSound;
                     audioSource.Play();
@@ -285,7 +314,14 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 //grab
                 else if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null && timeOfThrow + 0.2f < Time.time)
                 {
-                    GrabPushable(other);
+                    if (playerMove.FullyGrounded && playerMove.lastFeetTouched != other.transform)
+                    {
+                        Vector3 heading = other.transform.position - playerMove.transform.position;
+                        float dot = Vector3.Dot(heading, playerMove.transform.forward);
+
+                        if (dot > 0)
+                            GrabPushable(other);
+                    }
                 }
 
                 // Give the object either host or client authority, depending on which player is picking it up
@@ -317,9 +353,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
     #region Interactions
     private void GrabPushable(Collider other)
     {
-        heldObj = other.gameObject;
         Vector3 touchedPoint = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
+        if (touchedPoint.y > transform.position.y) return;
+
         playerMove.transform.LookAt(touchedPoint);
+
+        heldObj = other.gameObject;
         objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
         heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
         AddJoint();
@@ -331,7 +370,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         //stop player rotating in direction of movement, so they can face the block theyre pulling
         playerMove.rotateSpeed = 0;
 
-        playerMove.SetRestrictToBackCamera(true);
+        //playerMove.SetRestrictToBackCamera(true);
 
         PushableObject po = other.GetComponent<PushableObject>();
         if (po)
@@ -361,6 +400,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = true;
 
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
+
             //mass change was delegated to late update using flags
             //addChangeMass = true;
             //make sure we don't immediately throw object after picking it up
@@ -486,11 +526,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
         if (heldObj.tag == "Pickup")
         {
+            heldObj.layer = 0; //Default layer
+
             heldObj.transform.position = dropBox.transform.position;
             heldObjectRigidbody.mass /= weightChange;
 
             heldObj.GetComponent<FixedJoint>().connectedBody = null;
-            heldObj.layer = 0; //Default layer
 
             // If the object is a pickup set the boolean that its currently being held                
             ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
@@ -521,10 +562,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
         heldObj.GetComponent<Collider>().isTrigger = false;
         Destroy(joint);
         playerMove.rotateSpeed = defRotateSpeed;
-        playerMove.SetRestrictToBackCamera(false);
+        //playerMove.SetRestrictToBackCamera(false);
 
         if (heldObj.tag == "Pushable")
         {
+            heldObj.layer = 0; //Default layer
+
             PushableObject po = heldObj.GetComponent<PushableObject>();
             if (po)
                 po.SetIsBeingPushed(false);
@@ -581,10 +624,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
         Destroy(joint);
         Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-        heldObj.GetComponent<Collider>().isTrigger = false;
-        heldObjectRigidbody.useGravity = true;
-        heldObjectRigidbody.interpolation = objectDefInterpolation;
-        heldObjectRigidbody.mass /= weightChange;
 
         if (heldObj.tag == "Player")
         {
@@ -607,8 +646,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
         else
         {
             Debug.Log("Throwing block....");
+            heldObj.GetComponent<Collider>().isTrigger = false;
+            heldObjectRigidbody.useGravity = true;
             heldObjectRigidbody.interpolation = objectDefInterpolation;
             heldObjectRigidbody.mass /= weightChange;
+
             heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
             //Is holding pickup box
             playerMove.IsHoldingPickup = false;

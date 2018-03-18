@@ -9,7 +9,6 @@ public class InvisibleToVisible : MonoBehaviour
     private float m_Transparency = 0.3f;
     private const float startingTransparency = 0.0f;
 
-    public float TargetTransparency { get; set; }
     public float FadeInTimeout = 12f; //Set with Adaptative Level Transparency To Visible Time
     private bool isStandard;
 
@@ -80,6 +79,6 @@ public class InvisibleToVisible : MonoBehaviour
         }
 
         //Fading in
-        m_Transparency += ((1.0f - TargetTransparency) * Time.deltaTime) / FadeInTimeout;
+        m_Transparency += (1.0f * Time.deltaTime) / FadeInTimeout;
     }
 }

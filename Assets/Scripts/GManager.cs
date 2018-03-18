@@ -12,6 +12,8 @@ public class GManager : MonoBehaviour
     public float timeToMakeEverythingVisible = 200; //200secs to fade in everything
     public static float lastLevelFixedTime;
     public static GManager Instance;
+    public bool resetPlayers = false;
+    public static string pickupLayer = "Pickup";
 
     public static int invisiblePlayer1Layer = 9;
     public static int invisiblePlayer2Layer = 12;
