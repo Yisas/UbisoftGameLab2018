@@ -23,6 +23,7 @@ namespace AK
         static const AkUniqueID PLATEOFF = 844035674U;
         static const AkUniqueID PLATEON = 3888580188U;
         static const AkUniqueID PLAYERLAND = 846198821U;
+        static const AkUniqueID STOPDRAGWOODENBOX = 3167664084U;
         static const AkUniqueID THROW = 745179803U;
     } // namespace EVENTS
 

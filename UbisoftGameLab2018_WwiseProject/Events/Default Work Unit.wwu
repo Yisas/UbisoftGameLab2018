@@ -153,6 +153,20 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="StopDragWoodenBox" ID="{1E4ABB54-F674-4A61-B191-1AE3E7C83737}">
+							<ChildrenList>
+								<Action Name="" ID="{1521EA28-067C-4065-B470-C4A17891AB07}" ShortID="700769611">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="2"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="DRAG_Wooden_Box_short" ID="{346ACB7A-37B0-4A78-861D-DB396F4D71CB}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Folder Name="Ghost" ID="{8F9FF3EB-7C4F-498C-BB82-1A741FCBFA00}" ShortID="1053460253">

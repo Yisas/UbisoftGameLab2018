@@ -51,6 +51,7 @@ public class PushableObject : MonoBehaviour
         {
             //rb.constraints = RigidbodyConstraints.FreezeAll;
             rb.mass = 100;
+            AkSoundEngine.PostEvent("StopDragWoodenBox", gameObject);
         }
         else
         {
