@@ -46,7 +46,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1375084869648564
 GameObject:
   m_ObjectHideFlags: 0
@@ -82,7 +82,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1657101311739310
 GameObject:
   m_ObjectHideFlags: 0
@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 4572370079331064}
   - component: {fileID: 33039613480733650}
   - component: {fileID: 23374307602710994}
+  - component: {fileID: 64157594085142938}
   m_Layer: 0
   m_Name: arc
   m_TagString: Untagged
@@ -110,6 +111,7 @@ GameObject:
   - component: {fileID: 4707532437457326}
   - component: {fileID: 33546582424998686}
   - component: {fileID: 23782717786819064}
+  - component: {fileID: 65757188427144832}
   m_Layer: 0
   m_Name: planks
   m_TagString: Untagged
@@ -181,7 +183,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1144827369144128}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 23, y: 2.2, z: -97.1}
+  m_LocalPosition: {x: 23.3, y: 1.5, z: -93.95}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4572370079331064}
@@ -478,6 +480,32 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1709136051976850}
   m_Mesh: {fileID: 4300000, guid: 0b336a64abee841728efc5de95b64a77, type: 3}
+--- !u!64 &64157594085142938
+MeshCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1657101311739310}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 4300000, guid: c8df008e5c282428585a9a8ceb62192a, type: 3}
+--- !u!65 &65757188427144832
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1709136051976850}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.024218924, y: 0.020000009, z: 0.020190278}
+  m_Center: {x: -4.9390974e-27, y: -0.007443818, z: 0.000095137875}
 --- !u!95 &95819408584022216
 Animator:
   serializedVersion: 3
