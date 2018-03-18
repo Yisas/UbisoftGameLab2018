@@ -296,6 +296,8 @@ GameObject:
   - component: {fileID: 136995704138079122}
   - component: {fileID: 23749618141271426}
   - component: {fileID: 33951819695273608}
+  - component: {fileID: 114566677828543650}
+  - component: {fileID: 114830015419935284}
   m_Layer: 0
   m_Name: Old Mounted Torch
   m_TagString: Pickup
@@ -3197,6 +3199,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23363880e037e864c8b08314ac3ab8b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114566677828543650
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1347668835503844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 249
+    i1: 193
+    i2: 136
+    i3: 177
+    i4: 228
+    i5: 136
+    i6: 172
+    i7: 4
+    i8: 11
+    i9: 171
+    i10: 233
+    i11: 26
+    i12: 1
+    i13: 120
+    i14: 197
+    i15: 113
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 1
+--- !u!114 &114830015419935284
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1347668835503844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TransformSyncMode: 3
+  m_SendInterval: 0.1
+  m_SyncRotationAxis: 7
+  m_RotationSyncCompression: 0
+  m_SyncSpin: 0
+  m_MovementTheshold: 0.001
+  m_VelocityThreshold: 0.0001
+  m_SnapThreshold: 5
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1
 --- !u!136 &136995704138079122
 CapsuleCollider:
   m_ObjectHideFlags: 1
