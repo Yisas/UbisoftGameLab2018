@@ -1049,8 +1049,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1905659119879170}
-  m_LocalRotation: {x: -0, y: 0.012523852, z: -0, w: -0.9999216}
-  m_LocalPosition: {x: 36.490704, y: 1.39, z: -10.292626}
+  m_LocalRotation: {x: -0, y: -0.0026686853, z: -0, w: -0.9999965}
+  m_LocalPosition: {x: -6.94, y: 0.59, z: -0.91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4909744962977230}
@@ -2000,10 +2000,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7649da01531f883439f5efd284b2ba3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Canvas_Junk: {fileID: 0}
   Canvas_PresurePlate: {fileID: 0}
   Canvas_Player_1: {fileID: 223161545756350940}
   Canvas_Player_2: {fileID: 0}
-  buttonprompt: 1
+  buttonprompt: 2
   JumpImgP1: {fileID: 114208472664544306}
   InteractImgP1: {fileID: 114180345463373042}
   JumpImgP2: {fileID: 0}
@@ -2050,7 +2051,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.9
+  m_Radius: 1.05
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!137 &137721231173842646
 SkinnedMeshRenderer:
