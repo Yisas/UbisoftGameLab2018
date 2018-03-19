@@ -393,6 +393,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
 
+            heldObj.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            heldObj.GetComponent<Rigidbody>().isKinematic = true;
             heldObj.GetComponent<PlayerMove>().LockMovementToOtherPlayer(holdPlayerPos.transform);
 
 
@@ -543,6 +545,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if (heldObj.tag == "Player")
         {
             heldObj.transform.position = dropBox.transform.position;
+            heldObj.GetComponent<Rigidbody>().isKinematic = false;
             heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
             playerMove.CanJump = true;
@@ -633,6 +636,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             //throwForcePlayer
             Debug.Log("Throwing player....");
             PlayerMove heldPlayerMove = heldObj.GetComponent<PlayerMove>();
+            heldObj.GetComponent<Rigidbody>().isKinematic = false;
             heldPlayerMove.UnlockMovementToOtherPlayer();
             heldPlayerMove.IsBeingHeld = false;
 
