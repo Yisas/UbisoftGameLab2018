@@ -18,9 +18,6 @@ public class PressurePlateNew : DoorAnimatorBehaviour
     public Animation lockAnim;
     public int LockID;
 
-    public AudioSource onSound;
-    public AudioSource offSound;
-
     void Start()
     {
         myLight = GetComponent<Light>();
@@ -45,8 +42,8 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             Vector3 position = transform.position;
             position.y += 0.005f;
             transform.position = position;
-        }     
-        
+        }
+
     }
 
     void LateUpdate()
@@ -72,7 +69,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             myLight.enabled = false;
             isActive = false;
 
-            offSound.Play();
+            AkSoundEngine.PostEvent("PlateOff", gameObject);
 
             SetClosed();
         }
@@ -83,7 +80,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
     {
         if (other.tag == "Player" || other.tag == "Pushable" || other.tag == "Pickup")
         {
-            if(objectOnMe != null)
+            if (objectOnMe != null)
             {
                 Debug.Log("Object already on me, do nothing");
                 return;
@@ -100,11 +97,11 @@ public class PressurePlateNew : DoorAnimatorBehaviour
 
         // If the object is a pickup set the boolean that its on a pressure plate
         ResettableObject resettableObject = other.GetComponent<ResettableObject>();
-        if(resettableObject != null && resettableObject.CompareTag("Pickup"))
+        if (resettableObject != null && resettableObject.CompareTag("Pickup"))
         {
             resettableObject.IsOnPressurePlate = true;
         }
-        
+
     }
 
     private void Open()
@@ -115,22 +112,22 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             myLight.enabled = true;
             isActive = true;
 
-            onSound.Play();
-            
             //Lock Opens
             lockAnim.Play(string.Concat("lock", LockID, "Open"));
+
+            AkSoundEngine.PostEvent("PlateOn", gameObject);
 
             SetOpen();
 
             Door[] doors = target.GetComponentsInChildren<Door>();
             foreach (Door d in doors)
-                d.DecCount();                
+                d.DecCount();
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if(objectOnMe == null && (other.tag == "Player" || other.tag == "Pushable" || other.tag == "Pickup" ))
+        if (objectOnMe == null && (other.tag == "Player" || other.tag == "Pushable" || other.tag == "Pickup"))
         {
             Open();
             objectOnMe = other.gameObject;
@@ -142,7 +139,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
 
         if (other.tag == "Player" || other.tag == "Pushable" || other.tag == "Pickup")
         {
-            if(other.gameObject != objectOnMe)
+            if (other.gameObject != objectOnMe)
             {
                 return;
             }
@@ -154,12 +151,12 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             targetPosition = targetPositionStart;
             myLight.enabled = false;
             isActive = false;
-                        
+
             //Player leave the plate the lock closes          
             lockAnim.Play(string.Concat("lock", LockID, "Close"));
 
             SetClosed();
-            offSound.Play();
+            AkSoundEngine.PostEvent("PlateOff", gameObject);
 
             Door[] doors = target.GetComponentsInChildren<Door>();
             foreach (Door d in doors)
