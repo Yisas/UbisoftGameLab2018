@@ -108,7 +108,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1174809156514424}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 5.8, y: 1.4, z: -122.7}
+  m_LocalPosition: {x: 5.8, y: 2.26, z: -3.9}
   m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children:
   - {fileID: 224359576894867174}
@@ -270,7 +270,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1017497723233610}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7649da01531f883439f5efd284b2ba3c, type: 3}
   m_Name: 
@@ -317,15 +317,15 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1017497723233610}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 43c88029ea0575c469db7340429c9d92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Canvas_Junk: {fileID: 0}
+  Canvas_Junk: {fileID: 223412531853347044}
   Canvas_PresurePlate: {fileID: 0}
-  Canvas_Player_1: {fileID: 0}
-  buttonprompt: 0
+  Canvas_Player: {fileID: 0}
+  buttonprompt: 1
   JumpImgP1: {fileID: 0}
   InteractImgP1: {fileID: 0}
 --- !u!114 &114342700818896746
@@ -403,7 +403,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9d630ed547e10948a4d32f531aa0442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 0}
 --- !u!114 &114821682480087678
 MonoBehaviour:
   m_ObjectHideFlags: 1

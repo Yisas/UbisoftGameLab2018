@@ -80,4 +80,17 @@ public class GManager : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// After player has been spawned, setup references on environmental objects
+    /// </summary>
+    public void NetworkingLevelReferencesSetup(PlayerMove playerSpawned)
+    {
+        Debug.Log("here");
+        ButtonPromptsNetworked[] buttonPrompts = GameObject.FindObjectsOfType<ButtonPromptsNetworked>();
+        foreach (ButtonPromptsNetworked bp in buttonPrompts)
+        {
+            bp.NetworkPlayerPromptReferenceStart(playerSpawned.transform.GetComponentInChildren<Canvas>());
+        }
+    }
 }

@@ -19,7 +19,7 @@ public class ButtonPromptsNetworked : NetworkBehaviour
     [SerializeField]
     Canvas Canvas_PresurePlate;
     [SerializeField]
-    Canvas Canvas_Player_1;
+    Canvas Canvas_Player;
 
     public enum ButtonPromptOn { pressureplate, junk, player }
     public ButtonPromptOn buttonprompt;
@@ -39,7 +39,16 @@ public class ButtonPromptsNetworked : NetworkBehaviour
 
         Canvas_Junk.enabled = false;
         Canvas_PresurePlate.enabled = false;
-        Canvas_Player_1.enabled = false;
+    }
+
+    /// <summary>
+    /// References to the player canvas need to be aquired at runtime
+    /// </summary>
+    /// <param name="canvasPlayer"></param>
+    public void NetworkPlayerPromptReferenceStart(Canvas canvasPlayer)
+    {
+        Canvas_Player = canvasPlayer;
+        Canvas_Player.enabled = false;
     }
 
     void OnTriggerStay(Collider other)
@@ -100,7 +109,7 @@ public class ButtonPromptsNetworked : NetworkBehaviour
                 {
                     JumpImgP1.enabled = true;
                     InteractImgP1.enabled = false;
-                    Canvas_Player_1.enabled = true;
+                    Canvas_Player.enabled = true;
                 }
                 else
                 {
@@ -117,20 +126,20 @@ public class ButtonPromptsNetworked : NetworkBehaviour
             {
                 if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Canvas_Player_1.enabled = true;
+                    Canvas_Player.enabled = true;
                     isBeingControlled = true;
                 }
                 else if (isBeingControlled == false && (player.IsGrabingPushable == false || !player.IsHoldingPickup == false))
                 {
-                    Canvas_Player_1.enabled = true;
+                    Canvas_Player.enabled = true;
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Canvas_Player_1.enabled = true;
+                    Canvas_Player.enabled = true;
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
                 {
-                    Canvas_Player_1.enabled = false;
+                    Canvas_Player.enabled = false;
                     isBeingControlled = false;
                 }
             }
@@ -148,7 +157,7 @@ public class ButtonPromptsNetworked : NetworkBehaviour
         }
         else if (buttonprompt == ButtonPromptOn.player)
         {
-            Canvas_Player_1.enabled = false;
+            Canvas_Player.enabled = false;
         }
     }
 }

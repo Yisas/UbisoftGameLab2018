@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class PromptCanvasRotate : MonoBehaviour {
 
-    public Camera playerCamera;
     Transform cameraTransform;
 
     void Start()
     {
-        //cameraTransform = Camera.main.transform;
-        cameraTransform = playerCamera.transform;
+        cameraTransform = Camera.main.transform;
+        //cameraTransform = playerCamera.transform;
     }
 
     void Update()
