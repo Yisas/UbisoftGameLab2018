@@ -9,6 +9,10 @@ public class PlayerMove : NetworkBehaviour
     [SerializeField]
     private int playerID;
 
+    // Networking corrections
+    public float transformSyncVecticalCorrectionTreshold = 0.2f;
+    private Vector3 lastFrameTransformToSyncToPosition;     // Do to networking noise over this value, we'll cash it on a per frame basis and ignore if threshold
+
     [Header("------Camera Interactions------")]
     public float cameraDelayTimerBeforeRespawn;
     public Transform backCameraPosition;
@@ -17,7 +21,7 @@ public class PlayerMove : NetworkBehaviour
     private bool restrictToBackCamera = false;
 
     //setup
-    public Transform floorChecks;                         //FloorChecks are raycasted down from to check the player is grounded.
+    public Transform floorChecks;               //FloorChecks are raycasted down from to check the player is grounded.
     public Animator animator;                   //object with animation controller on, which you want to animate
     public AudioClip jumpSound;                 //play when jumping
     public AudioClip landSound;                 //play when landing on ground
@@ -122,7 +126,15 @@ public class PlayerMove : NetworkBehaviour
     {
         if (isSyncingToTransform && transformToSyncTo)
         {
-            transform.position = transformToSyncTo.position;
+            // Due to networking noise on transformToSyncTo, do not use it's y if below a certain treshold
+            // Should we aso check !isLocalPlayer && !yVelocity > 0 
+            float correctedYValue;
+            if (Mathf.Abs((transformToSyncTo.position.y - lastFrameTransformToSyncToPosition.y)) <= transformSyncVecticalCorrectionTreshold)
+                correctedYValue = transform.position.y;
+            else
+                correctedYValue = transformToSyncTo.position.y;
+
+            transform.position = new Vector3(transformToSyncTo.position.x, correctedYValue, transformToSyncTo.position.z);
             transform.rotation = transformToSyncTo.rotation;
         }
 
@@ -156,11 +168,14 @@ public class PlayerMove : NetworkBehaviour
 
         moveDirection = transform.position + direction;
 
-        if(GetComponent<Rigidbody>().velocity.y > maxVerticalVel) //Preventing superman jump
+        if (GetComponent<Rigidbody>().velocity.y > maxVerticalVel) //Preventing superman jump
         {
             Vector3 currVel = GetComponent<Rigidbody>().velocity;
             GetComponent<Rigidbody>().velocity = new Vector3(currVel.x, maxVerticalVel, currVel.y);
         }
+
+        if(transformToSyncTo)
+            lastFrameTransformToSyncToPosition = transformToSyncTo.position;
     }
 
     //apply correct player movement (fixedUpdate for physics calculations)
