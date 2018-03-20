@@ -3,12 +3,11 @@
 public class CameraFollow : MonoBehaviour
 {
     // GGJ addition
-    public Transform backCameraPosition;
     public int playerID;
     private PlayerMove playerMove;
 
-    public Transform target;                                    //object camera will focus on and follow
-    public Vector3 targetOffset = new Vector3(0f, 3.5f, 7); //how far back should camera be from the lookTarget
+    private Transform target;                                   //object camera will focus on and follow
+    public Vector3 targetOffset = new Vector3(0f, 3.5f, 7);     //how far back should camera be from the lookTarget
     public float followSpeed = 6;                               //how fast the camera moves to its intended position
     public float inputRotationSpeed = 100;                      //how fast the camera rotates around lookTarget when you press the camera adjust buttons
     public float rotateDamping = 100;                           //how fast camera rotates to look at target
@@ -22,6 +21,7 @@ public class CameraFollow : MonoBehaviour
     private Vector3 defTargetOffset;
 
     private float startingTargetY;
+    private Transform backCameraPosition;                       // Over the shoulder position of the camera for when the player is push/pulling blocks
     public string[] layersToSeeThrough;
     private int layerMaskSeeThrough;
 
@@ -36,13 +36,21 @@ public class CameraFollow : MonoBehaviour
     public float zoomInMultiplier = 0.99f;
     public float zoomOutMultiplier = 1.1f;
 
-    //setup objects
-    void Awake()
+    // State variables
+    private bool camColliding;
+
+    public void StartFollowingPlayer(PlayerMove playerMove, Transform backCameraPosition)
     {
-        playerMove = target.GetComponent<PlayerMove>();
+        if (target)
+            return;
+
+        target = playerMove.transform;
+        this.backCameraPosition = backCameraPosition;
+        this.playerMove = playerMove;
         followTarget = new GameObject().transform;  //create empty gameObject as camera target, this will follow and rotate around the player
         followTarget.name = "Camera Target";
         defTargetOffset = targetOffset;
+        startingTargetY = target.position.y;
 
         foreach (string layer in layersToSeeThrough)
             layerMaskSeeThrough |= 1 << LayerMask.NameToLayer(layer);
@@ -51,11 +59,7 @@ public class CameraFollow : MonoBehaviour
 
         if (!target)
             Debug.LogError("'CameraFollow script' has no target assigned to it", transform);
-    }
 
-    private void Start()
-    {
-        startingTargetY = target.position.y;
     }
 
     void Update()
@@ -64,44 +68,50 @@ public class CameraFollow : MonoBehaviour
         {
             SmoothLookAt();
             SmoothFollow();
-        }
 
-        RaycastHit[] hits;
+            RaycastHit[] hits;
 
-        //Calculate distance to player with small offset
-        float distanceToPLayer = Vector3.Distance(transform.position, target.position) * 1.1f;
+            //Calculate distance to player with small offset
+            float distanceToPLayer = Vector3.Distance(transform.position, target.position) * 1.1f;
 
-        // you can also use CapsuleCastAll()
-        // TODO: setup your layermask it improve performance and filter your hits.
-        hits = Physics.RaycastAll(transform.position - transform.forward, transform.forward, distanceToPLayer, layerMaskSeeThrough);
-        foreach (RaycastHit hit in hits)
-        {
-            if (startingTargetY > hit.point.y
-                && target.position.y > hit.point.y) continue;
-
-            Renderer R = hit.collider.GetComponent<Renderer>();
-            
-            if (R != null)
+            // you can also use CapsuleCastAll()
+            // TODO: setup your layermask it improve performance and filter your hits.
+            hits = Physics.RaycastAll(transform.position - transform.forward, transform.forward, distanceToPLayer, layerMaskSeeThrough);
+            foreach (RaycastHit hit in hits)
             {
-                if (R.tag != GManager.pickupLayer)
-                    setAutoTransparentOnObject(R.gameObject);
-            }
+                if (startingTargetY > hit.point.y
+                    && target.position.y > hit.point.y) continue;
 
-            Renderer[] Rchilds = hit.collider.GetComponentsInChildren<Renderer>();
+                Renderer R = hit.collider.GetComponent<Renderer>();
 
-            if (Rchilds != null)
-            {
-                foreach (Renderer child in Rchilds)
+                if (R != null)
+                    if (R.tag != GManager.pickupLayer)
+                        setAutoTransparentOnObject(R.gameObject);
+
+                Renderer[] Rchilds = hit.collider.GetComponentsInChildren<Renderer>();
+
+                if (Rchilds != null)
                 {
-                    if (child.tag != GManager.pickupLayer)
+                    foreach (Renderer child in Rchilds)
                     {
-                        setAutoTransparentOnObject(child.gameObject);
+                        if (child.tag != GManager.pickupLayer)
+                        {
+                            setAutoTransparentOnObject(child.gameObject);
+                        }
                     }
                 }
-            }
-            else continue; // no renderer attached? go to next hit
-                           // TODO: maybe implement here a check for GOs that should not be affected like the player
+                else continue; // no renderer attached? go to next hit
+                               // TODO: maybe implement here a check for GOs that should not be affected like the player
 
+
+                if (Rchilds != null)
+                {
+                    foreach (Renderer child in Rchilds)
+                        setAutoTransparentOnObject(child.gameObject);
+                }
+                else continue; // no renderer attached? go to next hit
+                               // TODO: maybe implement here a check for GOs that should not be affected like the player
+            }
         }
     }
 
@@ -126,9 +136,9 @@ public class CameraFollow : MonoBehaviour
     //run our camera functions each frame
     void LateUpdate()
     {
-        AdjustCamera();
         if (target)
         {
+            AdjustCamera();
             SmoothLookAt();
             SmoothFollow();
         }
@@ -172,7 +182,9 @@ public class CameraFollow : MonoBehaviour
         }
 
         if (targetOffset.magnitude > defTargetOffset.magnitude)
+        {
             targetOffset = defTargetOffset;
+        }
 
         if (yAxisPeakTilt > defyAxisPeakTilt)
             yAxisPeakTilt = defyAxisPeakTilt;
@@ -193,10 +205,10 @@ public class CameraFollow : MonoBehaviour
         followTarget.Translate(targetOffset, Space.Self);
 
         //rotate the followTarget around the target with input
-        float axis = Input.GetAxis("CamHorizontal " + playerID) * inputRotationSpeed * Time.deltaTime;
+        float axis = Input.GetAxis("CamHorizontal") * inputRotationSpeed * Time.deltaTime;
         followTarget.RotateAround(target.position, Vector3.up, axis);
 
-        float axis2 = (Input.GetAxis("CamVertical " + playerID) * inputRotationSpeed * Time.deltaTime)*verticalSensitivity;
+        float axis2 = Input.GetAxis("CamVertical") * inputRotationSpeed * Time.deltaTime * verticalSensitivity;
 
         //If it haven't reached the peak
         if (transform.position.y < target.position.y + yAxisPeakTilt)

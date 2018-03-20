@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 
 //this class holds movement functions for a rigidbody character such as player, enemy, npc..
 //you can then call these functions from another script, in order to move the character
 [RequireComponent(typeof(Rigidbody))]
-public class CharacterMotor : MonoBehaviour 
+public class CharacterMotor : NetworkBehaviour 
 {
 	[HideInInspector]
 	public Vector3 currentSpeed;
-	[HideInInspector]
+	[HideInInspector, SyncVar]
 	public float DistanceToTarget;
 	
 	void Awake()
@@ -30,6 +31,12 @@ public class CharacterMotor : MonoBehaviour
 	//move rigidbody to a target and return the bool "have we arrived?"
 	public bool MoveTo(Vector3 destination, float acceleration, float stopDistance, bool ignoreY)
 	{
+        if (!isLocalPlayer)
+        {
+            Debug.LogWarning("Move operation being called from non-local player instance. Is this intended behavior?");
+            return false;
+        }
+
 		Vector3 relativePos = (destination - transform.position);
 		if(ignoreY)
 			relativePos.y = 0;

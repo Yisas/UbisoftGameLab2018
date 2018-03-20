@@ -1,27 +1,33 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.Networking;
 
 //handles player movement, utilising the CharacterMotor class
 [RequireComponent(typeof(CharacterMotor))]
-public class PlayerMove : MonoBehaviour
+public class PlayerMove : NetworkBehaviour
 {
     [SerializeField]
     private int playerID;
 
-    // Camera interactions
+    // Networking corrections
+    public float transformSyncVecticalCorrectionTreshold = 0.2f;
+    private Vector3 lastFrameTransformToSyncToPosition;     // Do to networking noise over this value, we'll cash it on a per frame basis and ignore if threshold
+
+    [Header("------Camera Interactions------")]
     public float cameraDelayTimerBeforeRespawn;
+    public Transform backCameraPosition;
     private bool restrictMovementToOneAxis = false;
     private bool restrictMovementToTwoAxis = false;
     private bool restrictToBackCamera = false;
 
     //setup
-    public Transform mainCam, floorChecks;      //main camera, and floorChecks object. FloorChecks are raycasted down from to check the player is grounded.
+    public Transform floorChecks;               //FloorChecks are raycasted down from to check the player is grounded.
     public Animator animator;                   //object with animation controller on, which you want to animate
 
     //audio
     // If its too big then the landing sound plays multiple times, too short and it doesn't play at all
     public float landingSoundLength;
     public Transform lastFeetTouched;           //what the floorchecks last touched
+    private Rigidbody rb;
 
     //movement
     public float accel = 70f;                   //acceleration/deceleration in air or on the ground
@@ -48,6 +54,7 @@ public class PlayerMove : MonoBehaviour
     private bool fullyGrounded;
     private bool canJump = true;
     private bool isBeingHeld = false;
+    private bool isSyncingToTransform = false;
     private bool isHoldingPickup = false;
     private bool isGrabingPushable = false;
 
@@ -56,9 +63,11 @@ public class PlayerMove : MonoBehaviour
     private Vector3 direction, moveDirection, screenMovementForward, screenMovementRight, movingObjSpeed;
 
     // Private references
+    private Transform mainCam;
     private Transform[] floorCheckers;
     private Quaternion screenMovementSpace;
     private CharacterMotor characterMotor;
+    private Transform transformToSyncTo;
 
     //setup
     void Awake()
@@ -85,6 +94,7 @@ public class PlayerMove : MonoBehaviour
 
         //usual setup
         characterMotor = GetComponent<CharacterMotor>();
+        rb = GetComponent<Rigidbody>();
         //gets child objects of floorcheckers, and puts them in an array
         //later these are used to raycast downward and see if we are on the ground
         floorCheckers = new Transform[floorChecks.childCount];
@@ -92,9 +102,49 @@ public class PlayerMove : MonoBehaviour
             floorCheckers[i] = floorChecks.GetChild(i);
     }
 
+    private void Start()
+    {
+        // Get references on startup: required since networking needs player to spawn
+        if (isLocalPlayer)
+        {
+            mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+            mainCam.GetComponent<CameraFollow>().StartFollowingPlayer(this, backCameraPosition);
+
+            if (isServer) //if it's server set id's to 1
+            {
+                mainCam.GetComponent<CameraFollow>().playerID = 1;
+                GManager.Instance.setInvisibleToVisibleWorld(GManager.invisiblePlayer1Layer, GManager.SeeTP2NonCollidable);
+            }
+            else
+            {
+                mainCam.GetComponent<CameraFollow>().playerID = 2;
+                GManager.Instance.setInvisibleToVisibleWorld(GManager.invisiblePlayer2Layer, GManager.SeeTP1NonCollidable);
+            }
+        }
+    }
+
     //get state of player, values and input
     void Update()
     {
+        if (isSyncingToTransform && transformToSyncTo)
+        {
+            // Due to networking noise on transformToSyncTo, do not use it's y if below a certain treshold
+            // Should we aso check !isLocalPlayer && !yVelocity > 0 
+            float correctedYValue;
+            if (Mathf.Abs((transformToSyncTo.position.y - lastFrameTransformToSyncToPosition.y)) <= transformSyncVecticalCorrectionTreshold)
+                correctedYValue = transform.position.y;
+            else
+                correctedYValue = transformToSyncTo.position.y;
+
+            transform.position = new Vector3(transformToSyncTo.position.x, correctedYValue, transformToSyncTo.position.z);
+            transform.rotation = transformToSyncTo.rotation;
+        }
+
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
         //handle jumping
         JumpCalculations();
         //adjust movement values if we're in the air or on the ground
@@ -112,19 +162,22 @@ public class PlayerMove : MonoBehaviour
         float verticalInput = 0;
         if (!isBeingHeld)
         {
-            horizontalInput = Input.GetAxisRaw("Horizontal " + playerID);
-            verticalInput = Input.GetAxisRaw("Vertical " + playerID);
+            horizontalInput = Input.GetAxisRaw("Horizontal");
+            verticalInput = Input.GetAxisRaw("Vertical");
         }
 
         direction = (screenMovementForward * verticalInput) + (screenMovementRight * horizontalInput);
 
         moveDirection = transform.position + direction;
 
-        if(GetComponent<Rigidbody>().velocity.y > maxVerticalVel) //Preventing superman jump
+        if (rb.velocity.y > maxVerticalVel) //Preventing superman jump
         {
-            Vector3 currVel = GetComponent<Rigidbody>().velocity;
-            GetComponent<Rigidbody>().velocity = new Vector3(currVel.x, maxVerticalVel, currVel.y);
+            Vector3 currVel = rb.velocity;
+            rb.velocity = new Vector3(currVel.x, maxVerticalVel, currVel.y);
         }
+
+        if(transformToSyncTo)
+            lastFrameTransformToSyncToPosition = transformToSyncTo.position;
     }
 
     //apply correct player movement (fixedUpdate for physics calculations)
@@ -134,23 +187,38 @@ public class PlayerMove : MonoBehaviour
         grounded = IsGrounded();
         fullyGrounded = IsFullyGrounded();
 
-        //move, rotate, manage speed
-        characterMotor.MoveTo(moveDirection, curAccel, 0.7f, true);
+        // Perform movement operations only for local instance of player. Movement for non-local player is handled
+        // on their instance and networked over
+        if (isLocalPlayer)
+        {
+            //move, rotate, manage speed
+            characterMotor.MoveTo(moveDirection, curAccel, 0.7f, true);
 
-        if (!restrictMovementToOneAxis)
-            if (rotateSpeed != 0 && direction.magnitude != 0)
+            if (!restrictMovementToOneAxis)
+                if (rotateSpeed != 0 && direction.magnitude != 0)
+                {
+                    characterMotor.RotateToDirection(moveDirection, curRotateSpeed * 5, true);
+                }
+
+            characterMotor.ManageSpeed(curDecel, maxSpeed + movingObjSpeed.magnitude, true);
+
+            if (!isServer)
             {
-                characterMotor.RotateToDirection(moveDirection, curRotateSpeed * 5, true);
+                // Distance to target is Syncvared so it will update from Server to client automatically,
+                //but update from client to server needs to be a command
+                CmdUpdateDistanceToTarget(characterMotor.DistanceToTarget);
             }
+        }
 
-        characterMotor.ManageSpeed(curDecel, maxSpeed + movingObjSpeed.magnitude, true);
-        //set animation values
+        // Update animator
         if (animator)
         {
             animator.SetFloat("DistanceToTarget", characterMotor.DistanceToTarget);
             animator.SetBool("Grounded", grounded);
-            animator.SetFloat("YVelocity", GetComponent<Rigidbody>().velocity.y);
+            animator.SetFloat("YVelocity", rb.velocity.y);
         }
+        else
+            Debug.LogWarning("Animator missing on player " + playerID);
 
         // Adding footsteps audio GGJ2018:
         if (grounded && GetComponent<Rigidbody>().velocity.magnitude > 0)
@@ -167,11 +235,11 @@ public class PlayerMove : MonoBehaviour
         if (other.collider.tag != "Untagged" || grounded == false)
             return;
         //if no movement should be happening, stop player moving in Z/X axis
-        if (direction.magnitude == 0 && slope < slopeLimit && GetComponent<Rigidbody>().velocity.magnitude < 2)
+        if (direction.magnitude == 0 && slope < slopeLimit && rb.velocity.magnitude < 2)
         {
             //it's usually not a good idea to alter a rigidbodies velocity every frame
             //but this is the cleanest way i could think of, and we have a lot of checks beforehand, so it shou
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
+            rb.velocity = Vector3.zero;
         }
     }
 
@@ -195,7 +263,7 @@ public class PlayerMove : MonoBehaviour
                     if (slope > slopeLimit && hit.transform.tag != "Pushable")
                     {
                         Vector3 slide = new Vector3(0f, -slideAmount, 0f);
-                        GetComponent<Rigidbody>().AddForce(slide, ForceMode.Force);
+                        rb.AddForce(slide, ForceMode.Force);
                     }
 
                     //moving platforms
@@ -205,7 +273,7 @@ public class PlayerMove : MonoBehaviour
                         movingObjSpeed = hit.transform.GetComponent<Rigidbody>().velocity;
                         movingObjSpeed.y = 0f;
                         //9.5f is a magic number, if youre not moving properly on platforms, experiment with this number
-                        GetComponent<Rigidbody>().AddForce(movingObjSpeed * movingPlatformFriction * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                        rb.AddForce(movingObjSpeed * movingPlatformFriction * Time.fixedDeltaTime, ForceMode.VelocityChange);
                     }
                     else
                     {
@@ -243,7 +311,7 @@ public class PlayerMove : MonoBehaviour
                     if (slope > slopeLimit && hit.transform.tag != "Pushable")
                     {
                         Vector3 slide = new Vector3(0f, -slideAmount, 0f);
-                        GetComponent<Rigidbody>().AddForce(slide, ForceMode.Force);
+                        rb.AddForce(slide, ForceMode.Force);
                     }
 
                     //moving platforms
@@ -253,7 +321,7 @@ public class PlayerMove : MonoBehaviour
                         movingObjSpeed = hit.transform.GetComponent<Rigidbody>().velocity;
                         movingObjSpeed.y = 0f;
                         //9.5f is a magic number, if youre not moving properly on platforms, experiment with this number
-                        GetComponent<Rigidbody>().AddForce(movingObjSpeed * movingPlatformFriction * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                        rb.AddForce(movingObjSpeed * movingPlatformFriction * Time.fixedDeltaTime, ForceMode.VelocityChange);
                     }
                     else
                     {
@@ -282,22 +350,25 @@ public class PlayerMove : MonoBehaviour
         }
         
         //if we press jump in the air, save the time
-        if (Input.GetButtonDown("Jump " + playerID) && !grounded)
+        if (Input.GetButtonDown("Jump") && !grounded)
             airPressTime = Time.time;
 
         //if were on ground within slope limit
         if (grounded && slope < slopeLimit)
         {
             //and we press jump, or we pressed jump justt before hitting the ground
-            if (Input.GetButtonDown("Jump " + playerID) || airPressTime + jumpLeniancy > Time.time)
+            if (Input.GetButtonDown("Jump") || airPressTime + jumpLeniancy > Time.time)
             {
                 if (!isBeingHeld)
                     Jump(jumpForce);
                 else
                 {
                     Debug.Log("[PlayerMove Class] Player ID: " + playerID + "\n -----JumpForceWhileCarried: " + jumpForceWhileCarried + "(mag= " + jumpForceWhileCarried.magnitude + " )"
-                                + " Mass of Player: " + GetComponent<Rigidbody>().mass);
+                                + " Mass of Player: " + rb.mass);
+                    JumpOffPlayer();
                     Jump(jumpForceWhileCarried);
+                    // Tell other player to drop me
+                    // TENTATIVE TODO: fix me I'm ugly. Player superType with id and FindOtherPlayer()??
                 }
             }
         }
@@ -313,8 +384,8 @@ public class PlayerMove : MonoBehaviour
 
         AkSoundEngine.PostEvent("Jump", gameObject);
 
-        GetComponent<Rigidbody>().velocity = new Vector3(GetComponent<Rigidbody>().velocity.x, 0f, GetComponent<Rigidbody>().velocity.z);
-        GetComponent<Rigidbody>().AddRelativeForce(jumpVelocity, ForceMode.Impulse);
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddRelativeForce(jumpVelocity, ForceMode.Impulse);
         airPressTime = 0f;
 
         //Jump Prompt Counter
@@ -323,6 +394,54 @@ public class PlayerMove : MonoBehaviour
 
         // Stop being held after jumping
         IsBeingHeld = false;
+    }
+
+    /// <summary>
+    /// Notify the carrying player that I'm jumping off of my own volition
+    /// </summary>
+    public void JumpOffPlayer()
+    {
+        rb.isKinematic = false;
+        int otherPlayerID = playerID == 1 ? 2 : 1;
+        PlayerObjectInteraction playerHoldingMe = GameObject.Find("Player " + otherPlayerID).GetComponent<PlayerObjectInteraction>();
+        playerHoldingMe.PlayerDrop();
+
+        UnlockMovementToOtherPlayer();
+
+        if (isLocalPlayer && isServer)
+            RpcGetOffPlayer();
+        else if (isLocalPlayer && !isServer)
+            CmdGetOffPlayer();
+    }
+
+    [Command]
+    private void CmdGetOffPlayer()
+    {
+        JumpOffPlayer();
+    }
+
+    [ClientRpc]
+    private void RpcGetOffPlayer()
+    {
+        JumpOffPlayer();
+    }
+
+    public void LockMovementToOtherPlayer(Transform transformToMatch)
+    {
+        isSyncingToTransform = true;
+        this.transformToSyncTo = transformToMatch;
+    }
+
+    public void UnlockMovementToOtherPlayer()
+    {
+        isSyncingToTransform = false;
+        transformToSyncTo = null;
+    }
+
+    [Command]
+    private void CmdUpdateDistanceToTarget(float distanceToTarget)
+    {
+        characterMotor.DistanceToTarget = distanceToTarget;
     }
 
     public void ToogleRestrictMovementToTwoAxis()
@@ -373,6 +492,10 @@ public class PlayerMove : MonoBehaviour
         {
             return playerID;
         }
+        set
+        {
+            playerID = value;
+        }
     }
 
     public bool IsBeingHeld
@@ -385,7 +508,6 @@ public class PlayerMove : MonoBehaviour
         {
             isBeingHeld = value;
 
-            Rigidbody rb = GetComponent<Rigidbody>();
             // If you are now being held...
             if (isBeingHeld)
             {
@@ -400,8 +522,28 @@ public class PlayerMove : MonoBehaviour
                 //... put back rotation constraints
                 rb.constraints = RigidbodyConstraints.FreezeRotation;
             }
+
+            // Send message to mirrors
+            if (isLocalPlayer)
+                if (isServer)
+                    RpcSetIsBeingHeld(value);
+                else
+                    CmdSetIsBeingHeld(value);
         }
     }
+
+    [Command]
+    private void CmdSetIsBeingHeld(bool isBeingHeld)
+    {
+        IsBeingHeld = isBeingHeld;
+    }
+
+    [ClientRpc]
+    private void RpcSetIsBeingHeld(bool isBeingHeld)
+    {
+        IsBeingHeld = isBeingHeld;
+    }
+
 
     public bool CanJump
     {

@@ -15,6 +15,6 @@ public class ResetButton : MonoBehaviour
 #endif
 
         anim.SetTrigger("Push");
-        gameManager.ResetAllResetableObjects();
+        gameManager.ResetAllResetableObjects(false);
     }
 }

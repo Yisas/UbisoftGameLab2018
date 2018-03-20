@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 //this allows the player to pick up/throw, and also pull certain objects
 //you need to add the tags "Pickup" or "Pushable" to these objects
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(PlayerMove))]
-public class PlayerObjectInteraction : MonoBehaviour
+public class PlayerObjectInteraction : NetworkBehaviour
 {
+    public GameObject holdPlayerPos;
     public GameObject particlesBoxCollide;
     public GameObject particlesObjectAppear;
 
@@ -36,6 +38,7 @@ public class PlayerObjectInteraction : MonoBehaviour
     private FixedJoint joint;
     private Color gizmoColor;
     private ResetButton resetButton = null;
+    private PlayerMove otherPlayer = null;
 
     // State attributes
     private float timeOfPickup, timeOfThrow, defRotateSpeed;
@@ -84,30 +87,36 @@ public class PlayerObjectInteraction : MonoBehaviour
 
     }
 
+    #region Updates
     void LateUpdate()
     {
         if (heldObj != null)
         {
-            if (addChangeMass)
-            {
-                heldObj.GetComponent<Rigidbody>().mass *= weightChange;
-                addChangeMass = false;
-            }
-            if (subChangeMass)
-            {
-                //heldObj.GetComponent<Rigidbody>().mass /= weightChange;0
-                heldObj.GetComponent<Rigidbody>().mass = originalMass;
-                heldObj = null;
-                subChangeMass = false;
-            }
+            //if (addChangeMass)
+            //{
+            //    heldObj.GetComponent<Rigidbody>().mass *= weightChange;
+            //    addChangeMass = false;
+            //}
+            //if (subChangeMass)
+            //{
+            //    //heldObj.GetComponent<Rigidbody>().mass /= weightChange;0
+            //    heldObj.GetComponent<Rigidbody>().mass = originalMass;
+            //    heldObj = null;
+            //    subChangeMass = false;
+            //}
         }
     }
 
     //throwing/dropping
     void Update()
     {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
         //when we press grab button, throw object if we're holding one
-        if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj)
+        if (Input.GetButtonDown("Grab") && heldObj)
         {
             if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + throwThrowableCooldownTime)
             {
@@ -121,13 +130,7 @@ public class PlayerObjectInteraction : MonoBehaviour
                 DropPickup();
         }
 
-        //NOTE: Added--Now set the heldObj so that when it jumps it gets of the bottom player:                                                   
-        if (heldObj != null && heldObj.tag == "Player" && Input.GetButton("Jump " + heldObj.GetComponent<PlayerMove>().PlayerID))
-        {
-            PlayerDrop();
-        }
-
-        if (Input.GetButtonDown("Grab " + playerMove.PlayerID) && heldObj == null && canPushButton)
+        if (Input.GetButtonDown("Grab") && heldObj == null && canPushButton)
         {
             PushButton();
             // TODO: huh?
@@ -141,27 +144,67 @@ public class PlayerObjectInteraction : MonoBehaviour
             {
                 // --------- Holding animations ---------
                 if (heldObj.tag == "Pickup")
+                {
                     animator.SetBool("HoldingPickup", true);
+                    if (isServer)
+                        RpcUpdateClientAnimator("HoldingPickup", true);
+                    else
+                        CmdUpdateClientAnimator("HoldingPickup", true);
+                }
                 else if (heldObj.tag.StartsWith("Player"))
-                    //**TODO NOTE: Add Animation for picking up the player. 
+                //**TODO NOTE: Add Animation for picking up the player. 
+                {
                     animator.SetBool("HoldingPickup", true);
+                    if (isServer)
+                        RpcUpdateClientAnimator("HoldingPickup", true);
+                    else
+                        CmdUpdateClientAnimator("HoldingPickup", true);
+                }
                 else
+                {
                     animator.SetBool("HoldingPickup", false);
+                    if (isServer)
+                        RpcUpdateClientAnimator("HoldingPickup", false);
+                    else
+                        CmdUpdateClientAnimator("HoldingPickup", false);
+                }
 
                 // --------- Pushing animations ---------
                 if (heldObj && heldObj.tag == "Pushable")
+                {
                     animator.SetBool("HoldingPushable", true);
+                    if (isServer)
+                        RpcUpdateClientAnimator("HoldingPushable", true);
+                    else
+                        CmdUpdateClientAnimator("HoldingPushable", true);
+                }
                 else
+                {
                     animator.SetBool("HoldingPushable", false);
+                    if (isServer)
+                        RpcUpdateClientAnimator("HoldingPushable", false);
+                    else
+                        CmdUpdateClientAnimator("HoldingPushable", false);
+                }
             }
             else
             {
                 animator.SetBool("HoldingPickup", false);
                 animator.SetBool("HoldingPushable", false);
+                if (isServer)
+                {
+                    RpcUpdateClientAnimator("HoldingPickup", false);
+                    RpcUpdateClientAnimator("HoldingPushable", false);
+                }
+                else
+                {
+                    CmdUpdateClientAnimator("HoldingPickup", false);
+                    CmdUpdateClientAnimator("HoldingPushable", false);
+                }
             }
         }
         //when grab is released, let go of any pushable objects were holding
-        if (Input.GetButtonDown("Drop " + playerMove.PlayerID) && heldObj != null)
+        if (Input.GetButtonDown("Drop") && heldObj != null)
         {
             DropPickup();
         }
@@ -181,7 +224,9 @@ public class PlayerObjectInteraction : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Collision
     void OnTriggerEnter(Collider other)
     {
         if (currentPowCooldown > powCooldown && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
@@ -229,28 +274,46 @@ public class PlayerObjectInteraction : MonoBehaviour
     //pickup/grab
     void OnTriggerStay(Collider other)
     {
-        //if grab is pressed and an object is inside the players "grabBox" trigger
-        if (Input.GetButton("Grab " + playerMove.PlayerID))
-        {
-            //pickup
-            if (other.tag == "Pickup" && heldObj == null && timeOfThrow + 0.2f < Time.time)
-            {
-                ResettableObject resettableObject = other.GetComponent<ResettableObject>();
-                if (resettableObject != null && !resettableObject.IsHeld)
-                    LiftPickup(other);
-                return;
-            }
-            //grab
-            if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null && timeOfThrow + 0.2f < Time.time)
-            {
-                if (playerMove.FullyGrounded && playerMove.lastFeetTouched != other.transform)
-                {
-                    Vector3 heading = other.transform.position - playerMove.transform.position;
-                    float dot = Vector3.Dot(heading, playerMove.transform.forward);
+        // non-local players shouldn't try to grab. Local version will call appropriate functions when grabbing
+        if (!isLocalPlayer)
+            return;
 
-                    if(dot > 0)
-                        GrabPushable(other);
+        //if grab is pressed and an object is inside the players "grabBox" trigger
+        if (Input.GetButton("Grab"))
+        {
+            // Save computational time by not attempting to interact with non-valid objects
+            if (other.tag != "Pickup" && other.tag != "Pushable" && other.tag != "Player")
+                return;
+
+            // Give the object either host or client authority, depending on which player is picking it up
+            if (other.tag != "Player")
+            {
+                //pickup
+                if (other.tag == "Pickup" && heldObj == null && timeOfThrow + 0.2f < Time.time)
+                {
+                    ResettableObject resettableObject = other.GetComponent<ResettableObject>();
+                    if (resettableObject != null && !resettableObject.IsHeld)
+                        LiftPickup(other);
                 }
+                //grab
+                else if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null && timeOfThrow + 0.2f < Time.time)
+                {
+                    if (playerMove.FullyGrounded && playerMove.lastFeetTouched != other.transform)
+                    {
+                        Vector3 heading = other.transform.position - playerMove.transform.position;
+                        float dot = Vector3.Dot(heading, playerMove.transform.forward);
+
+                        if (dot > 0)
+                            GrabPushable(other);
+                    }
+                }
+
+                // Give the object either host or client authority, depending on which player is picking it up
+                if (isServer)
+                    SetPlayerAuthorityToHeldObject(GetComponent<NetworkIdentity>(), playerMove.PlayerID, other.GetComponent<NetworkIdentity>());
+                else
+                    CmdSetPlayerAuthorityToHeldObject(GetComponent<NetworkIdentity>(), playerMove.PlayerID, other.GetComponent<NetworkIdentity>());
+
                 return;
             }
             //NOTE: Added to pickup the player:
@@ -261,6 +324,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             }
         }
     }
+    #endregion
 
     public void PushButton()
     {
@@ -270,6 +334,7 @@ public class PlayerObjectInteraction : MonoBehaviour
             Debug.LogError("Button reference is missing dude!");
     }
 
+    #region Interactions
     private void GrabPushable(Collider other)
     {
         Vector3 touchedPoint = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
@@ -298,10 +363,8 @@ public class PlayerObjectInteraction : MonoBehaviour
             Debug.LogError("Unasignsed PushableObject component");
     }
 
-    //NOTE: Added this function to lift above its head
     private void PickupPlayer(Collider other)
     {
-        //Debug.Log("Player Pickup triggered !!!");
         Collider otherMesh = other.GetComponent<Collider>();
         holdPos = transform.position;
         holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + gap;
@@ -309,20 +372,20 @@ public class PlayerObjectInteraction : MonoBehaviour
         //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
         if (!Physics.CheckSphere(holdPos, checkRadius, 2))
         {
-            gizmoColor = Color.green;
             heldObj = other.gameObject;
             Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-            objectDefInterpolation = heldObjectRigidbody.interpolation;
-            heldObjectRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
-            AddJoint();
+
+            heldObj.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            heldObj.GetComponent<Rigidbody>().isKinematic = true;
+            heldObj.GetComponent<PlayerMove>().LockMovementToOtherPlayer(holdPlayerPos.transform);
+
+
             playerMove.CanJump = false;   //Bottom player cannot jump
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = true;
 
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            //heldObjectRigidbody.mass *= weightChange;
-            addChangeMass = true;
             //make sure we don't immediately throw object after picking it up
             timeOfPickup = Time.time;
         }
@@ -333,6 +396,39 @@ public class PlayerObjectInteraction : MonoBehaviour
             print("Can't lift object here. If nothing is above the player, make sure triggers are set to layer index 2 (ignore raycast by default)");
         }
 
+        // Networking logic: this function now needs to be executed by the opposite version of this player instance
+        if (isLocalPlayer && isServer)
+            RpcPickupPlayer(playerMove.PlayerID);
+        else if (isLocalPlayer && !isServer)
+            CmdPickupPlayer(playerMove.PlayerID);
+    }
+
+    [ClientRpc]
+    private void RpcPickupPlayer(int targetPlayerID)
+    {
+        CommonPickupPlayerCommand(targetPlayerID);
+    }
+
+    [Command]
+    private void CmdPickupPlayer(int targetPlayerID)
+    {
+        CommonPickupPlayerCommand(targetPlayerID);
+    }
+
+    /// <summary>
+    /// To be called by the networking commands to resolve the same logic from different network origins (client/server)
+    /// </summary>
+    /// <param name="targetPlayerID"></param>
+    private void CommonPickupPlayerCommand(int targetPlayerID)
+    {
+        if (otherPlayer == null)
+        {
+            FindOtherPlayer();
+        }
+
+        // Execution already happened in local player at this point, so we avoid circular referencing
+        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
+            PickupPlayer(otherPlayer.GetComponent<Collider>());
     }
 
     private void LiftPickup(Collider other)
@@ -374,11 +470,40 @@ public class PlayerObjectInteraction : MonoBehaviour
         {
             resettableObject.IsHeld = true;
         }
+    }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="targetNetworkIdentity">Client to receive authority of the object</param>
+    /// <param name="playerID"></param>
+    /// <param name="netIdentityOfObj">Network identity of the gameObject that will have its player auth modified</param>
+    public void SetPlayerAuthorityToHeldObject(NetworkIdentity targetNetworkIdentity, int playerID, NetworkIdentity netIdentityOfObj)
+    {
+        if (otherPlayer == null)
+        {
+            FindOtherPlayer();
+        }
 
-}
+        // Remove prior ownership if necessary
+        // TODO: consider removing authority (back to server) after letting go of heldObj
+        if (netIdentityOfObj.clientAuthorityOwner != null)
+            if (netIdentityOfObj.clientAuthorityOwner != targetNetworkIdentity.connectionToClient)
+            {
+                netIdentityOfObj.RemoveClientAuthority(otherPlayer.GetComponent<NetworkIdentity>().connectionToClient);
+            }
 
-public void DropPickup()
+        netIdentityOfObj.AssignClientAuthority((targetNetworkIdentity.connectionToClient));
+
+    }
+
+    [Command]
+    public void CmdSetPlayerAuthorityToHeldObject(NetworkIdentity networkIdentity, int playerID, NetworkIdentity objToChangeAuthNetIdentity)
+    {
+        SetPlayerAuthorityToHeldObject(networkIdentity, playerID, objToChangeAuthNetIdentity);
+    }
+
+    public void DropPickup()
     {
         Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
 
@@ -404,10 +529,16 @@ public void DropPickup()
         if (heldObj.tag == "Player")
         {
             heldObj.transform.position = dropBox.transform.position;
-            //heldObjectRigidbody.mass /= weightChange;
-            subChangeMass = true;
+            heldObj.GetComponent<Rigidbody>().isKinematic = false;
+            heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
             heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
             playerMove.CanJump = true;
+
+            // Networking logic: this function now needs to be executed by the opposite version of this player instance
+            if (isLocalPlayer && isServer)
+                RpcDropPickup(playerMove.PlayerID);
+            else if (isLocalPlayer && !isServer)
+                CmdDropPickup(playerMove.PlayerID);
         }
 
         heldObjectRigidbody.interpolation = objectDefInterpolation;
@@ -428,45 +559,82 @@ public void DropPickup()
                 Debug.LogError("Unasignsed PushableObject component");
 
             //Is grabbing pushable box?
-            playerMove.IsGrabingPushable = false; 
+            playerMove.IsGrabingPushable = false;
         }
 
-        // Player heldobj reference handled in LateUpdate
-        if(heldObj.tag != "Player")
-            heldObj = null;
+        heldObj = null;
 
         timeOfThrow = Time.time;
+    }
+
+    [ClientRpc]
+    private void RpcDropPickup(int targetPlayerID)
+    {
+        CommonDropPickup(targetPlayerID);
+    }
+
+    [Command]
+    private void CmdDropPickup(int targetPlayerID)
+    {
+        CommonDropPickup(targetPlayerID);
+    }
+
+    /// <summary>
+    /// To be called by the networking commands to resolve the same logic from different network origins (client/server)
+    /// </summary>
+    /// <param name="targetPlayerID"></param>
+    private void CommonDropPickup(int targetPlayerID)
+    {
+        // Execution already happened in local player at this point, so we avoid circular referencing
+        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
+            DropPickup();
     }
 
     public void ThrowPickup()
     {
         // If the object is a pickup set the boolean that its currently being held
         ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
+        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
         if (resettableObject != null && heldObj.CompareTag("Pickup"))
         {
             resettableObject.IsHeld = false;
         }
 
+        if(heldObj.CompareTag("Pickup") || heldObj.CompareTag("Pushable"))
+        {
+            // And modify mass
+            heldObj.GetComponent<Collider>().isTrigger = false;
+            heldObjectRigidbody.useGravity = true;
+            heldObjectRigidbody.interpolation = objectDefInterpolation;
+            heldObjectRigidbody.mass /= weightChange;
+        }
+
         AkSoundEngine.PostEvent("Throw", gameObject);
 
         Destroy(joint);
-        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-        heldObj.GetComponent<Collider>().isTrigger = false;
-        heldObjectRigidbody.useGravity = true;
-        heldObjectRigidbody.interpolation = objectDefInterpolation;
-        heldObjectRigidbody.mass /= weightChange;
 
         //Note Added:
         if (heldObj.tag == "Player")
         {
             //throwForcePlayer
-            //Debug.Log("Throwing player....");
-            heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
-            heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
+            Debug.Log("Throwing player....");
+            PlayerMove heldPlayerMove = heldObj.GetComponent<PlayerMove>();
+            heldObj.GetComponent<Rigidbody>().isKinematic = false;
+            heldPlayerMove.UnlockMovementToOtherPlayer();
+            heldPlayerMove.IsBeingHeld = false;
+
+            if (heldPlayerMove.isLocalPlayer)
+                heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+
+            // Networking logic: this function now needs to be executed by the opposite version of this player instance
+            if (isLocalPlayer && isServer)
+                RpcThrowPickup(playerMove.PlayerID);
+            else if (isLocalPlayer && !isServer)
+                CmdThrowPickup(playerMove.PlayerID);
+
         }
         else
         {
-            //Debug.Log("Throwing block....");
             heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
             //Is holding pickup box
             playerMove.IsHoldingPickup = false;
@@ -476,20 +644,72 @@ public void DropPickup()
         timeOfThrow = Time.time;
     }
 
+    [ClientRpc]
+    private void RpcThrowPickup(int targetPlayerID)
+    {
+        CommonThrowPickup(targetPlayerID);
+    }
+
+    [Command]
+    private void CmdThrowPickup(int targetPlayerID)
+    {
+        CommonThrowPickup(targetPlayerID);
+    }
+
+    /// <summary>
+    /// To be called by the networking commands to resolve the same logic from different network origins (client/server)
+    /// </summary>
+    /// <param name="targetPlayerID"></param>
+    private void CommonThrowPickup(int targetPlayerID)
+    {
+        // Execution already happened in local player at this point, so we avoid circular referencing
+        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
+            ThrowPickup();
+    }
+
     //Adding:
     //If the top player jumps while being held it will break the joint and reset both the players.
     public void PlayerDrop()
     {
+        if (heldObj != null && heldObj.tag == "Player")
+        {
+            Destroy(joint);
+            heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
         Destroy(joint);
         heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
-        //heldObj.GetComponent<Rigidbody>().mass /= weightChange;
-        subChangeMass = true;
-        //heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
 
-        //heldObj = null;
-        playerMove.CanJump = true;
-        timeOfThrow = Time.time;
+            heldObj = null;
+            playerMove.CanJump = true;
+            timeOfThrow = Time.time;
+
+            // Networking logic: this function now needs to be executed by the opposite version of this player instance
+            if (isLocalPlayer && isServer)
+                RpcPlayerDrop(playerMove.PlayerID);
+            else if (isLocalPlayer && !isServer)
+                CmdPlayerDrop(playerMove.PlayerID);
+        }
     }
+
+    [ClientRpc]
+    public void RpcPlayerDrop(int targetPlayerID)
+    {
+        CommonPlayerDrop(targetPlayerID);
+    }
+
+    [Command]
+    public void CmdPlayerDrop(int targetPlayerID)
+    {
+        CommonPlayerDrop(targetPlayerID);
+    }
+
+    private void CommonPlayerDrop(int targetPlayerID)
+    {
+        // Execution already happened in local player at this point, so we avoid circular referencing
+        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
+            PlayerDrop();
+    }
+
+    #endregion
 
     //connect player and pickup/pushable object via a physics joint
     private void AddJoint()
@@ -509,6 +729,47 @@ public void DropPickup()
         }
     }
 
+    private void FindOtherPlayer()
+    {
+        PlayerMove[] players = GameObject.FindObjectsOfType<PlayerMove>();
+        foreach (PlayerMove player in players)
+        {
+            if (player != playerMove)
+            {
+                otherPlayer = player;
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Send message to modify animator of player on client-side
+    /// </summary>
+    /// <param name="animatorAttributeName"></param>
+    /// <param name="value"></param>
+    [ClientRpc]
+    private void RpcUpdateClientAnimator(string animatorAttributeName, bool value)
+    {
+        if (animator)
+        {
+            animator.SetBool(animatorAttributeName, value);
+        }
+    }
+
+    /// <summary>
+    /// Send message to modify animator of player on server-side
+    /// </summary>
+    /// <param name="animatorAttributeName"></param>
+    /// <param name="value"></param>
+    [Command]
+    private void CmdUpdateClientAnimator(string animatorAttributeName, bool value)
+    {
+        if (animator)
+        {
+            animator.SetBool(animatorAttributeName, value);
+        }
+    }
+
     //draws red sphere if something is in way of pickup (select player in scene view to see)
     void OnDrawGizmosSelected()
     {
@@ -520,9 +781,9 @@ public void DropPickup()
     private void checkIfBoxIsHanging()
     {
         // If we've jumped and our velocity is 0 it means the box is keeping us afloat and we should drop it.
-        if((rb.velocity.y <boxHangThreshold && rb.velocity.y > -boxHangThreshold && !playerMove.Grounded)
+        if ((rb.velocity.y < boxHangThreshold && rb.velocity.y > -boxHangThreshold && !playerMove.Grounded)
             && (heldObj != null && heldObj.CompareTag("Pickup")))
-                DropPickup();
+            DropPickup();
     }
 }
 
