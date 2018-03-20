@@ -635,6 +635,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             else if (isLocalPlayer && !isServer)
                 CmdThrowPickup(playerMove.PlayerID);
 
+            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
         }
         else
         {
@@ -674,12 +675,14 @@ public class PlayerObjectInteraction : NetworkBehaviour
     //If the top player jumps while being held it will break the joint and reset both the players.
     public void PlayerDrop()
     {
-        if (heldObj != null && heldObj.tag == "Player")
+        if (heldObj != null && heldObj.tag.StartsWith("Player"))
         {
             Destroy(joint);
             heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
-        Destroy(joint);
-        heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
+            Destroy(joint);
+            heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
+
+            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
 
             heldObj = null;
             playerMove.CanJump = true;

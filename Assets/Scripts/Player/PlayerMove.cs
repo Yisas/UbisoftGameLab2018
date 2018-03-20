@@ -404,7 +404,7 @@ public class PlayerMove : NetworkBehaviour
     public void JumpOffPlayer()
     {
         rb.isKinematic = false;
-        otherPlayer.GetComponent<PlayerObjectInteraction>().PlayerDrop();
+        otherPlayer.PlayerDrop();
 
         UnlockMovementToOtherPlayer();
 
