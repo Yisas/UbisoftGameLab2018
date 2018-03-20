@@ -216,6 +216,7 @@ public class PlayerMove : NetworkBehaviour
             animator.SetFloat("DistanceToTarget", characterMotor.DistanceToTarget);
             animator.SetBool("Grounded", grounded);
             animator.SetFloat("YVelocity", rb.velocity.y);
+            animator.SetBool("IsBeingCarried", isBeingHeld);
         }
         else
             Debug.LogWarning("Animator missing on player " + playerID);
@@ -225,7 +226,6 @@ public class PlayerMove : NetworkBehaviour
         {
             AkSoundEngine.PostEvent("Footsteps", gameObject);
         }
-
     }
 
     //prevents rigidbody from sliding down slight slopes (read notes in characterMotor class for more info on friction)
