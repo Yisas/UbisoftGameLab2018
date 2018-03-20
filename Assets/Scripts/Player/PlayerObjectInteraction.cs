@@ -100,18 +100,18 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (heldObj != null)
         {
-            if (addChangeMass)
-            {
-                heldObj.GetComponent<Rigidbody>().mass *= weightChange;
-                addChangeMass = false;
-            }
-            if (subChangeMass)
-            {
-                //heldObj.GetComponent<Rigidbody>().mass /= weightChange;0
-                heldObj.GetComponent<Rigidbody>().mass = originalMass;
-                heldObj = null;
-                subChangeMass = false;
-            }
+            //if (addChangeMass)
+            //{
+            //    heldObj.GetComponent<Rigidbody>().mass *= weightChange;
+            //    addChangeMass = false;
+            //}
+            //if (subChangeMass)
+            //{
+            //    //heldObj.GetComponent<Rigidbody>().mass /= weightChange;0
+            //    heldObj.GetComponent<Rigidbody>().mass = originalMass;
+            //    heldObj = null;
+            //    subChangeMass = false;
+            //}
         }
     }
 
@@ -610,9 +610,19 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         // If the object is a pickup set the boolean that its currently being held
         ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
+        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
         if (resettableObject != null && heldObj.CompareTag("Pickup"))
         {
             resettableObject.IsHeld = false;
+        }
+
+        if(heldObj.CompareTag("Pickup") || heldObj.CompareTag("Pushable"))
+        {
+            // And modify mass
+            heldObj.GetComponent<Collider>().isTrigger = false;
+            heldObjectRigidbody.useGravity = true;
+            heldObjectRigidbody.interpolation = objectDefInterpolation;
+            heldObjectRigidbody.mass /= weightChange;
         }
 
         if (throwSound)
@@ -623,12 +633,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
             audioSource.Play();
         }
         Destroy(joint);
-        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-
-        heldObj.GetComponent<Collider>().isTrigger = false;
-        heldObjectRigidbody.useGravity = true;
-        heldObjectRigidbody.interpolation = objectDefInterpolation;
-        heldObjectRigidbody.mass /= weightChange;
 
         //Note Added:
         if (heldObj.tag == "Player")
