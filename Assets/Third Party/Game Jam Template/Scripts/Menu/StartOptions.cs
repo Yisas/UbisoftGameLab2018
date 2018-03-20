@@ -3,11 +3,9 @@ using System.Collections;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
-
-public class StartOptions : MonoBehaviour {
-
-
+public class StartOptions : NetworkBehaviour {
     public MenuSettings menuSettingsData;
 	public int sceneToStart = 1;										//Index number in build settings of scene to load if changeScenes is true
 	public bool changeScenes;											//If true, load a new scene when Start is pressed, if false, fade out UI and continue in single scene
@@ -67,10 +65,16 @@ public class StartOptions : MonoBehaviour {
         //If changeScenes is true, start fading and change scenes halfway through animation when screen is blocked by FadeImage
         if (menuSettingsData.nextSceneIndex != 0)
         {
-            //Use invoke to delay calling of LoadDelayed by half the length of fadeColorAnimationClip
-            Invoke("LoadDelayed", menuSettingsData.menuFadeTime);
+            StartCameraFade();
 
-            StartCoroutine(FadeCanvasGroupAlpha(0f, 1f, fadeOutImageCanvasGroup));
+            // Start fade in other game instance
+            if (isServer)
+            {
+                RpcStartCameraFade();
+                string path = SceneUtility.GetScenePathByBuildIndex(sceneToStart);
+                string sceneName = path.Substring(0, path.Length - 6).Substring(path.LastIndexOf('/') + 1);
+                NetworkManager.singleton.ServerChangeScene(sceneName);
+            }
         } 
 
 		//If changeScenes is false, call StartGameInScene
@@ -81,6 +85,20 @@ public class StartOptions : MonoBehaviour {
 		}
 
 	}
+
+    [ClientRpc]
+    public void RpcStartCameraFade()
+    {
+        StartCameraFade();
+    }
+
+    public void StartCameraFade()
+    {
+        //Use invoke to delay calling of LoadDelayed by half the length of fadeColorAnimationClip
+        Invoke("LoadDelayed", menuSettingsData.menuFadeTime);
+
+        StartCoroutine(FadeCanvasGroupAlpha(0f, 1f, fadeOutImageCanvasGroup));
+    }
 
     public void NextScene()
     {
