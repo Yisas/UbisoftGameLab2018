@@ -8,7 +8,7 @@ public class CharacterMotor : NetworkBehaviour
 {
 	[HideInInspector]
 	public Vector3 currentSpeed;
-	[HideInInspector, SyncVar]
+	
 	public float DistanceToTarget;
 	
 	void Awake()
@@ -42,6 +42,19 @@ public class CharacterMotor : NetworkBehaviour
 			relativePos.y = 0;
 		
 		DistanceToTarget = relativePos.magnitude;
+
+        if (isLocalPlayer)
+        {
+            if (isServer)
+            {
+                RpcSendDistanceToTarget(DistanceToTarget);
+            }
+            else
+            {
+                CmdSendDistanceToTarget(DistanceToTarget);
+            }
+        }
+
 		if (DistanceToTarget <= stopDistance)
 			return true;
 		else
@@ -96,6 +109,18 @@ public class CharacterMotor : NetworkBehaviour
 				GetComponent<Rigidbody>().AddForce ((currentSpeed * -1) * deceleration * Time.deltaTime, ForceMode.VelocityChange);
 		}
 	}
+
+    [Command]
+    public void CmdSendDistanceToTarget(float distanceToTarget)
+    {
+        DistanceToTarget = distanceToTarget;
+    }
+
+    [ClientRpc]
+    public void RpcSendDistanceToTarget(float distanceToTarget)
+    {
+        DistanceToTarget = distanceToTarget;
+    }
 }
 
 /* NOTE: ManageSpeed does a similar job to simply increasing the friction property of a rigidbodies "physics material"
