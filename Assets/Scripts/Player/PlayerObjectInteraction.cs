@@ -4,19 +4,11 @@ using UnityEngine.Networking;
 
 //this allows the player to pick up/throw, and also pull certain objects
 //you need to add the tags "Pickup" or "Pushable" to these objects
-[RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerObjectInteraction : NetworkBehaviour
 {
     public GameObject holdPlayerPos;
-
-    // Audio
-    public AudioClip pickUpSound;                               //sound when you pickup/grab an object
-    public AudioClip throwSound;                                //sound when you throw an object
-    public AudioClip boxCollideSound;                           //sound when you collide with a box
-    public AudioClip appearObjectSound;                         //sound when you make an object apper
-
     public GameObject particlesBoxCollide;
     public GameObject particlesObjectAppear;
 
@@ -248,27 +240,19 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
         {
-            if (boxCollideSound)
-            {
                 AppearingObject ao = other.GetComponent<AppearingObject>();
 
                 if (ao && other.gameObject.layer != LayerMask.NameToLayer("Default"))
                 {
-                    if (appearObjectSound && ao.playerToAppearTo == playerMove.PlayerID)
+                    if (ao.playerToAppearTo == playerMove.PlayerID)
                     {
-                        Instantiate(particlesObjectAppear, transform.position + transform.forward + transform.up, transform.rotation);
-                        audioSource.volume = 1f;
-                        audioSource.clip = appearObjectSound;
-                        audioSource.Play();
+                        AkSoundEngine.PostEvent("AppearObject", gameObject);
                     }
                 }
                 else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
                 {
-                    audioSource.volume = 0.5f;
-                    audioSource.clip = boxCollideSound;
-                    audioSource.Play();
+                    AkSoundEngine.PostEvent("BoxCollide", gameObject);
                 }
-            }
         }
 
         if (other.tag == "Button")
@@ -625,13 +609,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
             heldObjectRigidbody.mass /= weightChange;
         }
 
-        if (throwSound)
-        {
-            // TODO: undo hardcoded volume, multiple get etc.
-            audioSource.volume = 1;
-            audioSource.clip = throwSound;
-            audioSource.Play();
-        }
+        AkSoundEngine.PostEvent("Throw", gameObject);
+
         Destroy(joint);
 
         //Note Added:
@@ -737,13 +716,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (heldObj)
         {
-            if (pickUpSound)
-            {
-                // TODO: undo hardcoded volume, multiple get etc.
-                audioSource.volume = 1;
-                audioSource.clip = pickUpSound;
-                audioSource.Play();
-            }
+            AkSoundEngine.PostEvent("Pickup", gameObject);
+
             if (joint)
             {
                 Destroy(joint);

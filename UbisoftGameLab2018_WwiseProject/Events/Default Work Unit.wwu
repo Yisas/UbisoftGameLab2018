@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{DF800232-9191-4E76-93F8-17DF18D201CD}" SchemaVersion="85">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{DF800232-9191-4E76-93F8-17DF18D201CD}" PersistMode="Standalone">
+			<ChildrenList>
+				<Folder Name="PressurePlate" ID="{0CD3C9C2-09B3-4069-A7A2-62B39D6A63BA}" ShortID="340541235">
+					<ChildrenList>
+						<Event Name="PlateOn" ID="{D8627E1A-14C2-4DD2-8714-F08EF8769F75}">
+							<ChildrenList>
+								<Action Name="" ID="{09FB723C-DC6D-44D1-A491-C8016222B05E}" ShortID="827248650">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Plate_On" ID="{B3B96B60-2D33-4F13-BDE1-18B7C75C058A}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="PlateOff" ID="{E63A7DEA-FB3E-4C7E-991A-440AFA198FD8}">
+							<ChildrenList>
+								<Action Name="" ID="{71ECC454-E2E0-4534-B5AB-A1A639CC6D83}" ShortID="87639554">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Plate_Off" ID="{2D7E1C77-3156-4DEC-90FB-4930624BBADB}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Player" ID="{7F96680F-1447-408C-871F-49920FF1D6D0}" ShortID="406960008">
+					<ChildrenList>
+						<Event Name="Jump" ID="{904CF0A2-1D02-4A8C-9730-E69385182180}">
+							<ChildrenList>
+								<Action Name="" ID="{41F2F0B2-5459-4A7F-899F-557869B71411}" ShortID="909594467">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="jump_man_voice" ID="{C7DFF0FE-7FD5-44C1-A93D-0288B0862A00}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="PlayerLand" ID="{7005D1BF-439B-45A1-95B7-51FFA8769F44}">
+							<ChildrenList>
+								<Action Name="" ID="{AE67D704-F85B-42F8-9E1C-D920AEBDE252}" ShortID="149108226">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Player Land" ID="{06355480-3391-469F-89BB-2F86BFA9F961}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Footsteps" ID="{F95CE3C7-13BA-46A4-810F-EA6EED3A018D}">
+							<ChildrenList>
+								<Action Name="" ID="{020899C0-8FD5-49D8-880A-C808CCFCE407}" ShortID="693622193">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="FOOTSTEP_Player_Run" ID="{D6C74405-22B6-4C68-90D2-337B6019665B}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="Throw" ID="{B32B0151-A76A-4CAB-9382-4D93E9DF2E02}">
+							<ChildrenList>
+								<Action Name="" ID="{777E9F78-A704-47C0-9DEF-1F8D348D2F00}" ShortID="1071195940">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Throw" ID="{475E54B8-869A-4629-B1D0-0E3C8D8B0ACE}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="PickUp" ID="{E5BF143B-6BAA-4411-866F-7010AC5B7346}">
+							<ChildrenList>
+								<Action Name="" ID="{2B893779-3E95-47ED-AAD9-7245BADB3667}" ShortID="1026697017">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Pickup" ID="{93D09431-6D82-48A0-A94F-84776CDDFF00}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Object" ID="{A62B8F40-9B5A-477C-A075-C2652859BFAE}" ShortID="793297141">
+					<ChildrenList>
+						<Event Name="BoxCollide" ID="{EF93C60D-9B48-446D-BED2-925CDD245FC0}">
+							<ChildrenList>
+								<Action Name="" ID="{7B2D9253-A5B3-4EC0-BCEC-FC658DDD21FF}" ShortID="533782115">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="BoxCollide" ID="{84A44859-C994-4ABA-9E8E-45B8C716D665}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="AppearObject" ID="{4B308AF6-682C-4683-83DE-3870799CD3FD}">
+							<ChildrenList>
+								<Action Name="" ID="{0E7ACC86-7B4D-4C6C-BA79-33FDA493DB39}" ShortID="927789257">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="AppearObject" ID="{D737FB93-DCD1-4EA1-BEBD-658F73E8AB9D}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="DragWoodenBox" ID="{C23ECE2D-8C35-474C-8D45-B260867C7076}">
+							<ChildrenList>
+								<Action Name="" ID="{3B88F833-95A5-43C2-BBE1-D7744785D1A8}" ShortID="68020755">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="DRAG_Wooden_Box_short" ID="{346ACB7A-37B0-4A78-861D-DB396F4D71CB}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="StopDragWoodenBox" ID="{1E4ABB54-F674-4A61-B191-1AE3E7C83737}">
+							<ChildrenList>
+								<Action Name="" ID="{1521EA28-067C-4065-B470-C4A17891AB07}" ShortID="700769611">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="2"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="DRAG_Wooden_Box_short" ID="{346ACB7A-37B0-4A78-861D-DB396F4D71CB}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Ghost" ID="{8F9FF3EB-7C4F-498C-BB82-1A741FCBFA00}" ShortID="1053460253">
+					<ChildrenList>
+						<Event Name="GhostLaugh" ID="{E69E8769-400A-478D-B4A8-92D245746A19}">
+							<ChildrenList>
+								<Action Name="" ID="{BDB85C89-EFE8-4629-9BE2-4900CCE7298D}" ShortID="719106812">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Ghost_Laugh" ID="{3782F0B2-C700-4BC4-BF32-066FB5FE09CD}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>
