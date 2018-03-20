@@ -369,10 +369,10 @@ public class PlayerMove : NetworkBehaviour
                 {
                     Debug.Log("[PlayerMove Class] Player ID: " + playerID + "\n -----JumpForceWhileCarried: " + jumpForceWhileCarried + "(mag= " + jumpForceWhileCarried.magnitude + " )"
                                 + " Mass of Player: " + rb.mass);
+                    JumpOffPlayer();
                     Jump(jumpForceWhileCarried);
                     // Tell other player to drop me
                     // TENTATIVE TODO: fix me I'm ugly. Player superType with id and FindOtherPlayer()??
-                    JumpOffPlayer();
                 }
             }
         }
@@ -411,6 +411,7 @@ public class PlayerMove : NetworkBehaviour
     /// </summary>
     public void JumpOffPlayer()
     {
+        rb.isKinematic = false;
         int otherPlayerID = playerID == 1 ? 2 : 1;
         PlayerObjectInteraction playerHoldingMe = GameObject.Find("Player " + otherPlayerID).GetComponent<PlayerObjectInteraction>();
         playerHoldingMe.PlayerDrop();
