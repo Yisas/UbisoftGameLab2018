@@ -14,6 +14,7 @@ public class GManager : MonoBehaviour
     public static GManager Instance;
     public bool resetPlayers = false;
     public static string pickupLayer = "Pickup";
+    public GameObject respawnPickupEffect;
 
     public static int invisiblePlayer1Layer = 9;
     public static int invisiblePlayer2Layer = 12;
@@ -79,5 +80,10 @@ public class GManager : MonoBehaviour
                 go.GetComponent<Renderer>().enabled = false;
             }
         }
+    }
+
+    public void TriggerRespawnThrowableEffect(Vector3 position)
+    {
+        GameObject.Instantiate(respawnPickupEffect, position, Quaternion.Euler(90, 0, 0));
     }
 }
