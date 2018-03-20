@@ -97,7 +97,7 @@ public class GhostObjectInteraction : MonoBehaviour {
             if(heldObj.tag == "Pickup")
             {
                 //heldObj.transform.position = dropBox.transform.position;
-                resettableObject.Reset();
+                resettableObject.Reset(true);
             }
         }
         else

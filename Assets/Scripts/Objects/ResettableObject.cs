@@ -44,9 +44,9 @@ public class ResettableObject : MonoBehaviour
         }
     }
 
-    public void Reset()
+    public void Reset(bool preventRespawnEffect = false)
     {
-        if(transform.tag == "Pickup")
+        if(transform.tag == "Pickup" && !preventRespawnEffect)
         {
             Vector3 positionToSpawnAt = new Vector3(ogPosition.x, ogPosition.y - GetComponent<MeshRenderer>().bounds.extents.y, ogPosition.z);
 
