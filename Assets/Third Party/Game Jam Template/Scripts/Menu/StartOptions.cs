@@ -71,9 +71,7 @@ public class StartOptions : NetworkBehaviour {
             if (isServer)
             {
                 RpcStartCameraFade();
-                string path = SceneUtility.GetScenePathByBuildIndex(sceneToStart);
-                string sceneName = path.Substring(0, path.Length - 6).Substring(path.LastIndexOf('/') + 1);
-                NetworkManager.singleton.ServerChangeScene(sceneName);
+                NetworkedSceneChange();
             }
         } 
 
@@ -95,13 +93,23 @@ public class StartOptions : NetworkBehaviour {
     public void StartCameraFade()
     {
         //Use invoke to delay calling of LoadDelayed by half the length of fadeColorAnimationClip
-        Invoke("LoadDelayed", menuSettingsData.menuFadeTime);
+        //Invoke("LoadDelayed", menuSettingsData.menuFadeTime);
 
         StartCoroutine(FadeCanvasGroupAlpha(0f, 1f, fadeOutImageCanvasGroup));
     }
 
+    private void NetworkedSceneChange()
+    {
+        string path = SceneUtility.GetScenePathByBuildIndex(sceneToStart);
+        string sceneName = path.Substring(0, path.Length - 6).Substring(path.LastIndexOf('/') + 1);
+        NetworkManager.singleton.ServerChangeScene(sceneName);
+    }
+
     public void NextScene()
     {
+        if (!isServer)
+            return;
+
         //If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic
         //To change fade time, change length of animation "FadeToColor"
         if (menuSettingsData.musicLoopToChangeTo != null)
@@ -109,12 +117,13 @@ public class StartOptions : NetworkBehaviour {
             playMusic.FadeDown(menuSettingsData.menuFadeTime);
         }
 
+        StartCameraFade();
+
+        RpcStartCameraFade();
+
         sceneToStart += 1;
 
-        //Use invoke to delay calling of LoadDelayed by half the length of fadeColorAnimationClip
-        Invoke("LoadDelayed", menuSettingsData.menuFadeTime);
-
-        StartCoroutine(FadeCanvasGroupAlpha(0f, 1f, fadeOutImageCanvasGroup));
+        NetworkedSceneChange();
     }
 
     public void RestartGame()
@@ -143,14 +152,15 @@ public class StartOptions : NetworkBehaviour {
             playMusic.FadeDown(menuSettingsData.menuFadeTime);
         }
 
+        StartCameraFade();
+
+        RpcStartCameraFade();
+
         sceneToStart -= 1;
         if (sceneToStart <= 0)
             sceneToStart = 1;
 
-        //Use invoke to delay calling of LoadDelayed by half the length of fadeColorAnimationClip
-        Invoke("LoadDelayed", menuSettingsData.menuFadeTime);
-
-        StartCoroutine(FadeCanvasGroupAlpha(0f, 1f, fadeOutImageCanvasGroup));
+        NetworkedSceneChange();
     }
 
     void OnEnable()
