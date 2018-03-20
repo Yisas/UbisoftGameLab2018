@@ -373,6 +373,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if (!Physics.CheckSphere(holdPos, checkRadius, 2))
         {
             heldObj = other.gameObject;
+
+            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1) + " While Carried");
+
             Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
@@ -385,8 +388,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
             playerMove.CanJump = false;   //Bottom player cannot jump
             heldObj.GetComponent<PlayerMove>().SetIsBeingHeld(true);
 
-            //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            //make sure we don't immediately throw object after picking it up
             timeOfPickup = Time.time;
         }
         //if not print to console (look in scene view for sphere gizmo to see whats stopping the pickup)
@@ -533,6 +534,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
             heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
             heldObj.GetComponent<PlayerMove>().SetIsBeingHeld(false);
             playerMove.CanJump = true;
+
+            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
             if (isLocalPlayer && isServer)
