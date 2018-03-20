@@ -10,6 +10,7 @@ public class PlayerMove : NetworkBehaviour
 
     // Networking corrections
     public float transformSyncVecticalCorrectionTreshold = 0.2f;
+    public float interpolationChangeFactorWhileCarried = 0.5f;
     private Vector3 lastFrameTransformToSyncToPosition;     // Do to networking noise over this value, we'll cash it on a per frame basis and ignore if threshold
 
     [Header("------Camera Interactions------")]
@@ -68,6 +69,7 @@ public class PlayerMove : NetworkBehaviour
     private Quaternion screenMovementSpace;
     private CharacterMotor characterMotor;
     private Transform transformToSyncTo;
+    private PlayerObjectInteraction otherPlayer;
 
     //setup
     void Awake()
@@ -393,7 +395,7 @@ public class PlayerMove : NetworkBehaviour
             jumpPromptConter--;
 
         // Stop being held after jumping
-        IsBeingHeld = false;
+        SetIsBeingHeld(false);
     }
 
     /// <summary>
@@ -402,9 +404,7 @@ public class PlayerMove : NetworkBehaviour
     public void JumpOffPlayer()
     {
         rb.isKinematic = false;
-        int otherPlayerID = playerID == 1 ? 2 : 1;
-        PlayerObjectInteraction playerHoldingMe = GameObject.Find("Player " + otherPlayerID).GetComponent<PlayerObjectInteraction>();
-        playerHoldingMe.PlayerDrop();
+        otherPlayer.GetComponent<PlayerObjectInteraction>().PlayerDrop();
 
         UnlockMovementToOtherPlayer();
 
@@ -436,6 +436,15 @@ public class PlayerMove : NetworkBehaviour
     {
         isSyncingToTransform = false;
         transformToSyncTo = null;
+    }
+
+    private void FindOtherPlayer()
+    {
+        if (otherPlayer == null)
+        {
+            int otherPlayerID = playerID == 1 ? 2 : 1;
+            otherPlayer = GameObject.Find("Player " + otherPlayerID).GetComponent<PlayerObjectInteraction>();
+        }
     }
 
     [Command]
@@ -504,8 +513,13 @@ public class PlayerMove : NetworkBehaviour
         {
             return isBeingHeld;
         }
-        set
+    }
+
+    public void SetIsBeingHeld(bool value)
+    {
         {
+            FindOtherPlayer();
+
             isBeingHeld = value;
 
             // If you are now being held...
@@ -516,11 +530,21 @@ public class PlayerMove : NetworkBehaviour
                 rb.constraints = RigidbodyConstraints.None;
                 //... and adding the ones necessary when being carried through a FixedJoint logic
                 rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+                // Modify interpolation factor
+                otherPlayer.GetComponent<NetworkTransform>().interpolateMovement = interpolationChangeFactorWhileCarried;
+                GetComponent<NetworkTransform>().interpolateMovement = interpolationChangeFactorWhileCarried;
             }
             else
             {
+                FindOtherPlayer();
+
                 //... put back rotation constraints
                 rb.constraints = RigidbodyConstraints.FreezeRotation;
+
+                // Modify interpolation factor
+                otherPlayer.GetComponent<NetworkTransform>().interpolateMovement = 1f;
+                GetComponent<NetworkTransform>().interpolateMovement = 1f;
             }
 
             // Send message to mirrors
@@ -535,13 +559,13 @@ public class PlayerMove : NetworkBehaviour
     [Command]
     private void CmdSetIsBeingHeld(bool isBeingHeld)
     {
-        IsBeingHeld = isBeingHeld;
+        SetIsBeingHeld(isBeingHeld);
     }
 
     [ClientRpc]
     private void RpcSetIsBeingHeld(bool isBeingHeld)
     {
-        IsBeingHeld = isBeingHeld;
+        SetIsBeingHeld(isBeingHeld);
     }
 
 

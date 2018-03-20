@@ -383,7 +383,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
 
             playerMove.CanJump = false;   //Bottom player cannot jump
-            heldObj.GetComponent<PlayerMove>().IsBeingHeld = true;
+            heldObj.GetComponent<PlayerMove>().SetIsBeingHeld(true);
 
             //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
             //make sure we don't immediately throw object after picking it up
@@ -531,7 +531,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             heldObj.transform.position = dropBox.transform.position;
             heldObj.GetComponent<Rigidbody>().isKinematic = false;
             heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
-            heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
+            heldObj.GetComponent<PlayerMove>().SetIsBeingHeld(false);
             playerMove.CanJump = true;
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
@@ -621,7 +621,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             PlayerMove heldPlayerMove = heldObj.GetComponent<PlayerMove>();
             heldObj.GetComponent<Rigidbody>().isKinematic = false;
             heldPlayerMove.UnlockMovementToOtherPlayer();
-            heldPlayerMove.IsBeingHeld = false;
+            heldPlayerMove.SetIsBeingHeld(false);
 
             if (heldPlayerMove.isLocalPlayer)
                 heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
