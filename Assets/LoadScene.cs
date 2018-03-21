@@ -44,7 +44,6 @@ public class LoadScene : MonoBehaviour {
     }
 
     void FadeToClear()
-
     {
         // Lerp the colour of the image between itself and transparent.
         m_ImageToFade.color = Color.Lerp(m_ImageToFade.color, Color.clear, fadeSpeed * Time.deltaTime);
