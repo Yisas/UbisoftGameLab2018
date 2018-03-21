@@ -136,7 +136,6 @@ GameObject:
   - component: {fileID: 114261684740536138}
   - component: {fileID: 114507385579566834}
   - component: {fileID: 54302311295314138}
-  - component: {fileID: 82582006944707454}
   m_Layer: 0
   m_Name: Ghost
   m_TagString: Untagged
@@ -265,7 +264,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1861875874469952}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 34.89, y: 5.05, z: -3.361855}
+  m_LocalPosition: {x: 28.5, y: 3.75, z: 1.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4618300750894220}
@@ -799,86 +798,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.8349451, y: 3.2197042, z: 0.80391216}
   m_Center: {x: 0, y: 0.48994708, z: 1.5}
---- !u!82 &82582006944707454
-AudioSource:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1861875874469952}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: c8393b97e8e87fd43831ac491be49d6a, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 10
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
 --- !u!114 &114121381762283102
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -948,9 +867,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7e6390c6e89ec840a1203c0e9b90917, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickUpSound: {fileID: 8300000, guid: c8393b97e8e87fd43831ac491be49d6a, type: 3}
   dropBox: {fileID: 1316759313643092}
   grabBox: {fileID: 1716002871347264}
+  liftHeight: 0.7
+  radiusAboveHead: 0.5
+  weightChange: 0.3
 --- !u!136 &136135141620392648
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -1020,7 +941,7 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: -0.0001809597, y: 0.000000007450581, z: -0.00023390353}
+    m_Center: {x: -0.0001809597, y: 0.0000000018626451, z: -0.00023389608}
     m_Extent: {x: 0.015277837, y: 0.015444621, z: 0.022071565}
   m_DirtyAABB: 0
 --- !u!183 &183621804969352206
