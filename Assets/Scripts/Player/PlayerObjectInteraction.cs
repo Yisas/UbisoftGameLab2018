@@ -314,6 +314,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
     /// </summary>
     public void ResetHoldPosition()
     {
+        if (!heldObj)
+        {
+            Debug.LogWarning("Held object was missing when resetting. Did this break something in the game?");
+            return;
+        }
+
         holdPos = transform.position;
         holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (heldObj.GetComponent<Collider>().bounds.extents.y) + gap;
         heldObj.transform.position = holdPos;
