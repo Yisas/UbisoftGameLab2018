@@ -6,19 +6,15 @@ using UnityEngine;
 
 public class LoadScene : MonoBehaviour {
 
-    public static string m_SceneToLoad;
-    public static int m_ImageToLoad;
-
-    //public Animator m_CanvasAnimator;
+ 
     public Image m_ImageToFade;
-
-    private float timer;
-    public float fadeSpeed = 5f;
+    public float fadeSpeed;
     private bool fading = true;
 
     // Use this for initialization
     private void Awake()
     {
+        m_ImageToFade.enabled = true;
         m_ImageToFade.rectTransform.localScale = new Vector2(Screen.width, Screen.height);
     }
 
@@ -85,7 +81,7 @@ public class LoadScene : MonoBehaviour {
 
     }
     
-    public void EndScene(int SceneNumber)
+    public void EndScene(int SceneNumber)   //should load the next vignette
     {
         fading = false;
         StartCoroutine("EndSceneRoutine", SceneNumber);
