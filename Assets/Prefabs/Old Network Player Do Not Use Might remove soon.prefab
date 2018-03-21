@@ -35,7 +35,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4389737366342556}
   - component: {fileID: 135821822703125956}
-  - component: {fileID: 114593528492921884}
   - component: {fileID: 114111130946986822}
   m_Layer: 14
   m_Name: PlayerPromptTrigger
@@ -1334,7 +1333,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1899227055345258}
   m_LocalRotation: {x: 0, y: 0.012523852, z: 0, w: -0.9999216}
-  m_LocalPosition: {x: -3.61, y: 0.49436045, z: -0.039999995}
+  m_LocalPosition: {x: 15.095402, y: 2.06, z: 9.131327}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4906830259244268}
@@ -1795,8 +1794,8 @@ MonoBehaviour:
   Canvas_PresurePlate: {fileID: 0}
   Canvas_Player: {fileID: 223275923734359866}
   buttonprompt: 2
-  JumpImgP1: {fileID: 0}
-  InteractImgP1: {fileID: 0}
+  JumpImgP1: {fileID: 114686870430250022}
+  InteractImgP1: {fileID: 114075098569516542}
 --- !u!114 &114122018106457022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1857,26 +1856,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OnlyDeactivate: 0
---- !u!114 &114593528492921884
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1038499400753636}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7649da01531f883439f5efd284b2ba3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Canvas_Junk: {fileID: 0}
-  Canvas_PresurePlate: {fileID: 0}
-  Canvas_Player_1: {fileID: 0}
-  Canvas_Player_2: {fileID: 223275923734359866}
-  buttonprompt: 2
-  JumpImgP1: {fileID: 0}
-  InteractImgP1: {fileID: 0}
-  JumpImgP2: {fileID: 114686870430250022}
-  InteractImgP2: {fileID: 114075098569516542}
 --- !u!114 &114599334580162288
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1920,8 +1899,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf834097aa74eb4e86aa91a4b6ab25b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  holdPlayerPos: {fileID: 1901748987976732, guid: ddfc852c5191fc54aab28847c1eed25d,
-    type: 2}
+  holdPlayerPos: {fileID: 0}
   pickUpSound: {fileID: 8300000, guid: 6fed4bf326ed3a341a2c8aee9d090cef, type: 3}
   throwSound: {fileID: 8300000, guid: 6746d2e394654c24eb9b9e386cb14de7, type: 3}
   boxCollideSound: {fileID: 8300000, guid: 221c59d396d0c184796e72bc20f7b42d, type: 3}
@@ -1929,8 +1907,8 @@ MonoBehaviour:
   particlesBoxCollide: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 2}
   particlesObjectAppear: {fileID: 100000, guid: a6b884d400e6d2244a29b0550830c6da,
     type: 2}
-  grabBox: {fileID: 1913262883672236, guid: ddfc852c5191fc54aab28847c1eed25d, type: 2}
-  dropBox: {fileID: 1544105939397826, guid: ddfc852c5191fc54aab28847c1eed25d, type: 2}
+  grabBox: {fileID: 0}
+  dropBox: {fileID: 0}
   gap: 0.5
   throwForce: {x: 0, y: 9, z: 7}
   throwForcePlayer: {x: 0, y: 10, z: 20}
@@ -1940,7 +1918,7 @@ MonoBehaviour:
   weightChange: 0.3
   holdingBreakForce: 45
   holdingBreakTorque: 45
-  animator: {fileID: 95374153907054944, guid: ddfc852c5191fc54aab28847c1eed25d, type: 2}
+  animator: {fileID: 0}
   armsAnimationLayer: 1
   boxHangThreshold: 0
   heldObj: {fileID: 0}

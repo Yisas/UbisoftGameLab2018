@@ -156,7 +156,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4110511927837976}
   - component: {fileID: 65717752388573758}
-  - component: {fileID: 114358585510250562}
   - component: {fileID: 114047597457980224}
   m_Layer: 2
   m_Name: PickupPromptTrigger
@@ -1363,7 +1362,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1347668835503844}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.12895012, z: 0}
+  m_LocalPosition: {x: 24.309856, y: 0.5, z: -0.7824755}
   m_LocalScale: {x: 3.2237499, y: 3.2237499, z: 3.2237499}
   m_Children:
   - {fileID: 224231846644536536}
@@ -3280,12 +3279,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43c88029ea0575c469db7340429c9d92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Canvas_Junk: {fileID: 0}
+  Canvas_Junk: {fileID: 223675759047054984}
   Canvas_PresurePlate: {fileID: 0}
-  Canvas_Player_1: {fileID: 0}
-  buttonprompt: 0
-  JumpImgP1: {fileID: 0}
-  InteractImgP1: {fileID: 0}
+  Canvas_Player: {fileID: 0}
+  buttonprompt: 1
+  JumpImg: {fileID: 0}
+  InteractImg: {fileID: 0}
 --- !u!114 &114066882427082938
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3350,7 +3349,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9d630ed547e10948a4d32f531aa0442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 0}
 --- !u!114 &114240080418688664
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3383,26 +3381,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23363880e037e864c8b08314ac3ab8b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114358585510250562
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1161928167658244}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7649da01531f883439f5efd284b2ba3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Canvas_Junk: {fileID: 0}
-  Canvas_PresurePlate: {fileID: 0}
-  Canvas_Player_1: {fileID: 0}
-  Canvas_Player_2: {fileID: 0}
-  buttonprompt: 1
-  JumpImgP1: {fileID: 0}
-  InteractImgP1: {fileID: 0}
-  JumpImgP2: {fileID: 0}
-  InteractImgP2: {fileID: 0}
 --- !u!114 &114682432628064088
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -20,7 +20,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4979847781418590}
   - component: {fileID: 135125156165610262}
-  - component: {fileID: 114994325704070614}
+  - component: {fileID: 114230381618061992}
+  - component: {fileID: 114287392555458698}
   m_Layer: 2
   m_Name: PickupPromptTrigger
   m_TagString: Untagged
@@ -58,7 +59,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1956651292723708}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.68, y: 0.66, z: 1.97}
+  m_LocalPosition: {x: 24.365288, y: 0.5, z: -0.3679018}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4979847781418590}
@@ -258,6 +259,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23363880e037e864c8b08314ac3ab8b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114230381618061992
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1082093099639778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43c88029ea0575c469db7340429c9d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Canvas_Junk: {fileID: 0}
+  Canvas_PresurePlate: {fileID: 0}
+  Canvas_Player: {fileID: 0}
+  buttonprompt: 2
+  JumpImg: {fileID: 0}
+  InteractImg: {fileID: 0}
+--- !u!114 &114287392555458698
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1082093099639778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 73
+    i1: 213
+    i2: 191
+    i3: 246
+    i4: 229
+    i5: 94
+    i6: 122
+    i7: 196
+    i8: 217
+    i9: 250
+    i10: 194
+    i11: 30
+    i12: 114
+    i13: 69
+    i14: 107
+    i15: 210
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
 --- !u!114 &114623214572431136
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -290,26 +340,6 @@ MonoBehaviour:
     i15: 210
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
---- !u!114 &114994325704070614
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1082093099639778}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7649da01531f883439f5efd284b2ba3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Canvas_Junk: {fileID: 0}
-  Canvas_PresurePlate: {fileID: 0}
-  Canvas_Player_1: {fileID: 0}
-  Canvas_Player_2: {fileID: 0}
-  buttonprompt: 2
-  JumpImgP1: {fileID: 0}
-  InteractImgP1: {fileID: 0}
-  JumpImgP2: {fileID: 0}
-  InteractImgP2: {fileID: 0}
 --- !u!135 &135125156165610262
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -318,7 +348,7 @@ SphereCollider:
   m_GameObject: {fileID: 1082093099639778}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Radius: 1.5
   m_Center: {x: 0, y: 0, z: 0}
