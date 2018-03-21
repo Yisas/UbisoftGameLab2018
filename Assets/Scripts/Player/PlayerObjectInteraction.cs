@@ -342,6 +342,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
         //playerMove.SetRestrictToBackCamera(true);
 
+        SetInteractableIsBeingHeld(true, heldObj.tag);
+        if (!isServer)
+            CmdSetInteractableIsBeingHeld(true, heldObj.transform.position, heldObj.tag);
+
         PushableObject po = other.GetComponent<PushableObject>();
         if (po)
             po.SetIsBeingPushed(true);
@@ -451,25 +455,25 @@ public class PlayerObjectInteraction : NetworkBehaviour
             print("Can't lift object here. If nothing is above the player, make sure triggers are set to layer index 2 (ignore raycast by default)");
         }
 
-        SetPickupIsBeingHeld(true);
+        SetInteractableIsBeingHeld(true, heldObj.tag);
 
         // Value is already syncvared so it only needs to update client to server
         if (!isServer)
-            CmdSetPickupIsBeingHeld(true, heldObj.transform.position);
+            CmdSetInteractableIsBeingHeld(true, heldObj.transform.position, heldObj.tag);
     }
 
     [Command]
-    private void CmdSetPickupIsBeingHeld(bool value, Vector3 positionOfHeldObject)
+    private void CmdSetInteractableIsBeingHeld(bool value, Vector3 positionOfHeldObject, string type)
     {
-        FindLiftedPickupInNonLocalInstance(positionOfHeldObject);
-        SetPickupIsBeingHeld(value);
+        FindLiftedPickupInNonLocalInstance(positionOfHeldObject, type);
+        SetInteractableIsBeingHeld(value, type);
     }
 
-    private void SetPickupIsBeingHeld(bool value)
+    private void SetInteractableIsBeingHeld(bool value, string type)
     {
         // If the object is a pickup set the boolean that its currently being held
         ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
-        if (resettableObject != null && heldObj.CompareTag("Pickup"))
+        if (resettableObject != null && heldObj.CompareTag(type))
         {
             resettableObject.IsBeingHeld = value;
         }
@@ -478,7 +482,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     /// <summary>
     /// The non-local game instance does not lift the pickup per-se, so we gotta find it at runtime for other purposes
     /// </summary>
-    private void FindLiftedPickupInNonLocalInstance(Vector3 positionOfHeldObject)
+    private void FindLiftedPickupInNonLocalInstance(Vector3 positionOfHeldObject, string type)
     {
         Collider[] colliders;
         if ((colliders = Physics.OverlapSphere(positionOfHeldObject, 1f)).Length > 1)
@@ -486,7 +490,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             foreach (Collider collider in colliders)
             {
                 GameObject go = collider.gameObject; //This is the game object you collided with
-                if (go.tag == "Pickup")
+                if (go.tag == type)
                 {
                     heldObj = go;
                     return;
@@ -539,11 +543,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
             heldObj.GetComponent<FixedJoint>().connectedBody = null;
 
-            SetPickupIsBeingHeld(false);
+            SetInteractableIsBeingHeld(false, heldObj.tag);
 
             // Value is already syncvared so it only needs to update client to server
             if (!isServer)
-                CmdSetPickupIsBeingHeld(false, heldObj.transform.position);
+                CmdSetInteractableIsBeingHeld(false, heldObj.transform.position, heldObj.tag);
 
             //Is holding pickup box?
             playerMove.IsHoldingPickup = false;
@@ -577,6 +581,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if (heldObj.tag == "Pushable")
         {
             heldObj.layer = 0; //Default layer
+
+            SetInteractableIsBeingHeld(false, heldObj.tag);
+            if (!isServer)
+                CmdSetInteractableIsBeingHeld(false, heldObj.transform.position, heldObj.tag);
 
             PushableObject po = heldObj.GetComponent<PushableObject>();
             if (po)
@@ -618,10 +626,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     public void ThrowPickup()
     {
-        SetPickupIsBeingHeld(false);
+        SetInteractableIsBeingHeld(false, heldObj.tag);
         // Value is already syncvared so it only needs to update client to server
         if (!isServer)
-            CmdSetPickupIsBeingHeld(false, heldObj.transform.position);
+            CmdSetInteractableIsBeingHeld(false, heldObj.transform.position, heldObj.tag);
 
         Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
 
