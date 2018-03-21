@@ -60,9 +60,11 @@ public class VignettesLoad : MonoBehaviour
         Timer -= Time.deltaTime;
         if (Timer < 0)
         {
-            Debug.Log("....30 seconds passed");
+            Debug.Log(Timer +" ....seconds passed");
+            UpdateLevelCounter();
             //Load Next Scene
-            //UpdateLevelCounter();
+            SceneManager.LoadScene(Level_Counter+1);
+            
         }
     }
 
