@@ -54,16 +54,12 @@ public class ButtonPromptsNetworked : NetworkBehaviour
     }
     void Start()
     {
-        //if (JumpImg != null && InteractImg != null)
-        //{
-        //JumpImg.enabled = false;
-        //InteractImg.enabled = false;
-        //}
-        Debug.Log("hereee" + gameObject.name + " " + Canvas_Junk + " " + Canvas_PresurePlate);
-        if (Canvas_Junk != null || Canvas_PresurePlate != null)
+        if (Canvas_Junk != null)
         {
-            Debug.Log("hereee");
             Canvas_Junk.enabled = false;
+        }
+        if(Canvas_PresurePlate != null)
+        {
             Canvas_PresurePlate.enabled = false;
         }
     }
@@ -75,6 +71,7 @@ public class ButtonPromptsNetworked : NetworkBehaviour
     public void NetworkPlayerPromptReferenceStart(Canvas canvasPlayer)
     {
         Canvas_Player = canvasPlayer;
+
         //Also set the image of the Prompts
         Image[] imgType = canvasPlayer.GetComponentsInChildren<Image>();
         if (imgType[0].name == "Jump Img")
@@ -85,6 +82,7 @@ public class ButtonPromptsNetworked : NetworkBehaviour
         {
             InteractImg = imgType[1];
         }
+
         Canvas_Player.enabled = false;
     }
 
