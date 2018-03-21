@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(Rigidbody))]
-public class ResettableObject : MonoBehaviour
+public class ResettableObject : NetworkBehaviour
 {
     // Inspector
     // Particle effect that happens hen bumping into objects
@@ -15,7 +14,8 @@ public class ResettableObject : MonoBehaviour
     private Quaternion ogRotation;
     private bool isMoved;
     private bool isOnPressurePlate;
-    private bool isHeld;
+    [SyncVar]
+    private bool isBeingHeld;
     private bool usesGravity = true;
     private bool isTrigger;
 
@@ -61,7 +61,7 @@ public class ResettableObject : MonoBehaviour
     {
         // If a resettable object bumps into something then make a 'pow' particle effect
         if (currentPowCooldown > powCooldown && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
-            && other.gameObject.layer != 2 /*ignore raycast*/ && !isHeld)
+            && other.gameObject.layer != 2 /*ignore raycast*/ && !isBeingHeld)
         {
             Instantiate(bamParticleEffect, transform.position + transform.forward * 0.5f + transform.up, transform.rotation);
             currentPowCooldown = 0;
@@ -106,10 +106,10 @@ public class ResettableObject : MonoBehaviour
         set { isOnPressurePlate = value; }
     }
 
-    public bool IsHeld
+    public bool IsBeingHeld
     {
-        get { return isHeld; }
-        set { isHeld = value; }
+        get { return isBeingHeld; }
+        set { isBeingHeld = value; }
     }
 
     public Vector3 OriginalPosition
