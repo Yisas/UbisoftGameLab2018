@@ -34,7 +34,7 @@ public class ButtonPromptsNetworked : NetworkBehaviour
 
     private void Awake()
     {
-        if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger")
+        if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger") //Includes the junk
         {
             Canvas_PresurePlate = null;
         }
@@ -54,14 +54,15 @@ public class ButtonPromptsNetworked : NetworkBehaviour
     }
     void Start()
     {
-        if (JumpImg != null && InteractImg != null)
+        //if (JumpImg != null && InteractImg != null)
+        //{
+        //JumpImg.enabled = false;
+        //InteractImg.enabled = false;
+        //}
+        Debug.Log("hereee" + gameObject.name + " " + Canvas_Junk + " " + Canvas_PresurePlate);
+        if (Canvas_Junk != null || Canvas_PresurePlate != null)
         {
-            JumpImg.enabled = false;
-            InteractImg.enabled = false;
-        }
-
-        if (Canvas_Junk != null && Canvas_PresurePlate != null)
-        {
+            Debug.Log("hereee");
             Canvas_Junk.enabled = false;
             Canvas_PresurePlate.enabled = false;
         }
@@ -76,15 +77,15 @@ public class ButtonPromptsNetworked : NetworkBehaviour
         Canvas_Player = canvasPlayer;
         //Also set the image of the Prompts
         Image[] imgType = canvasPlayer.GetComponentsInChildren<Image>();
-        if(imgType[0].name == "Jump Img")
+        if (imgType[0].name == "Jump Img")
         {
             JumpImg = imgType[0];
         }
-        if(imgType[1].name == "Interact Img ")
+        if (imgType[1].name == "Interact Img ")
         {
             InteractImg = imgType[1];
         }
-        Canvas_Player.enabled = false;        
+        Canvas_Player.enabled = false;
     }
 
     void OnTriggerStay(Collider other)
@@ -154,7 +155,7 @@ public class ButtonPromptsNetworked : NetworkBehaviour
             }
             else                                            //(B: Interact)
             {
-               if (JumpImg != null && InteractImg != null)
+                if (JumpImg != null && InteractImg != null)
                 {
                     JumpImg.enabled = false;
                     InteractImg.enabled = true;
@@ -164,22 +165,22 @@ public class ButtonPromptsNetworked : NetworkBehaviour
             if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
             {
                 if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
-                {                      
-                        Canvas_Player.enabled = true;
-                        isBeingControlled = true;
+                {
+                    Canvas_Player.enabled = true;
+                    isBeingControlled = true;
                 }
                 else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
                 {
-                        Canvas_Player.enabled = true;
+                    Canvas_Player.enabled = true;
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                        Canvas_Player.enabled = true;
+                    Canvas_Player.enabled = true;
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
                 {
-                        Canvas_Player.enabled = false;
-                        isBeingControlled = false;
+                    Canvas_Player.enabled = false;
+                    isBeingControlled = false;
                 }
             }
         }
