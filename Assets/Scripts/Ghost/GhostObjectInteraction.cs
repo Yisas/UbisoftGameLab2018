@@ -57,7 +57,7 @@ public class GhostObjectInteraction : MonoBehaviour {
         ResettableObject resettableObject = other.GetComponent<ResettableObject>();
         if (resettableObject != null && resettableObject.CompareTag("Pickup"))
         {
-            resettableObject.IsHeld = true;
+            resettableObject.IsBeingHeld = true;
         }
         heldObjectRb = heldObj.GetComponent<Rigidbody>();
 
@@ -80,7 +80,7 @@ public class GhostObjectInteraction : MonoBehaviour {
         ResettableObject resettableObject = other.GetComponent<ResettableObject>();
         if (resettableObject != null && resettableObject.CompareTag("Pickup"))
         {
-            resettableObject.IsHeld = true;
+            resettableObject.IsBeingHeld = true;
         }
 
         //reduceHeldObjectVisibility();
@@ -94,7 +94,7 @@ public class GhostObjectInteraction : MonoBehaviour {
         ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
         if (resettableObject != null && resettableObject.CompareTag("Pickup"))
         {
-            resettableObject.IsHeld = false;
+            resettableObject.IsBeingHeld = false;
 
             if(heldObj.tag == "Pickup")
             {
