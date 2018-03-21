@@ -36,12 +36,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private Vector3 holdPos;
     private FixedJoint joint;
     private Color gizmoColor;
-    private ResetButton resetButton = null;
     private PlayerMove otherPlayer = null;
 
     // State attributes
     private float timeOfPickup, timeOfThrow, defRotateSpeed;
-    private bool canPushButton = false;
 
     private float originalMass;
 
@@ -138,13 +136,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
             else if (heldObj.tag == "Pushable")
                 DropPickup();
-        }
-
-        if (Input.GetButtonDown("Grab") && heldObj == null && canPushButton)
-        {
-            PushButton();
-            // TODO: huh?
-            return;
         }
 
         //set animation value for arms layer
@@ -259,21 +250,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 AkSoundEngine.PostEvent("BoxCollide", gameObject);
             }
         }
-
-        if (other.tag == "Button")
-        {
-            canPushButton = true;
-            resetButton = other.GetComponent<ResetButton>();
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Button")
-        {
-            canPushButton = false;
-            resetButton = null;
-        }
     }
 
     //pickup/grab
@@ -330,14 +306,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
     }
     #endregion
-
-    public void PushButton()
-    {
-        if (resetButton)
-            resetButton.Push(playerMove.PlayerID);
-        else
-            Debug.LogError("Button reference is missing dude!");
-    }
 
     /// <summary>
     /// Places the carried player above this players head. Used in networking transform corrections
