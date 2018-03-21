@@ -18,7 +18,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     public Vector3 throwForce = new Vector3(0, 5, 7);           //the throw force of the player on the ojects
     public Vector3 throwForcePlayer = new Vector3(0, 10, 20);   //Added: the throw force of the player on the player
     [Tooltip("Amount of time it takes before the player can use the 'throw' button again")]
-    private float throwThrowableCooldownTime = 0.1f;            
+    private float throwThrowableCooldownTime = 0.1f;
     public float throwPlayerCooldownTime = 0.1f;
     public float rotateToBlockSpeed = 3;                        //how fast to face the "Pushable" object you're holding/pulling
     public float checkRadius = 0.5f;                            //how big a radius to check above the players head, to see if anything is in the way of your pickup
@@ -113,6 +113,19 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if (!isLocalPlayer)
         {
             return;
+        }
+
+        // Defensive programing: if the carried player ever ends up inside the carrying player due to networking issues, reset
+        // the position to where it should be above the carrying players head
+        if (playerMove.IsBeingHeld)
+        {
+            Collider col = GetComponent<Collider>();
+
+            if (col.bounds.Intersects(otherPlayer.GetComponent<Collider>().bounds))
+            {
+                FindOtherPlayer();
+                otherPlayer.GetComponent<PlayerObjectInteraction>().ResetHoldPosition();
+            }
         }
 
         //when we press grab button, throw object if we're holding one
@@ -235,24 +248,24 @@ public class PlayerObjectInteraction : NetworkBehaviour
             Instantiate(particlesBoxCollide, transform.position + transform.forward * 0.5f + transform.up, transform.rotation);
             currentPowCooldown = 0;
             XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
-            vibrationTime = vibrationDuration; 
+            vibrationTime = vibrationDuration;
         }
 
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
         {
-                AppearingObject ao = other.GetComponent<AppearingObject>();
+            AppearingObject ao = other.GetComponent<AppearingObject>();
 
-                if (ao && other.gameObject.layer != LayerMask.NameToLayer("Default"))
+            if (ao && other.gameObject.layer != LayerMask.NameToLayer("Default"))
+            {
+                if (ao.playerToAppearTo == playerMove.PlayerID)
                 {
-                    if (ao.playerToAppearTo == playerMove.PlayerID)
-                    {
-                        AkSoundEngine.PostEvent("AppearObject", gameObject);
-                    }
+                    AkSoundEngine.PostEvent("AppearObject", gameObject);
                 }
-                else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
-                {
-                    AkSoundEngine.PostEvent("BoxCollide", gameObject);
-                }
+            }
+            else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
+            {
+                AkSoundEngine.PostEvent("BoxCollide", gameObject);
+            }
         }
 
         if (other.tag == "Button")
@@ -332,6 +345,17 @@ public class PlayerObjectInteraction : NetworkBehaviour
             resetButton.Push(playerMove.PlayerID);
         else
             Debug.LogError("Button reference is missing dude!");
+    }
+
+    /// <summary>
+    /// Places the carried player above this players head. Used in networking transform corrections
+    /// </summary>
+    public void ResetHoldPosition()
+    {
+        holdPos = transform.position;
+        holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (heldObj.GetComponent<Collider>().bounds.extents.y) + gap;
+        heldObj.transform.position = holdPos;
+        heldObj.transform.rotation = transform.rotation;
     }
 
     #region Interactions
@@ -603,7 +627,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             resettableObject.IsHeld = false;
         }
 
-        if(heldObj.CompareTag("Pickup") || heldObj.CompareTag("Pushable"))
+        if (heldObj.CompareTag("Pickup") || heldObj.CompareTag("Pushable"))
         {
             // And modify mass
             heldObj.GetComponent<Collider>().isTrigger = false;
@@ -619,15 +643,13 @@ public class PlayerObjectInteraction : NetworkBehaviour
         //Note Added:
         if (heldObj.tag == "Player")
         {
-            //throwForcePlayer
-            Debug.Log("Throwing player....");
             PlayerMove heldPlayerMove = heldObj.GetComponent<PlayerMove>();
             heldObj.GetComponent<Rigidbody>().isKinematic = false;
             heldPlayerMove.UnlockMovementToOtherPlayer();
             heldPlayerMove.SetIsBeingHeld(false);
 
             if (heldPlayerMove.isLocalPlayer)
-                heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+                heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.Impulse);
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
             if (isLocalPlayer && isServer)
@@ -737,6 +759,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void FindOtherPlayer()
     {
+        if (otherPlayer)
+            return;
+
         PlayerMove[] players = GameObject.FindObjectsOfType<PlayerMove>();
         foreach (PlayerMove player in players)
         {
