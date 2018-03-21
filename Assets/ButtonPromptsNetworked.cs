@@ -76,11 +76,11 @@ public class ButtonPromptsNetworked : NetworkBehaviour
         Canvas_Player = canvasPlayer;
         //Also set the image of the Prompts
         Image[] imgType = canvasPlayer.GetComponentsInChildren<Image>();
-        if(imgType[0].name == "Jump Image P2")
+        if(imgType[0].name == "Jump Img")
         {
             JumpImg = imgType[0];
         }
-        if(imgType[1].name == "Interact Image P2")
+        if(imgType[1].name == "Interact Img ")
         {
             InteractImg = imgType[1];
         }
