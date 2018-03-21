@@ -9,57 +9,44 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1636422693587522}
+  m_RootGameObject: {fileID: 1812244504967514}
   m_IsPrefabParent: 1
---- !u!1 &1636422693587522
+--- !u!1 &1812244504967514
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4531573338544284}
-  - component: {fileID: 114460475084617470}
-  - component: {fileID: 114852951384821578}
+  - component: {fileID: 4201280829309434}
+  - component: {fileID: 114491656081769980}
+  - component: {fileID: 114297992500508854}
   m_Layer: 0
   m_Name: Torch Spawner
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: -1412012063857583412, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4531573338544284
+--- !u!4 &4201280829309434
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1636422693587522}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 29.790787, y: 3.16, z: 14.655472}
-  m_LocalScale: {x: 3.2237499, y: 3.2237499, z: 3.2237499}
+  m_GameObject: {fileID: 1812244504967514}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 14.67, y: 1.75, z: 1.94}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114460475084617470
+--- !u!114 &114297992500508854
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1636422693587522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4854327f812a94d47ad41dfc75aa3aed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objToSpawn: {fileID: 1347668835503844, guid: f9c188b1e488ac040babe91a0178c571, type: 2}
-  overridePrefabScale: 0
---- !u!114 &114852951384821578
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1636422693587522}
+  m_GameObject: {fileID: 1812244504967514}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
@@ -68,21 +55,34 @@ MonoBehaviour:
   m_SceneId:
     m_Value: 0
   m_AssetId:
-    i0: 43
-    i1: 139
-    i2: 249
-    i3: 65
-    i4: 207
-    i5: 15
-    i6: 47
-    i7: 36
-    i8: 216
-    i9: 118
-    i10: 53
-    i11: 168
-    i12: 133
-    i13: 63
-    i14: 87
-    i15: 60
+    i0: 40
+    i1: 110
+    i2: 108
+    i3: 237
+    i4: 149
+    i5: 73
+    i6: 114
+    i7: 100
+    i8: 41
+    i9: 143
+    i10: 179
+    i11: 67
+    i12: 99
+    i13: 116
+    i14: 191
+    i15: 17
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
+--- !u!114 &114491656081769980
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1812244504967514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4854327f812a94d47ad41dfc75aa3aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objToSpawn: {fileID: 1347668835503844, guid: f9c188b1e488ac040babe91a0178c571, type: 2}
+  overridePrefabScale: 0

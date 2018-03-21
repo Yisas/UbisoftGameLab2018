@@ -4,19 +4,11 @@ using UnityEngine.Networking;
 
 //this allows the player to pick up/throw, and also pull certain objects
 //you need to add the tags "Pickup" or "Pushable" to these objects
-[RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerObjectInteraction : NetworkBehaviour
 {
     public GameObject holdPlayerPos;
-
-    // Audio
-    public AudioClip pickUpSound;                               //sound when you pickup/grab an object
-    public AudioClip throwSound;                                //sound when you throw an object
-    public AudioClip boxCollideSound;                           //sound when you collide with a box
-    public AudioClip appearObjectSound;                         //sound when you make an object apper
-
     public GameObject particlesBoxCollide;
     public GameObject particlesObjectAppear;
 
@@ -100,18 +92,18 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (heldObj != null)
         {
-            if (addChangeMass)
-            {
-                heldObj.GetComponent<Rigidbody>().mass *= weightChange;
-                addChangeMass = false;
-            }
-            if (subChangeMass)
-            {
-                //heldObj.GetComponent<Rigidbody>().mass /= weightChange;0
-                heldObj.GetComponent<Rigidbody>().mass = originalMass;
-                heldObj = null;
-                subChangeMass = false;
-            }
+            //if (addChangeMass)
+            //{
+            //    heldObj.GetComponent<Rigidbody>().mass *= weightChange;
+            //    addChangeMass = false;
+            //}
+            //if (subChangeMass)
+            //{
+            //    //heldObj.GetComponent<Rigidbody>().mass /= weightChange;0
+            //    heldObj.GetComponent<Rigidbody>().mass = originalMass;
+            //    heldObj = null;
+            //    subChangeMass = false;
+            //}
         }
     }
 
@@ -248,27 +240,19 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
         {
-            if (boxCollideSound)
-            {
                 AppearingObject ao = other.GetComponent<AppearingObject>();
 
                 if (ao && other.gameObject.layer != LayerMask.NameToLayer("Default"))
                 {
-                    if (appearObjectSound && ao.playerToAppearTo == playerMove.PlayerID)
+                    if (ao.playerToAppearTo == playerMove.PlayerID)
                     {
-                        Instantiate(particlesObjectAppear, transform.position + transform.forward + transform.up, transform.rotation);
-                        audioSource.volume = 1f;
-                        audioSource.clip = appearObjectSound;
-                        audioSource.Play();
+                        AkSoundEngine.PostEvent("AppearObject", gameObject);
                     }
                 }
                 else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
                 {
-                    audioSource.volume = 0.5f;
-                    audioSource.clip = boxCollideSound;
-                    audioSource.Play();
+                    AkSoundEngine.PostEvent("BoxCollide", gameObject);
                 }
-            }
         }
 
         if (other.tag == "Button")
@@ -389,18 +373,21 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if (!Physics.CheckSphere(holdPos, checkRadius, 2))
         {
             heldObj = other.gameObject;
+
+            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1) + " While Carried");
+
             Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
             heldObj.transform.position = holdPos;
             heldObj.transform.rotation = transform.rotation;
 
+            heldObj.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            heldObj.GetComponent<Rigidbody>().isKinematic = true;
             heldObj.GetComponent<PlayerMove>().LockMovementToOtherPlayer(holdPlayerPos.transform);
 
 
             playerMove.CanJump = false;   //Bottom player cannot jump
-            heldObj.GetComponent<PlayerMove>().IsBeingHeld = true;
+            heldObj.GetComponent<PlayerMove>().SetIsBeingHeld(true);
 
-            //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            //make sure we don't immediately throw object after picking it up
             timeOfPickup = Time.time;
         }
         //if not print to console (look in scene view for sphere gizmo to see whats stopping the pickup)
@@ -543,9 +530,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if (heldObj.tag == "Player")
         {
             heldObj.transform.position = dropBox.transform.position;
+            heldObj.GetComponent<Rigidbody>().isKinematic = false;
             heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
-            heldObj.GetComponent<PlayerMove>().IsBeingHeld = false;
+            heldObj.GetComponent<PlayerMove>().SetIsBeingHeld(false);
             playerMove.CanJump = true;
+
+            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
             if (isLocalPlayer && isServer)
@@ -607,25 +597,24 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         // If the object is a pickup set the boolean that its currently being held
         ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
+        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
         if (resettableObject != null && heldObj.CompareTag("Pickup"))
         {
             resettableObject.IsHeld = false;
         }
 
-        if (throwSound)
+        if(heldObj.CompareTag("Pickup") || heldObj.CompareTag("Pushable"))
         {
-            // TODO: undo hardcoded volume, multiple get etc.
-            audioSource.volume = 1;
-            audioSource.clip = throwSound;
-            audioSource.Play();
+            // And modify mass
+            heldObj.GetComponent<Collider>().isTrigger = false;
+            heldObjectRigidbody.useGravity = true;
+            heldObjectRigidbody.interpolation = objectDefInterpolation;
+            heldObjectRigidbody.mass /= weightChange;
         }
-        Destroy(joint);
-        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
 
-        heldObj.GetComponent<Collider>().isTrigger = false;
-        heldObjectRigidbody.useGravity = true;
-        heldObjectRigidbody.interpolation = objectDefInterpolation;
-        heldObjectRigidbody.mass /= weightChange;
+        AkSoundEngine.PostEvent("Throw", gameObject);
+
+        Destroy(joint);
 
         //Note Added:
         if (heldObj.tag == "Player")
@@ -633,8 +622,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
             //throwForcePlayer
             Debug.Log("Throwing player....");
             PlayerMove heldPlayerMove = heldObj.GetComponent<PlayerMove>();
+            heldObj.GetComponent<Rigidbody>().isKinematic = false;
             heldPlayerMove.UnlockMovementToOtherPlayer();
-            heldPlayerMove.IsBeingHeld = false;
+            heldPlayerMove.SetIsBeingHeld(false);
 
             if (heldPlayerMove.isLocalPlayer)
                 heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
@@ -645,6 +635,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             else if (isLocalPlayer && !isServer)
                 CmdThrowPickup(playerMove.PlayerID);
 
+            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
         }
         else
         {
@@ -684,12 +675,14 @@ public class PlayerObjectInteraction : NetworkBehaviour
     //If the top player jumps while being held it will break the joint and reset both the players.
     public void PlayerDrop()
     {
-        if (heldObj != null && heldObj.tag == "Player")
+        if (heldObj != null && heldObj.tag.StartsWith("Player"))
         {
             Destroy(joint);
             heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
-        Destroy(joint);
-        heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
+            Destroy(joint);
+            heldObj.GetComponent<Rigidbody>().interpolation = objectDefInterpolation;
+
+            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
 
             heldObj = null;
             playerMove.CanJump = true;
@@ -729,13 +722,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (heldObj)
         {
-            if (pickUpSound)
-            {
-                // TODO: undo hardcoded volume, multiple get etc.
-                audioSource.volume = 1;
-                audioSource.clip = pickUpSound;
-                audioSource.Play();
-            }
+            AkSoundEngine.PostEvent("Pickup", gameObject);
+
             if (joint)
             {
                 Destroy(joint);

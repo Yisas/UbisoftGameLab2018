@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class GhostObjectInteraction : MonoBehaviour {
 
-    public AudioClip pickUpSound;
     public GameObject dropBox;
     public GameObject grabBox;
 
@@ -18,14 +17,12 @@ public class GhostObjectInteraction : MonoBehaviour {
     private Vector3 holdPos;
     private RigidbodyInterpolation objectDefInterpolation;
     private FixedJoint joint;
-    private AudioSource audioSource;
     private float timeOfPickup;
     private Rigidbody heldObjectRb;
     private Movable movableAI;
     private Color originalHeldObjColor;
 
     void Awake () {
-        audioSource = GetComponent<AudioSource>();
         movableAI = GetComponent<Movable>();
     }
 	
@@ -100,7 +97,7 @@ public class GhostObjectInteraction : MonoBehaviour {
             if(heldObj.tag == "Pickup")
             {
                 //heldObj.transform.position = dropBox.transform.position;
-                resettableObject.Reset();
+                resettableObject.Reset(true);
             }
         }
         else
@@ -124,13 +121,7 @@ public class GhostObjectInteraction : MonoBehaviour {
     {
         if (heldObj)
         {
-            if (pickUpSound)
-            {
-                // TODO: undo hardcoded volume, multiple get etc.
-                audioSource.volume = 1;
-                audioSource.clip = pickUpSound;
-                audioSource.Play();
-            }
+            AkSoundEngine.PostEvent("GhostLaugh", gameObject);
             joint = heldObj.AddComponent<FixedJoint>();
             joint.connectedBody = GetComponent<Rigidbody>();
             heldObj.layer = gameObject.layer;

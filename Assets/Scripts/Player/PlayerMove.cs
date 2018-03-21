@@ -3,7 +3,6 @@ using UnityEngine.Networking;
 
 //handles player movement, utilising the CharacterMotor class
 [RequireComponent(typeof(CharacterMotor))]
-[RequireComponent(typeof(AudioSource))]
 public class PlayerMove : NetworkBehaviour
 {
     [SerializeField]
@@ -11,6 +10,7 @@ public class PlayerMove : NetworkBehaviour
 
     // Networking corrections
     public float transformSyncVecticalCorrectionTreshold = 0.2f;
+    public float interpolationChangeFactorWhileCarried = 0.5f;
     private Vector3 lastFrameTransformToSyncToPosition;     // Do to networking noise over this value, we'll cash it on a per frame basis and ignore if threshold
 
     [Header("------Camera Interactions------")]
@@ -23,10 +23,12 @@ public class PlayerMove : NetworkBehaviour
     //setup
     public Transform floorChecks;               //FloorChecks are raycasted down from to check the player is grounded.
     public Animator animator;                   //object with animation controller on, which you want to animate
-    public AudioClip jumpSound;                 //play when jumping
-    public AudioClip landSound;                 //play when landing on ground
-    public AudioClip runSound;                  //play when running
+
+    //audio
+    // If its too big then the landing sound plays multiple times, too short and it doesn't play at all
+    public float landingSoundLength;
     public Transform lastFeetTouched;           //what the floorchecks last touched
+    private Rigidbody rb;
 
     //movement
     public float accel = 70f;                   //acceleration/deceleration in air or on the ground
@@ -67,6 +69,7 @@ public class PlayerMove : NetworkBehaviour
     private Quaternion screenMovementSpace;
     private CharacterMotor characterMotor;
     private Transform transformToSyncTo;
+    private PlayerObjectInteraction otherPlayer;
 
     //setup
     void Awake()
@@ -93,6 +96,7 @@ public class PlayerMove : NetworkBehaviour
 
         //usual setup
         characterMotor = GetComponent<CharacterMotor>();
+        rb = GetComponent<Rigidbody>();
         //gets child objects of floorcheckers, and puts them in an array
         //later these are used to raycast downward and see if we are on the ground
         floorCheckers = new Transform[floorChecks.childCount];
@@ -170,10 +174,10 @@ public class PlayerMove : NetworkBehaviour
 
         moveDirection = transform.position + direction;
 
-        if (GetComponent<Rigidbody>().velocity.y > maxVerticalVel) //Preventing superman jump
+        if (rb.velocity.y > maxVerticalVel) //Preventing superman jump
         {
-            Vector3 currVel = GetComponent<Rigidbody>().velocity;
-            GetComponent<Rigidbody>().velocity = new Vector3(currVel.x, maxVerticalVel, currVel.y);
+            Vector3 currVel = rb.velocity;
+            rb.velocity = new Vector3(currVel.x, maxVerticalVel, currVel.y);
         }
 
         if(transformToSyncTo)
@@ -215,20 +219,17 @@ public class PlayerMove : NetworkBehaviour
         {
             animator.SetFloat("DistanceToTarget", characterMotor.DistanceToTarget);
             animator.SetBool("Grounded", grounded);
-            animator.SetFloat("YVelocity", GetComponent<Rigidbody>().velocity.y);
+            animator.SetFloat("YVelocity", rb.velocity.y);
+            animator.SetBool("IsBeingCarried", isBeingHeld);
         }
         else
             Debug.LogWarning("Animator missing on player " + playerID);
 
-        // Play footsteps
-        if (grounded && runSound && !GetComponent<AudioSource>().isPlaying && GetComponent<Rigidbody>().velocity.magnitude > 0)
+        // Adding footsteps audio GGJ2018:
+        if (grounded && GetComponent<Rigidbody>().velocity.magnitude > 0)
         {
-            // TODO: add clip volume change as attribute, not hardcoded
-            GetComponent<AudioSource>().volume = 1;
-            GetComponent<AudioSource>().clip = runSound;
-            GetComponent<AudioSource>().Play();
+            AkSoundEngine.PostEvent("Footsteps", gameObject);
         }
-
     }
 
     //prevents rigidbody from sliding down slight slopes (read notes in characterMotor class for more info on friction)
@@ -238,11 +239,11 @@ public class PlayerMove : NetworkBehaviour
         if (other.collider.tag != "Untagged" || grounded == false)
             return;
         //if no movement should be happening, stop player moving in Z/X axis
-        if (direction.magnitude == 0 && slope < slopeLimit && GetComponent<Rigidbody>().velocity.magnitude < 2)
+        if (direction.magnitude == 0 && slope < slopeLimit && rb.velocity.magnitude < 2)
         {
             //it's usually not a good idea to alter a rigidbodies velocity every frame
             //but this is the cleanest way i could think of, and we have a lot of checks beforehand, so it shou
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
+            rb.velocity = Vector3.zero;
         }
     }
 
@@ -266,7 +267,7 @@ public class PlayerMove : NetworkBehaviour
                     if (slope > slopeLimit && hit.transform.tag != "Pushable")
                     {
                         Vector3 slide = new Vector3(0f, -slideAmount, 0f);
-                        GetComponent<Rigidbody>().AddForce(slide, ForceMode.Force);
+                        rb.AddForce(slide, ForceMode.Force);
                     }
 
                     //moving platforms
@@ -276,7 +277,7 @@ public class PlayerMove : NetworkBehaviour
                         movingObjSpeed = hit.transform.GetComponent<Rigidbody>().velocity;
                         movingObjSpeed.y = 0f;
                         //9.5f is a magic number, if youre not moving properly on platforms, experiment with this number
-                        GetComponent<Rigidbody>().AddForce(movingObjSpeed * movingPlatformFriction * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                        rb.AddForce(movingObjSpeed * movingPlatformFriction * Time.fixedDeltaTime, ForceMode.VelocityChange);
                     }
                     else
                     {
@@ -314,7 +315,7 @@ public class PlayerMove : NetworkBehaviour
                     if (slope > slopeLimit && hit.transform.tag != "Pushable")
                     {
                         Vector3 slide = new Vector3(0f, -slideAmount, 0f);
-                        GetComponent<Rigidbody>().AddForce(slide, ForceMode.Force);
+                        rb.AddForce(slide, ForceMode.Force);
                     }
 
                     //moving platforms
@@ -324,7 +325,7 @@ public class PlayerMove : NetworkBehaviour
                         movingObjSpeed = hit.transform.GetComponent<Rigidbody>().velocity;
                         movingObjSpeed.y = 0f;
                         //9.5f is a magic number, if youre not moving properly on platforms, experiment with this number
-                        GetComponent<Rigidbody>().AddForce(movingObjSpeed * movingPlatformFriction * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                        rb.AddForce(movingObjSpeed * movingPlatformFriction * Time.fixedDeltaTime, ForceMode.VelocityChange);
                     }
                     else
                     {
@@ -347,12 +348,11 @@ public class PlayerMove : NetworkBehaviour
         groundedCount = (grounded) ? groundedCount += Time.deltaTime : 0f;
 
         //play landing sound
-        if (groundedCount < 0.25 && groundedCount != 0 && !GetComponent<AudioSource>().isPlaying && landSound && GetComponent<Rigidbody>().velocity.y < 1)
+        if (groundedCount < landingSoundLength && groundedCount != 0 && GetComponent<Rigidbody>().velocity.y < 1)
         {
-            GetComponent<AudioSource>().volume = Mathf.Abs(GetComponent<Rigidbody>().velocity.y) / 40;
-            GetComponent<AudioSource>().clip = landSound;
-            GetComponent<AudioSource>().Play();
+            AkSoundEngine.PostEvent("PlayerLand", gameObject);
         }
+        
         //if we press jump in the air, save the time
         if (Input.GetButtonDown("Jump") && !grounded)
             airPressTime = Time.time;
@@ -368,11 +368,11 @@ public class PlayerMove : NetworkBehaviour
                 else
                 {
                     Debug.Log("[PlayerMove Class] Player ID: " + playerID + "\n -----JumpForceWhileCarried: " + jumpForceWhileCarried + "(mag= " + jumpForceWhileCarried.magnitude + " )"
-                                + " Mass of Player: " + GetComponent<Rigidbody>().mass);
+                                + " Mass of Player: " + rb.mass);
+                    JumpOffPlayer();
                     Jump(jumpForceWhileCarried);
                     // Tell other player to drop me
                     // TENTATIVE TODO: fix me I'm ugly. Player superType with id and FindOtherPlayer()??
-                    GetOffPlayer();
                 }
             }
         }
@@ -386,16 +386,10 @@ public class PlayerMove : NetworkBehaviour
             return;
         }
 
-        if (jumpSound)
-        {
-            // TODO: add clip volume change as attribute, not hardcoded. Single get
-            GetComponent<AudioSource>().volume = 1;
-            GetComponent<AudioSource>().clip = jumpSound;
-            GetComponent<AudioSource>().Play();
-        }
+        AkSoundEngine.PostEvent("Jump", gameObject);
 
-        GetComponent<Rigidbody>().velocity = new Vector3(GetComponent<Rigidbody>().velocity.x, 0f, GetComponent<Rigidbody>().velocity.z);
-        GetComponent<Rigidbody>().AddRelativeForce(jumpVelocity, ForceMode.Impulse);
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddRelativeForce(jumpVelocity, ForceMode.Impulse);
         airPressTime = 0f;
 
         //Jump Prompt Counter
@@ -403,17 +397,16 @@ public class PlayerMove : NetworkBehaviour
             jumpPromptConter--;
 
         // Stop being held after jumping
-        IsBeingHeld = false;
+        SetIsBeingHeld(false);
     }
 
     /// <summary>
     /// Notify the carrying player that I'm jumping off of my own volition
     /// </summary>
-    public void GetOffPlayer()
+    public void JumpOffPlayer()
     {
-        int otherPlayerID = playerID == 1 ? 2 : 1;
-        PlayerObjectInteraction playerHoldingMe = GameObject.Find("Player " + otherPlayerID).GetComponent<PlayerObjectInteraction>();
-        playerHoldingMe.PlayerDrop();
+        rb.isKinematic = false;
+        otherPlayer.PlayerDrop();
 
         UnlockMovementToOtherPlayer();
 
@@ -426,13 +419,13 @@ public class PlayerMove : NetworkBehaviour
     [Command]
     private void CmdGetOffPlayer()
     {
-        GetOffPlayer();
+        JumpOffPlayer();
     }
 
     [ClientRpc]
     private void RpcGetOffPlayer()
     {
-        GetOffPlayer();
+        JumpOffPlayer();
     }
 
     public void LockMovementToOtherPlayer(Transform transformToMatch)
@@ -445,6 +438,15 @@ public class PlayerMove : NetworkBehaviour
     {
         isSyncingToTransform = false;
         transformToSyncTo = null;
+    }
+
+    private void FindOtherPlayer()
+    {
+        if (otherPlayer == null)
+        {
+            int otherPlayerID = playerID == 1 ? 2 : 1;
+            otherPlayer = GameObject.Find("Player " + otherPlayerID).GetComponent<PlayerObjectInteraction>();
+        }
     }
 
     [Command]
@@ -513,11 +515,15 @@ public class PlayerMove : NetworkBehaviour
         {
             return isBeingHeld;
         }
-        set
+    }
+
+    public void SetIsBeingHeld(bool value)
+    {
         {
+            FindOtherPlayer();
+
             isBeingHeld = value;
 
-            Rigidbody rb = GetComponent<Rigidbody>();
             // If you are now being held...
             if (isBeingHeld)
             {
@@ -526,11 +532,21 @@ public class PlayerMove : NetworkBehaviour
                 rb.constraints = RigidbodyConstraints.None;
                 //... and adding the ones necessary when being carried through a FixedJoint logic
                 rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+                // Modify interpolation factor
+                otherPlayer.GetComponent<NetworkTransform>().interpolateMovement = interpolationChangeFactorWhileCarried;
+                GetComponent<NetworkTransform>().interpolateMovement = interpolationChangeFactorWhileCarried;
             }
             else
             {
+                FindOtherPlayer();
+
                 //... put back rotation constraints
                 rb.constraints = RigidbodyConstraints.FreezeRotation;
+
+                // Modify interpolation factor
+                otherPlayer.GetComponent<NetworkTransform>().interpolateMovement = 1f;
+                GetComponent<NetworkTransform>().interpolateMovement = 1f;
             }
 
             // Send message to mirrors
@@ -545,13 +561,13 @@ public class PlayerMove : NetworkBehaviour
     [Command]
     private void CmdSetIsBeingHeld(bool isBeingHeld)
     {
-        IsBeingHeld = isBeingHeld;
+        SetIsBeingHeld(isBeingHeld);
     }
 
     [ClientRpc]
     private void RpcSetIsBeingHeld(bool isBeingHeld)
     {
-        IsBeingHeld = isBeingHeld;
+        SetIsBeingHeld(isBeingHeld);
     }
 
 
