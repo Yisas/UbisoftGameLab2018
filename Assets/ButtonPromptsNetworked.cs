@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using UnityEngine;
 
-public class ButtonPromptsNetworked : NetworkBehaviour
+public class ButtonPromptsNetworked : MonoBehaviour
 {
 
     /**NOTE FOR NETWORKING VERSION:
@@ -29,11 +29,13 @@ public class ButtonPromptsNetworked : NetworkBehaviour
 
     PlayerMove player;
     int playerID;
+    NetworkIdentity playerNetID;    // Droping this because the other objects have different parents. 
+                                    //NOTE: Instead we should use the PlayerMove player and get the player.isLocalPlayer??
 
     private bool isBeingControlled;
 
     private void Awake()
-    {
+    {     
         if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger") //Includes the junk
         {
             Canvas_PresurePlate = null;
@@ -52,13 +54,15 @@ public class ButtonPromptsNetworked : NetworkBehaviour
             InteractImg = null;
         }
     }
+
     void Start()
     {
+        //We do not see the prompts above the Pressureplate and Junk items at the start of the game
         if (Canvas_Junk != null)
         {
             Canvas_Junk.enabled = false;
         }
-        if(Canvas_PresurePlate != null)
+        if (Canvas_PresurePlate != null)
         {
             Canvas_PresurePlate.enabled = false;
         }
@@ -85,17 +89,18 @@ public class ButtonPromptsNetworked : NetworkBehaviour
 
         Canvas_Player.enabled = false;
     }
-
+    
     void OnTriggerStay(Collider other)
     {
         if (other.tag == "Player")
         {
             player = other.gameObject.GetComponent<PlayerMove>();
             playerID = other.gameObject.GetComponent<PlayerMove>().PlayerID;
+            playerNetID = other.GetComponentInParent<NetworkIdentity>();    //Getting the players network identity...
             TurnOnPrompt();
         }
     }
-
+    
     void OnTriggerExit(Collider other)
     {
         if (other.tag == "Player")
@@ -108,79 +113,102 @@ public class ButtonPromptsNetworked : NetworkBehaviour
 
     private void TurnOnPrompt()
     {
-        if (buttonprompt == ButtonPromptOn.pressureplate)  // If the prompt is appearing above the preasure plate
+        /**
+        Debug.Log("happened?");
+        if (playerNetID.isLocalPlayer)
         {
+            Debug.Log("here " + gameObject.name);
+        }
+
+        if (playerNetID.isServer)
+        {
+            Debug.Log("server" + gameObject.name);
+        }
+        */
+                
+        if (buttonprompt == ButtonPromptOn.pressureplate)  // If the prompt is suppose to appear above the preasure plate
+        {
+            //Here we are going to make the prompt on the Pressureplate only visible to the local player. 
             if (player.IsHoldingPickup == true) //Checking to see if a player is holding a Pickupable block
             {
-                if (playerID == 1)
+                if (playerNetID.isLocalPlayer && playerID == 1)
                 {
                     Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"                    
                 }
-                if (playerID == 2)
+                if (playerNetID.isLocalPlayer && playerID == 2)
                 {
                     Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
-                }
+                }                
+                
+                //NOTE: Will this only make the canvas of the pressureplate visible to Local Player?
                 Canvas_PresurePlate.enabled = true;
             }
         }
-        else if (buttonprompt == ButtonPromptOn.junk)
+        else if (buttonprompt == ButtonPromptOn.junk)   // If the prompt is suppose to appear above the Junk Items
         {
-            if (playerID == 1)
+            //Here we are going to make the prompt on the Junk Items only visible to the local player. 
+            if (playerNetID.isLocalPlayer && playerID == 1)
             {
                 Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"                    
             }
-            if (playerID == 2)
+            if (playerNetID.isLocalPlayer && playerID == 2)
             {
                 Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
             }
-            Canvas_Junk.enabled = true;
-        }
-        else if (buttonprompt == ButtonPromptOn.player)
-        {
-            //Switching the image prompts
-            if (gameObject.name == "JumpPromptTrigger")     //(A: Jumpp)
-            {
-                if (player.jumpPromptConter > 0)
-                {
-                    JumpImg.enabled = true;
-                    InteractImg.enabled = false;
-                    Canvas_Player.enabled = true;
-                }
-                else
-                {
-                    JumpImg.enabled = false;
-                }
-            }
-            else                                            //(B: Interact)
-            {
-                if (JumpImg != null && InteractImg != null)
-                {
-                    JumpImg.enabled = false;
-                    InteractImg.enabled = true;
-                }
-            }
 
-            if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
-            {
-                if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
+            //NOTE: Will this only make the canvas of the pressureplate visible to Local Player?
+            //if (player.isLocalPlayer)
+                Canvas_Junk.enabled = true;
+        }
+        else if (buttonprompt == ButtonPromptOn.player) // If the prompt is suppose to appear above the Player
+        {
+            //if (player.isLocalPlayer)
+            //{
+                //Switching the image prompts
+                if (gameObject.name == "JumpPromptTrigger")     //(A: Jumpp)
                 {
-                    Canvas_Player.enabled = true;
-                    isBeingControlled = true;
+                    if (player.jumpPromptConter > 0)
+                    {
+                        JumpImg.enabled = true;
+                        InteractImg.enabled = false;
+                        Canvas_Player.enabled = true;
+                    }
+                    else
+                    {
+                        JumpImg.enabled = false;
+                    }
                 }
-                else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
+                else                                            //(B: Interact)
                 {
-                    Canvas_Player.enabled = true;
+                    if (JumpImg != null && InteractImg != null)
+                    {
+                        JumpImg.enabled = false;
+                        InteractImg.enabled = true;
+                    }
                 }
-                else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
+
+                if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
                 {
-                    Canvas_Player.enabled = true;
+                    if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true) )
+                    {
+                        Canvas_Player.enabled = true;
+                        isBeingControlled = true;
+                    }
+                    else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
+                    {
+                        Canvas_Player.enabled = true;
+                    }
+                    else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true) )
+                    {
+                        Canvas_Player.enabled = true;
+                    }
+                    else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
+                    {
+                        Canvas_Player.enabled = false;
+                        isBeingControlled = false;
+                    }
                 }
-                else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
-                {
-                    Canvas_Player.enabled = false;
-                    isBeingControlled = false;
-                }
-            }
+            //}
         }
     }
 

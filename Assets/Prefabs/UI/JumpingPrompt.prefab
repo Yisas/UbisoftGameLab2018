@@ -36,7 +36,6 @@ GameObject:
   - component: {fileID: 224609709149384298}
   - component: {fileID: 65971813374053340}
   - component: {fileID: 114937201466785556}
-  - component: {fileID: 114001427302540400}
   m_Layer: 2
   m_Name: JumpPromptTrigger
   m_TagString: Untagged
@@ -56,38 +55,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 60, y: 1, z: 42.16713}
   m_Center: {x: 0, y: 0, z: 18.583565}
---- !u!114 &114001427302540400
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1677099865503820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SceneId:
-    m_Value: 0
-  m_AssetId:
-    i0: 201
-    i1: 119
-    i2: 19
-    i3: 76
-    i4: 63
-    i5: 82
-    i6: 98
-    i7: 196
-    i8: 138
-    i9: 182
-    i10: 189
-    i11: 56
-    i12: 162
-    i13: 117
-    i14: 244
-    i15: 23
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 0
 --- !u!114 &114937201466785556
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -112,7 +79,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1480548609237460}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -11}
+  m_LocalPosition: {x: 0, y: 0, z: 11.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224609709149384298}
@@ -121,7 +88,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -35.4, y: 0.49999833}
+  m_AnchoredPosition: {x: 35.6, y: 0.50000095}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224609709149384298
