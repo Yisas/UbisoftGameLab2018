@@ -653,9 +653,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
             if (isLocalPlayer && isServer)
-                RpcThrowPickup(playerMove.PlayerID, transform.position, transform.rotation);
+                RpcThrowPickup(playerMove.PlayerID, transform.position, transform.rotation, rb.velocity);
             else if (isLocalPlayer && !isServer)
-                CmdThrowPickup(playerMove.PlayerID, transform.position, transform.rotation);
+                CmdThrowPickup(playerMove.PlayerID, transform.position, transform.rotation, rb.velocity);
 
             heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
         }
@@ -671,26 +671,27 @@ public class PlayerObjectInteraction : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcThrowPickup(int targetPlayerID, Vector3 position, Quaternion rotation)
+    private void RpcThrowPickup(int targetPlayerID, Vector3 position, Quaternion rotation, Vector3 velocity)
     {
-        CommonThrowPickup(targetPlayerID, position, rotation);
+        CommonThrowPickup(targetPlayerID, position, rotation, velocity);
     }
 
     [Command]
-    private void CmdThrowPickup(int targetPlayerID, Vector3 position, Quaternion rotation)
+    private void CmdThrowPickup(int targetPlayerID, Vector3 position, Quaternion rotation, Vector3 velocity)
     {
-        CommonThrowPickup(targetPlayerID, position, rotation);
+        CommonThrowPickup(targetPlayerID, position, rotation, velocity);
     }
 
     /// <summary>
     /// To be called by the networking commands to resolve the same logic from different network origins (client/server)
     /// </summary>
     /// <param name="targetPlayerID"></param>
-    private void CommonThrowPickup(int targetPlayerID, Vector3 position, Quaternion rotation)
+    private void CommonThrowPickup(int targetPlayerID, Vector3 position, Quaternion rotation, Vector3 velocity)
     {
         // Ensure that the non-local player has been updated before attempting throw
         transform.position = position;
         transform.rotation = rotation;
+        rb.velocity = velocity;
 
         // Execution already happened in local player at this point, so we avoid circular referencing
         if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
