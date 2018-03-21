@@ -119,7 +119,7 @@ public class PlayerMove : NetworkBehaviour
                 GManager.Instance.setInvisibleToVisibleWorld(GManager.invisiblePlayer2Layer, GManager.SeeTP1NonCollidable);
             }
 
-            //GManager.Instance.NetworkingLevelReferencesSetup(this);
+            GManager.Instance.NetworkingLevelReferencesSetup(this);
         }
     }
 

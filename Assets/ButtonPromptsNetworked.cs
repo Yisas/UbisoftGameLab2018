@@ -36,11 +36,11 @@ public class ButtonPromptsNetworked : MonoBehaviour/*NetworkBehaviour*/
     {
         if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger")
         {
-            Canvas_Player = null;
+            //Canvas_Player = null;
             Canvas_PresurePlate = null;
-            Canvas_Junk = null;
-            JumpImg = null;
-            InteractImg = null;
+            //Canvas_Junk = null;
+            //JumpImg = null;
+            //InteractImg = null;
         }
         if (gameObject.name == "PlayerPromptTrigger")
         {
@@ -148,33 +148,49 @@ public class ButtonPromptsNetworked : MonoBehaviour/*NetworkBehaviour*/
             }
             else                                            //(B: Interact)
             {
-                if (JumpImg != null && InteractImg != null)
-                {
+               // if (JumpImg != null && InteractImg != null)
+               // {
                     JumpImg.enabled = false;
                     InteractImg.enabled = true;
-                }
+                //}
             }
 
             if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
             {
-                Debug.Log("Trigger entered!");
+                Debug.Log("Trigger entered!" + gameObject.name);
                 if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Canvas_Player.enabled = true;
-                    isBeingControlled = true;
+                    Debug.Log("Player canvas prompt 1");
+                    //if (Canvas_Player != null)
+                    //{                        
+                        Canvas_Player.enabled = true;
+                        isBeingControlled = true;
+                    //}
                 }
-                else if (isBeingControlled == false && (player.IsGrabingPushable == false || !player.IsHoldingPickup == false))
+                else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
                 {
-                    Canvas_Player.enabled = true;
+                    Debug.Log("Player canvas prompt 2");
+                    //if (Canvas_Player != null)
+                    //{
+                        Canvas_Player.enabled = true;
+                    //}
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Canvas_Player.enabled = true;
+                    Debug.Log("Player canvas prompt 3");
+                    //if (Canvas_Player != null)
+                    //{
+                        Canvas_Player.enabled = true;
+                    //}
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
                 {
-                    Canvas_Player.enabled = false;
-                    isBeingControlled = false;
+                    Debug.Log("Player canvas prompt 4");
+                   // if (Canvas_Player != null)
+                    //{
+                        Canvas_Player.enabled = false;
+                        isBeingControlled = false;
+                    //}
                 }
             }
         }
@@ -191,7 +207,10 @@ public class ButtonPromptsNetworked : MonoBehaviour/*NetworkBehaviour*/
         }
         else if (buttonprompt == ButtonPromptOn.player)
         {
-            Canvas_Player.enabled = false;
+            if (Canvas_Player != null)
+            {
+                Canvas_Player.enabled = false;
+            }
         }
     }
 }
