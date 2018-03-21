@@ -9,7 +9,6 @@ using UnityEngine.Networking;
 public class PlayerObjectInteraction : NetworkBehaviour
 {
     public GameObject holdPlayerPos;
-    public GameObject particlesBoxCollide;
     public GameObject particlesObjectAppear;
 
     public GameObject grabBox;                                  //objects inside this trigger box can be picked up by the player (think of this as your reach)
@@ -53,8 +52,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private TriggerParent triggerParent;
     private RigidbodyInterpolation objectDefInterpolation;
     private Rigidbody rb;
-    public float powCooldown = 0.75f;
-    private float currentPowCooldown = 0;
     public float vibrationDuration = 0.5f;
     private float vibrationTime = 0;
     public float vibrationIntensity = 0.1f;
@@ -224,9 +221,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
         checkIfBoxIsHanging();
 
-        if (currentPowCooldown < powCooldown)
-            currentPowCooldown += Time.deltaTime;
-
         if (vibrationTime > 0)
         {
             vibrationTime -= Time.deltaTime;
@@ -242,11 +236,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
     #region Collision
     void OnTriggerEnter(Collider other)
     {
-        if (currentPowCooldown > powCooldown && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
+        if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
             && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
         {
-            Instantiate(particlesBoxCollide, transform.position + transform.forward * 0.5f + transform.up, transform.rotation);
-            currentPowCooldown = 0;
             XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
             vibrationTime = vibrationDuration;
         }
