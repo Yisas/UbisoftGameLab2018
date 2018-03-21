@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using UnityEngine;
 
-public class ButtonPromptsNetworked : MonoBehaviour/*NetworkBehaviour*/
+public class ButtonPromptsNetworked : NetworkBehaviour
 {
 
     /**NOTE FOR NETWORKING VERSION:
@@ -36,11 +36,7 @@ public class ButtonPromptsNetworked : MonoBehaviour/*NetworkBehaviour*/
     {
         if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger")
         {
-            //Canvas_Player = null;
             Canvas_PresurePlate = null;
-            //Canvas_Junk = null;
-            //JumpImg = null;
-            //InteractImg = null;
         }
         if (gameObject.name == "PlayerPromptTrigger")
         {
@@ -78,7 +74,17 @@ public class ButtonPromptsNetworked : MonoBehaviour/*NetworkBehaviour*/
     public void NetworkPlayerPromptReferenceStart(Canvas canvasPlayer)
     {
         Canvas_Player = canvasPlayer;
-        Canvas_Player.enabled = false;
+        //Also set the image of the Prompts
+        Image[] imgType = canvasPlayer.GetComponentsInChildren<Image>();
+        if(imgType[0].name == "Jump Image P2")
+        {
+            JumpImg = imgType[0];
+        }
+        if(imgType[1].name == "Interact Image P2")
+        {
+            InteractImg = imgType[1];
+        }
+        Canvas_Player.enabled = false;        
     }
 
     void OnTriggerStay(Collider other)
@@ -148,53 +154,37 @@ public class ButtonPromptsNetworked : MonoBehaviour/*NetworkBehaviour*/
             }
             else                                            //(B: Interact)
             {
-               // if (JumpImg != null && InteractImg != null)
-               // {
+               if (JumpImg != null && InteractImg != null)
+                {
                     JumpImg.enabled = false;
                     InteractImg.enabled = true;
-                //}
+                }
             }
 
             if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
             {
-                Debug.Log("Trigger entered!" + gameObject.name);
                 if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
-                {
-                    Debug.Log("Player canvas prompt 1");
-                    //if (Canvas_Player != null)
-                    //{                        
+                {                      
                         Canvas_Player.enabled = true;
                         isBeingControlled = true;
-                    //}
                 }
                 else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
                 {
-                    Debug.Log("Player canvas prompt 2");
-                    //if (Canvas_Player != null)
-                    //{
                         Canvas_Player.enabled = true;
-                    //}
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Debug.Log("Player canvas prompt 3");
-                    //if (Canvas_Player != null)
-                    //{
                         Canvas_Player.enabled = true;
-                    //}
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
                 {
-                    Debug.Log("Player canvas prompt 4");
-                   // if (Canvas_Player != null)
-                    //{
                         Canvas_Player.enabled = false;
                         isBeingControlled = false;
-                    //}
                 }
             }
         }
     }
+
     private void TurnOffPrompt()
     {
         if (buttonprompt == ButtonPromptOn.junk)
