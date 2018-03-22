@@ -46,7 +46,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private PlayerMove otherPlayer = null;
 
     // State attributes
-    private float timeOfPickup, defRotateSpeed;
+    private float timeOfPickup, timeOfThrow, defRotateSpeed;
 
     private float originalMass;
 
@@ -140,7 +140,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
             else if (heldObj.tag == "Player" && Time.time > timeOfPickup + throwPlayerCooldownTime)    //NOTE: can combine with above 'if' ---Added for player to pick up another player
             {
-                ThrowPickup();
+                //ThrowPickup();
             }
             else if (heldObj.tag == "Pushable")
                 DropPickup();
@@ -280,13 +280,13 @@ public class PlayerObjectInteraction : NetworkBehaviour
             if (other.tag != "Player")
             {
                 //pickup
-                if (other.tag == "Pickup" && other.GetComponent<PickupableObject>())
+                if (other.tag == "Pickup" && other.GetComponent<PickupableObject>() && newHeldObj == HoldableType.None && timeOfThrow + 0.2f < Time.time)
                 {
                     Debug.Log("Lifting pickup from player " + playerMove.PlayerID + ", isServer? " + isServer);
                     LiftPickup(other.transform, other.GetComponent<PickupableObject>().Type);
                 }
                 //grab
-                else if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null)
+                else if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && newHeldObj == HoldableType.None && timeOfThrow + 0.2f < Time.time)
                 {
                     // Never grab off another player's hands
                     if (playerMove.FullyGrounded && playerMove.lastFeetTouched != other.transform && !resettableObject.IsBeingHeld)
@@ -527,7 +527,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
     [ClientRpc]
     private void RpcShowFakeObject(PickupableObject.PickupableType type)
     {
-        CommonShowFakeObject(type);
+        if(!isLocalPlayer)
+            CommonShowFakeObject(type);
     }
 
     private void HideFakeObject()
@@ -564,7 +565,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
     [ClientRpc]
     private void RpcHideFakeObject()
     {
-        CommonHideFakeObject();
+        if(!isLocalPlayer)
+            CommonHideFakeObject();
     }
 
     [Command]
@@ -739,6 +741,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
         if (isLocalPlayer)
         {
+            timeOfThrow = Time.time;
+            
             if (isServer)
             {
                 RpcThrowPickup();
@@ -775,7 +779,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
     [ClientRpc]
     private void RpcThrowPickup()
     {
-        CommonThrowPickup();
+        if(!isLocalPlayer)
+            CommonThrowPickup();
     }
 
     [Command]
