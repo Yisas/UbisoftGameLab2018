@@ -3,74 +3,62 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class VignettesLoad : MonoBehaviour
+public class VignettesLoad : NetworkBehaviour
 {
-    LoadScene fadeScr;
-    public int SceneNumb;
-    private static int Level_Counter;
-    public Image[] Vignettes_arr;
-
+    public Image Vignette;
     public float Timer = 30;
 
+    private LoadScene Fade;
 
     private void Awake()
     {
-        fadeScr = GameObject.FindObjectOfType<LoadScene>();
-        Debug.Log("Level Counter: " + Level_Counter);
-        //fadeScr.EndScene(SceneNumb);
+        StartTimer(); //Lenght of the audio narration
     }
-
     private void Start()
     {
-        for (int i = 0; i < Vignettes_arr.Length; i++)
-        {
-            Vignettes_arr[i].enabled = false;
-        }
+        Fade = GameObject.FindObjectOfType<LoadScene>();
+        //start playing the audio narration?
+    }
+
+    private void LAteUpdate()
+    {
+       
     }
 
     private void Update()
     {
-        LoadVignette();
-        StartTimer();
-    }
-
-    private void LoadVignette()
-    {
-        switch (Level_Counter)
+        if (StartTimer())
         {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 7:
-                Vignettes_arr[Level_Counter].enabled = true;
-                break;
-            default:
-                Debug.Log("Default case");
-                break;
+            Fade.SetFadeOut(true);
+        }
+        if (Fade.GetHasFadedOut())
+        {
+            GameObject menu = GameObject.FindGameObjectWithTag("MenuUI");
+            if (menu != null)
+            {
+                menu.GetComponent<StartOptions>().NextScene();
+
+                foreach (Transform child in transform)
+                {
+                    child.gameObject.SetActive(true);
+                }
+
+                this.enabled = false;
+            }
         }
     }
 
-    private void StartTimer()
+
+    private bool StartTimer()
     {
         Timer -= Time.deltaTime;
-        if (Timer < 0)
+        if (Timer <= 0)
         {
-            Debug.Log(Timer +" ....seconds passed");
-            UpdateLevelCounter();
-            //Load Next Scene
-            SceneManager.LoadScene(Level_Counter+1);
-            
+            return true;
         }
-    }
-
-    private void UpdateLevelCounter()
-    {
-        Level_Counter++;
+        return false;
     }
 
 }
