@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PickupableObject : MonoBehaviour
 {
-    public enum PickupableType { Box, Vase, Torch }
+    public enum PickupableType { Box, Vase, Torch, BigBox }
     [SerializeField]
     private PickupableType type;
 

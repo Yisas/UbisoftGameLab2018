@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerObjectInteraction : NetworkBehaviour
 {
-    public enum HoldableType { Pickup, Grabable, None }
+    public enum HoldableType { Pickup, Player, Pushable, None }
     private HoldableType newHeldObj = HoldableType.None;
 
     public GameObject fakeBox;
@@ -17,6 +17,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
     public GameObject throwableVase;
     public GameObject fakeTorch;
     public GameObject torch;
+    public GameObject fakePushableBox;
+    public GameObject pushableBox;
     private PickupableObject.PickupableType heldObjectType;
 
     public GameObject holdPlayerPos;
@@ -142,11 +144,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 Debug.Log("Throwing pickup from player " + playerMove.PlayerID + ", isServer? " + isServer);
                 ThrowPickup();
             }
-            else if (heldObj.tag == "Player" && Time.time > timeOfPickup + throwPlayerCooldownTime)    //NOTE: can combine with above 'if' ---Added for player to pick up another player
+            else if (newHeldObj == HoldableType.Player && Time.time > timeOfPickup + throwPlayerCooldownTime)
             {
                 //ThrowPickup();
             }
-            else if (heldObj.tag == "Pushable")
+            else if (newHeldObj == HoldableType.Pushable)
                 DropPickup();
         }
 
@@ -164,7 +166,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     else
                         CmdUpdateClientAnimator("HoldingPickup", true);
                 }
-                else if (heldObj.tag.StartsWith("Player"))
+                else if (newHeldObj == HoldableType.Player)
                 //**TODO NOTE: Add Animation for picking up the player. 
                 {
                     animator.SetBool("HoldingPickup", true);
@@ -183,7 +185,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 }
 
                 // --------- Pushing animations ---------
-                if (heldObj && heldObj.tag == "Pushable")
+                if (newHeldObj == HoldableType.Pushable)
                 {
                     animator.SetBool("HoldingPushable", true);
                     if (isServer)
@@ -340,29 +342,21 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
         playerMove.transform.LookAt(touchedPoint);
 
-        heldObj = other.gameObject;
-        objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
-        heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-        AddJoint();
-        //Is grabbing pushable box?
         playerMove.IsGrabingPushable = true;
-        //set limits for when player will let go of object
-        //joint.breakForce = holdingBreakForce;
-        //joint.breakTorque = holdingBreakTorque;
-        //stop player rotating in direction of movement, so they can face the block theyre pulling
         playerMove.rotateSpeed = 0;
 
-        //playerMove.SetRestrictToBackCamera(true);
-
-        SetInteractableIsBeingHeld(true, heldObj.tag);
-        if (!isServer)
-            CmdSetInteractableIsBeingHeld(true, heldObj.transform.position, heldObj.tag);
-
-        PushableObject po = other.GetComponent<PushableObject>();
-        if (po)
-            po.SetIsBeingPushed(true);
+        // Only destroy objects on the server
+        if (isServer)
+        {
+            NetworkServer.Destroy(other.gameObject);
+        }
         else
-            Debug.LogError("Unasignsed PushableObject component");
+        {
+            CmdServerDestroy(other.gameObject);
+        }
+
+        newHeldObj = HoldableType.Pushable;
+        ShowFakeObject(PickupableObject.PickupableType.BigBox);
     }
 
     private void PickupPlayer(Collider other)
@@ -497,6 +491,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
         NetworkServer.Destroy(gameObjectToDestroy);
     }
 
+    /// <summary>
+    /// Side effect: will set heldObjectType to type
+    /// </summary>
+    /// <param name="type"></param>
     private void ShowFakeObject(PickupableObject.PickupableType type)
     {
         CommonShowFakeObject(type);
@@ -522,6 +520,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 break;
             case PickupableObject.PickupableType.Torch:
                 fakeTorch.SetActive(true);
+                break;
+            case PickupableObject.PickupableType.BigBox:
+                fakePushableBox.SetActive(true);
                 break;
         }
 
