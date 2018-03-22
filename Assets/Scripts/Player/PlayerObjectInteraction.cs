@@ -130,9 +130,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
 
         //when we press grab button, throw object if we're holding one
-        if (Input.GetButtonDown("Grab") && heldObj)
+        if (Input.GetButtonDown("Grab") && newHeldObj != HoldableType.None)
         {
-            if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + throwThrowableCooldownTime)
+            if (newHeldObj == HoldableType.Pickup && Time.time > timeOfPickup + throwThrowableCooldownTime)
             {
                 ThrowPickup();
             }
@@ -443,6 +443,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
             CommonLiftPickup(type);
 
+            // Local player only
+            timeOfPickup = Time.time;
+
             if (isServer)
             {
                 RpcLiftPickup(type);
@@ -523,6 +526,16 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void HideFakeObject()
     {
+        CommonHideFakeObject();
+
+        if (isServer)
+            RpcHideFakeObject();
+        else
+            CmdHideFakeObject();
+    }
+
+    private void CommonHideFakeObject()
+    {
         if (newHeldObj == HoldableType.None)
         {
             Debug.LogWarning("Tried to hide an object when none was active.");
@@ -538,6 +551,18 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
 
         newHeldObj = HoldableType.None;
+    }
+
+    [Command]
+    private void CmdHideFakeObject()
+    {
+        CommonHideFakeObject();
+    }
+
+    [ClientRpc]
+    private void RpcHideFakeObject()
+    {
+        CommonHideFakeObject();
     }
 
     [Command]
@@ -702,53 +727,37 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     public void ThrowPickup()
     {
-        SetInteractableIsBeingHeld(false, heldObj.tag);
-        // Value is already syncvared so it only needs to update client to server
-        if (!isServer)
-            CmdSetInteractableIsBeingHeld(false, heldObj.transform.position, heldObj.tag);
-
-        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-
-        if (heldObj.CompareTag("Pickup") || heldObj.CompareTag("Pushable"))
-        {
-            // And modify mass
-            heldObj.GetComponent<Collider>().isTrigger = false;
-            heldObjectRigidbody.useGravity = true;
-            heldObjectRigidbody.interpolation = objectDefInterpolation;
-            heldObjectRigidbody.mass /= weightChange;
-        }
-
         AkSoundEngine.PostEvent("Throw", gameObject);
 
-        Destroy(joint);
+        HideFakeObject();
 
-        //Note Added:
-        if (heldObj.tag == "Player")
-        {
-            PlayerMove heldPlayerMove = heldObj.GetComponent<PlayerMove>();
-            heldObj.GetComponent<Rigidbody>().isKinematic = false;
-            heldPlayerMove.UnlockMovementToOtherPlayer();
-            heldPlayerMove.SetIsBeingHeld(false);
+        ////Note Added:
+        //if (heldObj.tag == "Player")
+        //{
+        //    PlayerMove heldPlayerMove = heldObj.GetComponent<PlayerMove>();
+        //    heldObj.GetComponent<Rigidbody>().isKinematic = false;
+        //    heldPlayerMove.UnlockMovementToOtherPlayer();
+        //    heldPlayerMove.SetIsBeingHeld(false);
 
-            if (heldPlayerMove.isLocalPlayer)
-                heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.Impulse);
+        //    if (heldPlayerMove.isLocalPlayer)
+        //        heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.Impulse);
 
-            // Networking logic: this function now needs to be executed by the opposite version of this player instance
-            if (isLocalPlayer && isServer)
-                RpcThrowPickup(playerMove.PlayerID, transform.position, transform.rotation, rb.velocity);
-            else if (isLocalPlayer && !isServer)
-                CmdThrowPickup(playerMove.PlayerID, transform.position, transform.rotation, rb.velocity);
+        //    // Networking logic: this function now needs to be executed by the opposite version of this player instance
+        //    if (isLocalPlayer && isServer)
+        //        RpcThrowPickup(playerMove.PlayerID, transform.position, transform.rotation, rb.velocity);
+        //    else if (isLocalPlayer && !isServer)
+        //        CmdThrowPickup(playerMove.PlayerID, transform.position, transform.rotation, rb.velocity);
 
-            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
-        }
-        else
-        {
-            heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
-            //Is holding pickup box
-            playerMove.IsHoldingPickup = false;
-        }
-        heldObj = null;
-        playerMove.CanJump = true;    //Added: lets the bottom player jump again
+        //    heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
+        //}
+        //else
+        //{
+        //    heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
+        //    //Is holding pickup box
+        //    playerMove.IsHoldingPickup = false;
+        //}
+        //heldObj = null;
+        //playerMove.CanJump = true;    //Added: lets the bottom player jump again
     }
 
     [ClientRpc]
