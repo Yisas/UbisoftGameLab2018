@@ -8,6 +8,12 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerObjectInteraction : NetworkBehaviour
 {
+    public enum HoldableType { Pickup, Grabable, None}
+    private HoldableType newHeldObj = HoldableType.None;
+
+    public GameObject fakeBox;
+    private PickupableObject.PickupableType heldObjectType;
+
     public GameObject holdPlayerPos;
     public GameObject particlesObjectAppear;
 
@@ -39,7 +45,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private PlayerMove otherPlayer = null;
 
     // State attributes
-    private float timeOfPickup, timeOfThrow, defRotateSpeed;
+    private float timeOfPickup, defRotateSpeed;
 
     private float originalMass;
 
@@ -141,10 +147,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
         //set animation value for arms layer
         if (animator)
         {
-            if (heldObj)
+            if (newHeldObj != HoldableType.None)
             {
                 // --------- Holding animations ---------
-                if (heldObj.tag == "Pickup")
+                if (newHeldObj == HoldableType.Pickup)
                 {
                     animator.SetBool("HoldingPickup", true);
                     if (isServer)
@@ -272,13 +278,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
             if (other.tag != "Player")
             {
                 //pickup
-                if (other.tag == "Pickup" && heldObj == null && timeOfThrow + 0.2f < Time.time)
+                if (other.tag == "Pickup" && other.GetComponent<PickupableObject>())
                 {
-                    if (resettableObject != null && !resettableObject.IsBeingHeld)
-                        LiftPickup(other);
+                    LiftPickup(other.transform, other.GetComponent<PickupableObject>().Type);
                 }
                 //grab
-                else if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null && timeOfThrow + 0.2f < Time.time)
+                else if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null)
                 {
                     // Never grab off another player's hands
                     if (playerMove.FullyGrounded && playerMove.lastFeetTouched != other.transform && !resettableObject.IsBeingHeld)
@@ -300,7 +305,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 return;
             }
             //NOTE: Added to pickup the player:
-            if (other.tag == "Player" && heldObj == null && timeOfThrow + 0.2f < Time.time)
+            if (other.tag == "Player" && heldObj == null)
             {
                 PickupPlayer(other);    //Created new function.
                 return;
@@ -428,44 +433,53 @@ public class PlayerObjectInteraction : NetworkBehaviour
             PickupPlayer(otherPlayer.GetComponent<Collider>());
     }
 
-    private void LiftPickup(Collider other)
+    private void LiftPickup(Transform other, PickupableObject.PickupableType type)
     {
-        //get where to move item once its picked up
-        Mesh otherMesh = other.GetComponent<MeshFilter>().mesh;
-        holdPos = transform.position;
-        holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + gap;
-
-        //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
-        if (!Physics.CheckSphere(holdPos, checkRadius, 2))
+        if (!Physics.CheckSphere(other.position, checkRadius, LayerMask.NameToLayer("Ignore Raycast")))
         {
-            gizmoColor = Color.green;
-            heldObj = other.gameObject;
-            Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-            objectDefInterpolation = heldObjectRigidbody.interpolation;
-            heldObjectRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-            heldObj.transform.position = holdPos;
-            heldObj.transform.rotation = transform.rotation;
-            AddJoint();
-            //NEW: Is holding pickup box
-            playerMove.IsHoldingPickup = true;
-
-            //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            heldObjectRigidbody.mass *= weightChange;
-            //make sure we don't immediately throw object after picking it up
-            timeOfPickup = Time.time;
+            Destroy(other.gameObject);
+            newHeldObj = HoldableType.Pickup;
+            ShowFakeObject(type);
         }
-        //if not print to console (look in scene view for sphere gizmo to see whats stopping the pickup)
         else
         {
-            gizmoColor = Color.red;
-            print("Can't lift object here. If nothing is above the player, make sure triggers are set to layer index 2 (ignore raycast by default)");
+            // TODO: handle not being able to pickup if necessary
         }
-
-        SetInteractableIsBeingHeld(true, heldObj.tag);
 
         // Value is already syncvared so it only needs to update client to server
         if (!isServer)
             CmdSetInteractableIsBeingHeld(true, heldObj.transform.position, heldObj.tag);
+    }
+
+    private void ShowFakeObject(PickupableObject.PickupableType type)
+    {
+        switch (type)
+        {
+            case PickupableObject.PickupableType.Box:
+                fakeBox.SetActive(true);
+                break;
+        }
+
+        heldObjectType = type;
+    }
+
+    private void HideFakeObject()
+    {
+        if(newHeldObj == HoldableType.None)
+        {
+            Debug.LogWarning("Tried to hide an object when none was active.");
+        }
+        else
+        {
+            switch (heldObjectType)
+            {
+                case PickupableObject.PickupableType.Box:
+                    fakeBox.SetActive(false);
+                    break;
+            }
+        }
+
+        newHeldObj = HoldableType.None;
     }
 
     [Command]
@@ -603,8 +617,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
 
         heldObj = null;
-
-        timeOfThrow = Time.time;
     }
 
     [ClientRpc]
@@ -679,7 +691,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
         heldObj = null;
         playerMove.CanJump = true;    //Added: lets the bottom player jump again
-        timeOfThrow = Time.time;
     }
 
     [ClientRpc]
@@ -725,7 +736,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
             heldObj = null;
             playerMove.CanJump = true;
-            timeOfThrow = Time.time;
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
             if (isLocalPlayer && isServer)
