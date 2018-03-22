@@ -855,6 +855,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     break;
                 case PickupableObject.PickupableType.Torch:
                     throwableToSpawn = (GameObject)Instantiate(torch, fakeTorch.transform.position, fakeTorch.transform.rotation);
+                    throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
+                    throwableToSpawn.GetComponent<Collider>().isTrigger = false;
                     break;
             }
 
