@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerObjectInteraction : NetworkBehaviour
 {
-    public enum HoldableType { Pickup, Grabable, None}
+    public enum HoldableType { Pickup, Grabable, None }
     private HoldableType newHeldObj = HoldableType.None;
 
     public GameObject fakeBox;
@@ -296,12 +296,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     }
                 }
 
-                // Give the object either host or client authority, depending on which player is picking it up
-                if (isServer)
-                    SetPlayerAuthorityToHeldObject(GetComponent<NetworkIdentity>(), playerMove.PlayerID, other.GetComponent<NetworkIdentity>());
-                else
-                    CmdSetPlayerAuthorityToHeldObject(GetComponent<NetworkIdentity>(), playerMove.PlayerID, other.GetComponent<NetworkIdentity>());
-
                 return;
             }
             //NOTE: Added to pickup the player:
@@ -437,9 +431,27 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (!Physics.CheckSphere(other.position, checkRadius, LayerMask.NameToLayer("Ignore Raycast")))
         {
-            Destroy(other.gameObject);
-            newHeldObj = HoldableType.Pickup;
-            ShowFakeObject(type);
+            // Only destroy objects on the server
+            if (isServer)
+            {
+                NetworkServer.Destroy(other.gameObject);
+            }
+            else
+            {
+                CmdServerDestroy(other.gameObject);
+            }
+
+            CommonLiftPickup(type);
+
+            if (isServer)
+            {
+                RpcLiftPickup(type);
+            }
+            else
+            {
+                CmdLiftPickup(type);
+            }
+
         }
         else
         {
@@ -451,7 +463,41 @@ public class PlayerObjectInteraction : NetworkBehaviour
             CmdSetInteractableIsBeingHeld(true, heldObj.transform.position, heldObj.tag);
     }
 
+    [Command]
+    private void CmdLiftPickup(PickupableObject.PickupableType type)
+    {
+        CommonLiftPickup(type);
+    }
+
+    [ClientRpc]
+    private void RpcLiftPickup(PickupableObject.PickupableType type)
+    {
+        CommonLiftPickup(type);
+    }
+
+    private void CommonLiftPickup(PickupableObject.PickupableType type)
+    {
+        newHeldObj = HoldableType.Pickup;
+        ShowFakeObject(type);
+    }
+
+    [Command]
+    private void CmdServerDestroy(GameObject gameObjectToDestroy)
+    {
+        NetworkServer.Destroy(gameObjectToDestroy);
+    }
+
     private void ShowFakeObject(PickupableObject.PickupableType type)
+    {
+        CommonShowFakeObject(type);
+
+        if (isServer)
+            RpcShowFakeObject(type);
+        else
+            CmdShowFakeObject(type);
+    }
+
+    private void CommonShowFakeObject(PickupableObject.PickupableType type)
     {
         switch (type)
         {
@@ -463,9 +509,21 @@ public class PlayerObjectInteraction : NetworkBehaviour
         heldObjectType = type;
     }
 
+    [Command]
+    private void CmdShowFakeObject(PickupableObject.PickupableType type)
+    {
+        CommonShowFakeObject(type);
+    }
+
+    [ClientRpc]
+    private void RpcShowFakeObject(PickupableObject.PickupableType type)
+    {
+        CommonShowFakeObject(type);
+    }
+
     private void HideFakeObject()
     {
-        if(newHeldObj == HoldableType.None)
+        if (newHeldObj == HoldableType.None)
         {
             Debug.LogWarning("Tried to hide an object when none was active.");
         }
