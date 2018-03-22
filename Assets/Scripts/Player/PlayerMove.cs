@@ -109,7 +109,7 @@ public class PlayerMove : NetworkBehaviour
         // Get references on startup: required since networking needs player to spawn
         if (isLocalPlayer)
         {
-            mainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+            mainCam = Camera.main.transform;
             mainCam.GetComponent<CameraFollow>().StartFollowingPlayer(this, backCameraPosition);
 
             if (isServer) //if it's server set id's to 1
