@@ -22,6 +22,10 @@ public class GManager : MonoBehaviour
     public static int SeeTP1NonCollidable = 20;
     public static int SeeTP2NonCollidable = 21;
 
+    private CameraFollow cameraFollow;
+    private GameObject player1;
+    private GameObject player2;
+
     private void Awake()
     {
         Instance = this;
@@ -55,7 +59,7 @@ public class GManager : MonoBehaviour
     {
         foreach (ResettableObject ro in GameObject.FindObjectsOfType<ResettableObject>())
         {
-            if(!resetPlayers && ro.gameObject.tag == "Player")
+            if (!resetPlayers && ro.gameObject.tag == "Player")
             {
                 continue;
             }
@@ -85,5 +89,49 @@ public class GManager : MonoBehaviour
     public void TriggerRespawnThrowableEffect(Vector3 position)
     {
         GameObject.Instantiate(respawnPickupEffect, position, Quaternion.Euler(90, 0, 0));
+    }
+
+    private void FindPlayers()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+        {
+            PlayerMove playerMove = player.GetComponent<PlayerMove>();
+            if (playerMove.PlayerID == 1)
+            {
+                player1 = player;
+            }
+            else if (playerMove.PlayerID == 2)
+            {
+                player2 = player;
+            }
+        }
+    }
+
+    //--------------------------- NETWORKING HACKS ------------------------------------
+    public void OverridePlayer(int playerID)
+    {
+        if (!player1 || !player2)
+            FindPlayers();
+
+        if (playerID == 1)
+        {
+            player1.SetActive(false);
+        }
+        else if (playerID == 2)
+        {
+            player2.SetActive(false);
+        }
+    }
+
+    public void OverrideCameraFollow(int idOfPlayerOverriding)
+    {
+        if (!cameraFollow)
+            cameraFollow = Camera.main.GetComponent<CameraFollow>();
+
+        if(idOfPlayerOverriding == 1)
+            cameraFollow.target = player1.GetComponent<PlayerObjectInteraction>().fakePlayer.transform;
+        else
+            cameraFollow.target = player2.GetComponent<PlayerObjectInteraction>().fakePlayer.transform;
     }
 }

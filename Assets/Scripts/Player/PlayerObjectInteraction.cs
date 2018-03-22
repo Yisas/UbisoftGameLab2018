@@ -364,30 +364,36 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void PickupPlayer(Collider other)
     {
-        //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
-        if (!Physics.CheckSphere(fakePlayer.transform.position, checkRadius, 2))
+        if (isLocalPlayer)
         {
-            ShowFakeObject(PickupableObject.PickupableType.Player);
-            newHeldObj = HoldableType.Player;
+            //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
+            if (!Physics.CheckSphere(fakePlayer.transform.position, checkRadius, 2))
+            {
+                ShowFakeObject(PickupableObject.PickupableType.Player);
+                newHeldObj = HoldableType.Player;
 
-            //heldObj.GetComponent<PlayerMove>().LockMovementToOtherPlayer(holdPlayerPos.transform);
+                //heldObj.GetComponent<PlayerMove>().LockMovementToOtherPlayer(holdPlayerPos.transform);
 
-            //playerMove.CanJump = false;   //Bottom player cannot jump
+                //playerMove.CanJump = false;   //Bottom player cannot jump
 
-            timeOfPickup = Time.time;
+                timeOfPickup = Time.time;
+
+                OverrideOtherPlayer();
+            }
+
+            // Networking logic: this function now needs to be executed by the opposite version of this player instance
+            if (isServer)
+                RpcPickupPlayer();
+            else
+                CmdPickupPlayer();
         }
-
-        // Networking logic: this function now needs to be executed by the opposite version of this player instance
-        if (isLocalPlayer && isServer)
-            RpcPickupPlayer();
-        else if (isLocalPlayer && !isServer)
-            CmdPickupPlayer();
     }
 
     [ClientRpc]
     private void RpcPickupPlayer()
     {
-        CommonPickupPlayerCommand();
+        if (!isLocalPlayer)
+            CommonPickupPlayerCommand();
     }
 
     [Command]
@@ -406,6 +412,44 @@ public class PlayerObjectInteraction : NetworkBehaviour
         //playerMove.CanJump = false;   //Bottom player cannot jump
 
         timeOfPickup = Time.time;
+    }
+
+    /// <summary>
+    /// The other player is now faked in this screen, so pretend the other game is this instance's fake player
+    /// </summary>
+    private void OverrideOtherPlayer()
+    {
+        CommonOverrideOtherPlayer();
+
+        if (isServer)
+            RpcOverrideOtherPlayer();
+        else
+            CmdOverrideOtherPlayer();
+    }
+
+    private void CommonOverrideOtherPlayer()
+    {
+        int otherPlayerID = playerMove.PlayerID == 1 ? 2 : 1;
+        GManager.Instance.OverridePlayer(otherPlayerID);
+
+        // Local player needs a new camera target, so if you're not local player but carrying, you're overriding camera
+        if (!isLocalPlayer)
+        {
+            GManager.Instance.OverrideCameraFollow(playerMove.PlayerID);
+        }
+    }
+
+    [Command]
+    private void CmdOverrideOtherPlayer()
+    {
+        CommonOverrideOtherPlayer();
+    }
+
+    [ClientRpc]
+    private void RpcOverrideOtherPlayer()
+    {
+        if (!isLocalPlayer)
+            CommonOverrideOtherPlayer();
     }
 
     private void LiftPickup(Transform other, PickupableObject.PickupableType type)
