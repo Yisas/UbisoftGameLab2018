@@ -1755,6 +1755,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23363880e037e864c8b08314ac3ab8b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bamParticleEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 2}
+  powCooldown: 0.75
 --- !u!114 &114293771151829488
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1767,12 +1769,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   holdPlayerPos: {fileID: 1901748987976732}
-  particlesBoxCollide: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 2}
   particlesObjectAppear: {fileID: 100000, guid: a6b884d400e6d2244a29b0550830c6da,
     type: 2}
   grabBox: {fileID: 1913262883672236}
   dropBox: {fileID: 1544105939397826}
-  gap: 0.5
+  gap: 1
   throwForce: {x: 0, y: 9, z: 7}
   throwForcePlayer: {x: 0, y: 10, z: 20}
   throwPlayerCooldownTime: 0.1
@@ -1785,7 +1786,6 @@ MonoBehaviour:
   armsAnimationLayer: 1
   boxHangThreshold: 0
   heldObj: {fileID: 0}
-  powCooldown: 0.75
   vibrationDuration: 0.5
   vibrationIntensity: 0.1
 --- !u!114 &114529846741435150
@@ -1807,7 +1807,7 @@ MonoBehaviour:
   m_MovementTheshold: 0.001
   m_VelocityThreshold: 0.0001
   m_SnapThreshold: 5
-  m_InterpolateRotation: 5
+  m_InterpolateRotation: 10
   m_InterpolateMovement: 1
 --- !u!114 &114592616025784668
 MonoBehaviour:

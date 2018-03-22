@@ -10,9 +10,9 @@ public class GhostObjectInteraction : MonoBehaviour {
     internal GameObject heldObj;
 
 
-    private const float liftHeight = 0.5f;
-    private const float radiusAboveHead= 0.5f;
-    public const float weightChange = 0.3f;
+    public float liftHeight;
+    public float radiusAboveHead;
+    public float weightChange;
 
     private Vector3 holdPos;
     private RigidbodyInterpolation objectDefInterpolation;
@@ -57,7 +57,7 @@ public class GhostObjectInteraction : MonoBehaviour {
         ResettableObject resettableObject = other.GetComponent<ResettableObject>();
         if (resettableObject != null && resettableObject.CompareTag("Pickup"))
         {
-            resettableObject.IsHeld = true;
+            resettableObject.IsBeingHeld = true;
         }
         heldObjectRb = heldObj.GetComponent<Rigidbody>();
 
@@ -67,7 +67,9 @@ public class GhostObjectInteraction : MonoBehaviour {
     public void GrabObject(Collider other)
     {
         heldObj = other.gameObject;
-        heldObj.transform.position = grabBox.transform.position;
+        Vector3 grabBoxPosition = grabBox.transform.position;
+        grabBoxPosition.y += liftHeight;
+        heldObj.transform.position = grabBoxPosition;        
         heldObjectRb = heldObj.GetComponent<Rigidbody>();
         heldObjectRb.velocity = Vector3.zero;
         objectDefInterpolation = heldObjectRb.interpolation;
@@ -78,7 +80,7 @@ public class GhostObjectInteraction : MonoBehaviour {
         ResettableObject resettableObject = other.GetComponent<ResettableObject>();
         if (resettableObject != null && resettableObject.CompareTag("Pickup"))
         {
-            resettableObject.IsHeld = true;
+            resettableObject.IsBeingHeld = true;
         }
 
         //reduceHeldObjectVisibility();
@@ -92,7 +94,7 @@ public class GhostObjectInteraction : MonoBehaviour {
         ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
         if (resettableObject != null && resettableObject.CompareTag("Pickup"))
         {
-            resettableObject.IsHeld = false;
+            resettableObject.IsBeingHeld = false;
 
             if(heldObj.tag == "Pickup")
             {

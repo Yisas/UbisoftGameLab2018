@@ -133,7 +133,7 @@ public class Ghost : Movable
             {
                 ResettableObject pickupableObject = collider.GetComponent<ResettableObject>();                
                 if (pickupableObject != null && pickupableObject.IsMoved && !pickupableObject.IsOnPressurePlate 
-                    && !pickupableObject.IsHeld)
+                    && !pickupableObject.IsBeingHeld)
                     pickupableList.Add(pickupableObject);
             }
         }
