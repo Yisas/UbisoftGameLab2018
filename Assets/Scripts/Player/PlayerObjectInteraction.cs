@@ -19,6 +19,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     public GameObject torch;
     public GameObject fakePushableBox;
     public GameObject pushableBox;
+    public GameObject fakePlayer;
     private PickupableObject.PickupableType heldObjectType;
 
     public GameObject holdPlayerPos;
@@ -307,10 +308,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
                 return;
             }
-            //NOTE: Added to pickup the player:
-            if (other.tag == "Player" && heldObj == null)
+            if (other.tag == "Player" && newHeldObj == HoldableType.None)
             {
-                PickupPlayer(other);    //Created new function.
+                PickupPlayer(other);
                 return;
             }
         }
@@ -364,71 +364,48 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void PickupPlayer(Collider other)
     {
-        Collider otherMesh = other.GetComponent<Collider>();
-        holdPos = transform.position;
-        holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + gap;
-
         //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
-        if (!Physics.CheckSphere(holdPos, checkRadius, 2))
+        if (!Physics.CheckSphere(fakePlayer.transform.position, checkRadius, 2))
         {
-            heldObj = other.gameObject;
+            ShowFakeObject(PickupableObject.PickupableType.Player);
+            newHeldObj = HoldableType.Player;
 
-            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1) + " While Carried");
+            //heldObj.GetComponent<PlayerMove>().LockMovementToOtherPlayer(holdPlayerPos.transform);
 
-            Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-            heldObj.transform.position = holdPos;
-            heldObj.transform.rotation = transform.rotation;
-
-            heldObj.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-            heldObj.GetComponent<Rigidbody>().isKinematic = true;
-            heldObj.GetComponent<PlayerMove>().LockMovementToOtherPlayer(holdPlayerPos.transform);
-
-
-            playerMove.CanJump = false;   //Bottom player cannot jump
-            heldObj.GetComponent<PlayerMove>().SetIsBeingHeld(true);
+            //playerMove.CanJump = false;   //Bottom player cannot jump
 
             timeOfPickup = Time.time;
-        }
-        //if not print to console (look in scene view for sphere gizmo to see whats stopping the pickup)
-        else
-        {
-            gizmoColor = Color.red;
-            print("Can't lift object here. If nothing is above the player, make sure triggers are set to layer index 2 (ignore raycast by default)");
         }
 
         // Networking logic: this function now needs to be executed by the opposite version of this player instance
         if (isLocalPlayer && isServer)
-            RpcPickupPlayer(playerMove.PlayerID);
+            RpcPickupPlayer();
         else if (isLocalPlayer && !isServer)
-            CmdPickupPlayer(playerMove.PlayerID);
+            CmdPickupPlayer();
     }
 
     [ClientRpc]
-    private void RpcPickupPlayer(int targetPlayerID)
+    private void RpcPickupPlayer()
     {
-        CommonPickupPlayerCommand(targetPlayerID);
+        CommonPickupPlayerCommand();
     }
 
     [Command]
-    private void CmdPickupPlayer(int targetPlayerID)
+    private void CmdPickupPlayer()
     {
-        CommonPickupPlayerCommand(targetPlayerID);
+        CommonPickupPlayerCommand();
     }
 
-    /// <summary>
-    /// To be called by the networking commands to resolve the same logic from different network origins (client/server)
-    /// </summary>
-    /// <param name="targetPlayerID"></param>
-    private void CommonPickupPlayerCommand(int targetPlayerID)
+    private void CommonPickupPlayerCommand()
     {
-        if (otherPlayer == null)
-        {
-            FindOtherPlayer();
-        }
+        ShowFakeObject(PickupableObject.PickupableType.Player);
+        newHeldObj = HoldableType.Player;
 
-        // Execution already happened in local player at this point, so we avoid circular referencing
-        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
-            PickupPlayer(otherPlayer.GetComponent<Collider>());
+        //heldObj.GetComponent<PlayerMove>().LockMovementToOtherPlayer(holdPlayerPos.transform);
+
+        //playerMove.CanJump = false;   //Bottom player cannot jump
+
+        timeOfPickup = Time.time;
     }
 
     private void LiftPickup(Transform other, PickupableObject.PickupableType type)
@@ -526,6 +503,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 break;
             case PickupableObject.PickupableType.BigBox:
                 fakePushableBox.SetActive(true);
+                break;
+            case PickupableObject.PickupableType.Player:
+                fakePlayer.SetActive(true);
                 break;
         }
 
