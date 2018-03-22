@@ -148,8 +148,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
             {
                 //ThrowPickup();
             }
-            else if (newHeldObj == HoldableType.Pushable)
-                DropPickup();
+            else if (newHeldObj == HoldableType.Pushable && Time.time > timeOfPickup + throwPlayerCooldownTime)
+                LetGoOFPushable();
         }
 
         //set animation value for arms layer
@@ -337,6 +337,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
     #region Interactions
     private void GrabPushable(Collider other)
     {
+        Debug.Log("Grabbing pushable from player " + playerMove.PlayerID + " islocal? " + isLocalPlayer + " isServer?" + isServer);
+
         Vector3 touchedPoint = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
         if (touchedPoint.y > transform.position.y) return;
 
@@ -355,6 +357,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             CmdServerDestroy(other.gameObject);
         }
 
+        timeOfPickup = Time.time;
         newHeldObj = HoldableType.Pushable;
         ShowFakeObject(PickupableObject.PickupableType.BigBox);
     }
@@ -568,6 +571,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
             case PickupableObject.PickupableType.Torch:
                 fakeTorch.SetActive(false);
                 break;
+            case PickupableObject.PickupableType.BigBox:
+                fakePushableBox.SetActive(false);
+                break;
         }
 
         newHeldObj = HoldableType.None;
@@ -652,6 +658,64 @@ public class PlayerObjectInteraction : NetworkBehaviour
     public void CmdSetPlayerAuthorityToHeldObject(NetworkIdentity networkIdentity, int playerID, NetworkIdentity objToChangeAuthNetIdentity)
     {
         SetPlayerAuthorityToHeldObject(networkIdentity, playerID, objToChangeAuthNetIdentity);
+    }
+
+    public void LetGoOFPushable()
+    {
+        Debug.Log("Letting go pushable from player " + playerMove.PlayerID + " islocal? " + isLocalPlayer + " isServer?" + isServer);
+
+        CommonLetGoOfPushable();
+
+        if (isLocalPlayer)
+        {
+            timeOfThrow = Time.time;
+
+            if (isServer)
+            {
+                RpcLetGoOfPushable();
+            }
+            else
+            {
+                CmdLetGoOfPushable();
+            }
+        }
+    }
+
+    private void CommonLetGoOfPushable()
+    {
+        if (isServer)
+        {
+            // Spawn a new object and throw it
+            GameObject pushableToSpawn = null;
+
+            if (heldObjectType == PickupableObject.PickupableType.BigBox)
+            {
+                pushableToSpawn = (GameObject)Instantiate(pushableBox, fakePushableBox.transform.position, fakePushableBox.transform.rotation);
+            }
+            else
+            {
+                Debug.LogWarning("Letting go of pushable you don't have?");
+            }
+
+            NetworkServer.Spawn(pushableToSpawn);
+        }
+
+        HideFakeObject();
+        playerMove.IsGrabingPushable = false;
+        playerMove.rotateSpeed = defRotateSpeed;
+    }
+
+    [ClientRpc]
+    private void RpcLetGoOfPushable()
+    {
+        if (!isLocalPlayer)
+            CommonLetGoOfPushable();
+    }
+
+    [Command]
+    private void CmdLetGoOfPushable()
+    {
+        CommonLetGoOfPushable();
     }
 
     public void DropPickup()
