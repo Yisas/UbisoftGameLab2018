@@ -13,6 +13,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     public GameObject fakeBox;
     public GameObject throwableBox;
+    public GameObject fakeVase;
+    public GameObject throwableVase;
+    public GameObject fakeTorch;
+    public GameObject torch;
     private PickupableObject.PickupableType heldObjectType;
 
     public GameObject holdPlayerPos;
@@ -513,6 +517,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
             case PickupableObject.PickupableType.Box:
                 fakeBox.SetActive(true);
                 break;
+            case PickupableObject.PickupableType.Vase:
+                fakeVase.SetActive(true);
+                break;
+            case PickupableObject.PickupableType.Torch:
+                fakeTorch.SetActive(true);
+                break;
         }
 
         heldObjectType = type;
@@ -527,7 +537,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     [ClientRpc]
     private void RpcShowFakeObject(PickupableObject.PickupableType type)
     {
-        if(!isLocalPlayer)
+        if (!isLocalPlayer)
             CommonShowFakeObject(type);
     }
 
@@ -551,6 +561,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
             case PickupableObject.PickupableType.Box:
                 fakeBox.SetActive(false);
                 break;
+            case PickupableObject.PickupableType.Vase:
+                fakeVase.SetActive(false);
+                break;
+            case PickupableObject.PickupableType.Torch:
+                fakeTorch.SetActive(false);
+                break;
         }
 
         newHeldObj = HoldableType.None;
@@ -565,7 +581,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     [ClientRpc]
     private void RpcHideFakeObject()
     {
-        if(!isLocalPlayer)
+        if (!isLocalPlayer)
             CommonHideFakeObject();
     }
 
@@ -742,7 +758,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if (isLocalPlayer)
         {
             timeOfThrow = Time.time;
-            
+
             if (isServer)
             {
                 RpcThrowPickup();
@@ -769,6 +785,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 case PickupableObject.PickupableType.Box:
                     throwableToSpawn = (GameObject)Instantiate(throwableBox, fakeBox.transform.position, fakeBox.transform.rotation);
                     break;
+                case PickupableObject.PickupableType.Vase:
+                    throwableToSpawn = (GameObject)Instantiate(throwableVase, fakeVase.transform.position, fakeVase.transform.rotation);
+                    break;
+                case PickupableObject.PickupableType.Torch:
+                    throwableToSpawn = (GameObject)Instantiate(torch, fakeTorch.transform.position, fakeTorch.transform.rotation);
+                    break;
             }
 
             NetworkServer.Spawn(throwableToSpawn);
@@ -779,7 +801,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     [ClientRpc]
     private void RpcThrowPickup()
     {
-        if(!isLocalPlayer)
+        if (!isLocalPlayer)
             CommonThrowPickup();
     }
 

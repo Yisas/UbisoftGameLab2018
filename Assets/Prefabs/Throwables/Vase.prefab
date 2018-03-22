@@ -26,6 +26,7 @@ GameObject:
   - component: {fileID: 136335751973164812}
   - component: {fileID: 114016278404791856}
   - component: {fileID: 114194640766167770}
+  - component: {fileID: 114788662247238246}
   m_Layer: 0
   m_Name: Vase
   m_TagString: Pickup
@@ -168,6 +169,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bamParticleEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 2}
   powCooldown: 0.75
+--- !u!114 &114788662247238246
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1174809156514424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a34343892ed5fc47814e5960da553ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
 --- !u!136 &136335751973164812
 CapsuleCollider:
   m_ObjectHideFlags: 1

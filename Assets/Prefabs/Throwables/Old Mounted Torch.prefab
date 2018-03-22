@@ -298,6 +298,7 @@ GameObject:
   - component: {fileID: 33951819695273608}
   - component: {fileID: 114566677828543650}
   - component: {fileID: 114830015419935284}
+  - component: {fileID: 114245572954844384}
   m_Layer: 0
   m_Name: Old Mounted Torch
   m_TagString: Pickup
@@ -3188,6 +3189,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &114245572954844384
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1347668835503844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a34343892ed5fc47814e5960da553ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
 --- !u!114 &114288751707329298
 MonoBehaviour:
   m_ObjectHideFlags: 1
