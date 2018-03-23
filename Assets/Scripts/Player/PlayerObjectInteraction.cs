@@ -9,7 +9,7 @@ using UnityEngine.Networking;
 public class PlayerObjectInteraction : NetworkBehaviour
 {
     public enum HoldableType { Pickup, Player, Pushable, None }
-    private HoldableType newHeldObj = HoldableType.None;
+    public HoldableType newHeldObj = HoldableType.None;
 
     public GameObject fakeBox;
     public GameObject throwableBox;
