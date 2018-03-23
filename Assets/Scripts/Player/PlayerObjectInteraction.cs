@@ -899,7 +899,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         AkSoundEngine.PostEvent("Throw", gameObject);
 
-        if (isLocalPlayer && !isClient)
+        if (isLocalPlayer && !isServer)
         {
             // local client has to wait for the object to spawn from the server to hide its object otherwise fakeobj dissapears before object appears
         }
