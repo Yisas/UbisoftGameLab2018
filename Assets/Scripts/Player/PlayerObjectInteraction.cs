@@ -955,6 +955,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
             throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().Spawned(Time.time, playerMove.PlayerID);
             NetworkServer.Spawn(throwableToSpawn);
+
+            throwableToSpawn.GetComponent<Rigidbody>().velocity = rb.velocity;
             throwableToSpawn.GetComponent<Rigidbody>().AddRelativeForce(throwForce, ForceMode.VelocityChange);
         }
     }
