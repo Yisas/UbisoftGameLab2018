@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Lava : MonoBehaviour
 {
-
+    public GameObject lavaSinkParticles;
+    public float lavaParticleHeight;
     private CameraFollow cameraFollow;
     private bool cameraDeactivated = false;
     private float cameraFollowTime = 0;
@@ -13,6 +14,11 @@ public class Lava : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            // Start particle effect when player sinks into lava
+            Vector3 particlePosition = other.transform.position;
+            particlePosition.y = transform.position.y + lavaParticleHeight;
+            Instantiate(lavaSinkParticles, particlePosition, transform.rotation);
+
             // Deactivate camera follow
             int playerID = other.GetComponent<PlayerMove>().PlayerID;
 
