@@ -64,6 +64,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private TriggerParent triggerParent;
     private RigidbodyInterpolation objectDefInterpolation;
     private Rigidbody rb;
+    private NetworkIdentity networkIdentity;
     public float vibrationDuration = 0.5f;
     private float vibrationTime = 0;
     public float vibrationIntensity = 0.1f;
@@ -72,6 +73,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        networkIdentity = GetComponent<NetworkIdentity>();
 
         //create grabBox is none has been assigned
         if (!grabBox)
@@ -272,6 +274,21 @@ public class PlayerObjectInteraction : NetworkBehaviour
             else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
             {
                 AkSoundEngine.PostEvent("BoxCollide", gameObject);
+            }
+        }
+
+
+        if (other.tag == "Pickup")
+        {
+            if (isLocalPlayer)
+            {
+                NetworkIdentity pickupableNetID = other.GetComponent<NetworkIdentity>();
+
+                if (!pickupableNetID.hasAuthority)
+                    if (isServer)
+                        SetPlayerAuthorityToHeldObject(networkIdentity, playerMove.PlayerID, other.GetComponent<NetworkIdentity>());
+                    else
+                        CmdSetPlayerAuthorityToHeldObject(networkIdentity, playerMove.PlayerID, other.GetComponent<NetworkIdentity>());
             }
         }
     }
@@ -664,6 +681,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
     /// <param name="netIdentityOfObj">Network identity of the gameObject that will have its player auth modified</param>
     public void SetPlayerAuthorityToHeldObject(NetworkIdentity targetNetworkIdentity, int playerID, NetworkIdentity netIdentityOfObj)
     {
+        Debug.Log("Changing authority of " + netIdentityOfObj.gameObject.name + " to " + playerID);
+
         if (otherPlayer == null)
         {
             FindOtherPlayer();
