@@ -40,7 +40,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
         {
             Canvas_PresurePlate = null;
         }
-        if (gameObject.name == "PlayerPromptTrigger")
+        if (gameObject.name == "PlayerButtonPrompt")
         {
             Canvas_PresurePlate = null;
             Canvas_Junk = null;
@@ -66,6 +66,10 @@ public class ButtonPromptsNetworked : MonoBehaviour
         {
             Canvas_PresurePlate.enabled = false;
         }
+        if (Canvas_Player != null)
+        {
+            Canvas_Player.enabled = false;
+        }
     }
 
     /// <summary>
@@ -88,7 +92,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
         }
 
         //At the start of the game the prompts on player will be off
-        Canvas_Player.enabled = false;
+        //Canvas_Player.enabled = false;
     }
 
     void OnTriggerStay(Collider other)
@@ -146,19 +150,22 @@ public class ButtonPromptsNetworked : MonoBehaviour
                 {
                     Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;
                 }
-                //if (playerID == 1)
-                //{
-                //    Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"  
-                //    //Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;                  
-                //}
-                //if (playerID == 2)
-                //{
-                //    Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
-                //    //Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;
-                //}
+
+                /**OLD CODE
+                if (playerID == 1)
+                {
+                    Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"  
+                    //Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;                  
+                }
+                if (playerID == 2)
+                {
+                    Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
+                    //Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;
+                }
 
                 //NOTE: Will this only make the canvas of the pressureplate visible to Local Player?
-                //Canvas_PresurePlate.enabled = true;
+                Canvas_PresurePlate.enabled = true;
+                */
             }
         }
         else if (buttonprompt == ButtonPromptOn.junk)   // If the prompt is suppose to appear above the Junk Items
@@ -173,34 +180,62 @@ public class ButtonPromptsNetworked : MonoBehaviour
             {
                 Canvas_Junk.gameObject.GetComponent<Canvas>().enabled = false;
             }
-            //if (playerID == 1)
-            //{
-            //    Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"                    
-            //}
-            //if (playerID == 2)
-            //{
-            //    Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
-            //}
+
+            /**OLD CODE
+            if (playerID == 1)
+            {
+                Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"                    
+            }
+            if (playerID == 2)
+            {
+                Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
+            }
 
             //NOTE: Will this only make the canvas of the pressureplate visible to Local Player?
-            //if (player.isLocalPlayer)
-            //Canvas_Junk.enabled = true;
+            if (player.isLocalPlayer)
+                Canvas_Junk.enabled = true;
+            */
         }
         else if (buttonprompt == ButtonPromptOn.player) // If the prompt is suppose to appear above the Player
         {
             //if (player.isLocalPlayer)
             //{
-            //Switching the image prompts
+
+            //Setting the visiblity of the player seeing eachothers canvas.
+            Debug.Log("HI im Player " + playerID + "and Im the LocalPlayer? " + playerNetID.isLocalPlayer);
+
+            if (playerNetID.isLocalPlayer)
+            {
+                Debug.Log("LocalPlayer: Player " + playerID);
+                //Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
+            }
+
+            if (!player.isLocalPlayer)
+            {
+                Debug.Log("NOT LocalPlayer: Player " + playerID);
+                //Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
+            }
+
+            //Switching the image prompts           
             if (gameObject.name == "JumpPromptTrigger")     //(A: Jumpp)
             {
                 if (player.jumpPromptConter > 0)
                 {
+                    Debug.Log("Swaping Image to Jump!!!");
                     JumpImg.enabled = true;
                     InteractImg.enabled = false;
-                    Canvas_Player.enabled = true;
+                    if (playerNetID.isLocalPlayer)
+                    {
+                        Canvas_Player.enabled = true;
+                    }
+                    if (!playerNetID.isLocalPlayer)
+                    {
+                        Canvas_Player.enabled = false;
+                    }
                 }
                 else
                 {
+                    Debug.Log("No more jumps tuts required !");
                     JumpImg.enabled = false;
                 }
             }
@@ -213,27 +248,55 @@ public class ButtonPromptsNetworked : MonoBehaviour
                 }
             }
 
-            if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerPromptTrigger")
+            if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerButtonPrompt")
             {
                 if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Canvas_Player.enabled = true;
+                    Debug.Log("1: player-" + playerID);
+                    if (playerNetID.isLocalPlayer)
+                    {
+                        Canvas_Player.enabled = true;
+                    }
+                    if (!playerNetID.isLocalPlayer)
+                    {
+                        Canvas_Player.enabled = false;
+                    }
+
                     isBeingControlled = true;
                 }
                 else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
                 {
-                    Canvas_Player.enabled = true;
+                    Debug.Log("2: player-" + playerID);
+                    if (playerNetID.isLocalPlayer)
+                    {
+                        Canvas_Player.enabled = true;
+                    }
+                    if (!playerNetID.isLocalPlayer)
+                    {
+                        Canvas_Player.enabled = false;
+                    }
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Canvas_Player.enabled = true;
+                    Debug.Log("3: player-" + playerID);
+                    if (playerNetID.isLocalPlayer)
+                    {
+                        Canvas_Player.enabled = true;
+                    }
+                    if (!playerNetID.isLocalPlayer)
+                    {
+                        Canvas_Player.enabled = false;
+                    }
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
                 {
+                    Debug.Log("4: player-" + playerID);
                     Canvas_Player.enabled = false;
                     isBeingControlled = false;
                 }
             }
+
+
             //}
         }
     }
