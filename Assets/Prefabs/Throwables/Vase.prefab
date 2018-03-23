@@ -27,6 +27,7 @@ GameObject:
   - component: {fileID: 114016278404791856}
   - component: {fileID: 114194640766167770}
   - component: {fileID: 114788662247238246}
+  - component: {fileID: 114378604822736864}
   m_Layer: 0
   m_Name: Vase
   m_TagString: Pickup
@@ -156,6 +157,19 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 1.5
   m_InterpolateMovement: 1
+--- !u!114 &114378604822736864
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1174809156514424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 112f4af93771c094d8e96778ff1ef84d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeToRenableInteractionWithSpawningPlayer: 0.1
+  turnOnPhysicsAtStart: 0
 --- !u!114 &114459806341266528
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -181,8 +195,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  timeToRenableInteractionWithSpawningPlayer: 0.1
-  turnOnPhysicsAtStart: 0
 --- !u!136 &136335751973164812
 CapsuleCollider:
   m_ObjectHideFlags: 1

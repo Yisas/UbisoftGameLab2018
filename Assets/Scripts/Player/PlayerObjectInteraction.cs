@@ -816,11 +816,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
                     throwableToSpawn.GetComponent<Collider>().isTrigger = false;
                     // use syncvared value to turn on physics in client after spawn
-                    throwableToSpawn.GetComponent<PickupableObject>().turnOnPhysicsAtStart = true;
+                    throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().turnOnPhysicsAtStart = true;
                     break;
             }
 
-            throwableToSpawn.GetComponent<PickupableObject>().Spawned(Time.time, playerMove.PlayerID);
+            throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().Spawned(Time.time, playerMove.PlayerID);
             NetworkServer.Spawn(throwableToSpawn);
         }
     }
@@ -923,11 +923,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
                     throwableToSpawn.GetComponent<Collider>().isTrigger = false;
                     // use syncvared value to turn on physics in client after spawn
-                    throwableToSpawn.GetComponent<PickupableObject>().turnOnPhysicsAtStart = true;
+                    throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().turnOnPhysicsAtStart = true;
                     break;
             }
 
-            throwableToSpawn.GetComponent<PickupableObject>().Spawned(Time.time, playerMove.PlayerID);
+            throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().Spawned(Time.time, playerMove.PlayerID);
             NetworkServer.Spawn(throwableToSpawn);
             throwableToSpawn.GetComponent<Rigidbody>().AddRelativeForce(throwForce, ForceMode.VelocityChange);
         }

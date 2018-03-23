@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 114623214572431136}
   - component: {fileID: 114016553445858288}
   - component: {fileID: 114537176676008738}
+  - component: {fileID: 114756132349076082}
   m_Layer: 0
   m_Name: Pickupable Box
   m_TagString: Pickup
@@ -192,8 +193,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  timeToRenableInteractionWithSpawningPlayer: 0.1
-  turnOnPhysicsAtStart: 0
 --- !u!114 &114623214572431136
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -226,6 +225,19 @@ MonoBehaviour:
     i15: 210
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
+--- !u!114 &114756132349076082
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1956651292723708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 112f4af93771c094d8e96778ff1ef84d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeToRenableInteractionWithSpawningPlayer: 0.1
+  turnOnPhysicsAtStart: 0
 --- !u!114 &114994325704070614
 MonoBehaviour:
   m_ObjectHideFlags: 1
