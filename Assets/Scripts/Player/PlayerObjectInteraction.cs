@@ -220,9 +220,18 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
         }
         //when grab is released, let go of any pushable objects were holding
-        if (Input.GetButtonDown("Drop") && heldObj != null)
+        if (Input.GetButtonDown("Drop") && newHeldObj != HoldableType.None)
         {
-            DropPickup();
+            if (newHeldObj == HoldableType.Player)
+            {
+                //dropplaeyr
+            }
+            else if (newHeldObj == HoldableType.Pushable)
+            {
+                LetGoOFPushable();
+            }
+            else
+                DropPickup();
         }
 
         checkIfBoxIsHanging();
@@ -737,94 +746,76 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     public void DropPickup()
     {
-        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+        CommonDropPickup();
 
-        if (heldObj.tag == "Pickup")
+        if (isLocalPlayer)
         {
-            heldObj.layer = 0; //Default layer
-
-            heldObj.transform.position = dropBox.transform.position;
-            heldObjectRigidbody.mass /= weightChange;
-
-            heldObj.GetComponent<FixedJoint>().connectedBody = null;
-
-            SetInteractableIsBeingHeld(false, heldObj.tag);
-
-            // Value is already syncvared so it only needs to update client to server
-            if (!isServer)
-                CmdSetInteractableIsBeingHeld(false, heldObj.transform.position, heldObj.tag);
-
-            //Is holding pickup box?
-            playerMove.IsHoldingPickup = false;
+            if (isServer)
+                RpcDropPickup();
+            else
+                CmdDropPickup();
         }
+
 
         //NOTE: Added the bottom player allow and drop the top player
-        if (heldObj.tag == "Player")
-        {
-            heldObj.transform.position = dropBox.transform.position;
-            heldObj.GetComponent<Rigidbody>().isKinematic = false;
-            heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
-            heldObj.GetComponent<PlayerMove>().SetIsBeingHeld(false);
-            playerMove.CanJump = true;
+        //if (heldObj.tag == "Player")
+        //{
+        //    heldObj.transform.position = dropBox.transform.position;
+        //    heldObj.GetComponent<Rigidbody>().isKinematic = false;
+        //    heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
+        //    heldObj.GetComponent<PlayerMove>().SetIsBeingHeld(false);
+        //    playerMove.CanJump = true;
 
-            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
+        //    heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
 
-            // Networking logic: this function now needs to be executed by the opposite version of this player instance
-            if (isLocalPlayer && isServer)
-                RpcDropPickup(playerMove.PlayerID);
-            else if (isLocalPlayer && !isServer)
-                CmdDropPickup(playerMove.PlayerID);
-        }
-
-        heldObjectRigidbody.interpolation = objectDefInterpolation;
-        heldObjectRigidbody.useGravity = true;
-        heldObj.GetComponent<Collider>().isTrigger = false;
-        Destroy(joint);
-        playerMove.rotateSpeed = defRotateSpeed;
-        //playerMove.SetRestrictToBackCamera(false);
-
-        if (heldObj.tag == "Pushable")
-        {
-            heldObj.layer = 0; //Default layer
-
-            SetInteractableIsBeingHeld(false, heldObj.tag);
-            if (!isServer)
-                CmdSetInteractableIsBeingHeld(false, heldObj.transform.position, heldObj.tag);
-
-            PushableObject po = heldObj.GetComponent<PushableObject>();
-            if (po)
-                po.SetIsBeingPushed(false);
-            else
-                Debug.LogError("Unasignsed PushableObject component");
-
-            //Is grabbing pushable box?
-            playerMove.IsGrabingPushable = false;
-        }
-
-        heldObj = null;
+        //    // Networking logic: this function now needs to be executed by the opposite version of this player instance
+        //    if (isLocalPlayer && isServer)
+        //        RpcDropPickup(playerMove.PlayerID);
+        //    else if (isLocalPlayer && !isServer)
+        //        CmdDropPickup(playerMove.PlayerID);
+        //}
     }
 
     [ClientRpc]
-    private void RpcDropPickup(int targetPlayerID)
+    private void RpcDropPickup()
     {
-        CommonDropPickup(targetPlayerID);
+        if (!isLocalPlayer)
+            CommonDropPickup();
     }
 
     [Command]
-    private void CmdDropPickup(int targetPlayerID)
+    private void CmdDropPickup()
     {
-        CommonDropPickup(targetPlayerID);
+        CommonDropPickup();
     }
 
-    /// <summary>
-    /// To be called by the networking commands to resolve the same logic from different network origins (client/server)
-    /// </summary>
-    /// <param name="targetPlayerID"></param>
-    private void CommonDropPickup(int targetPlayerID)
+    private void CommonDropPickup()
     {
-        // Execution already happened in local player at this point, so we avoid circular referencing
-        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
-            DropPickup();
+        //AkSoundEngine.PostEvent("Throw", gameObject);
+        HideFakeObject();
+        newHeldObj = HoldableType.None;
+
+        if (isServer)
+        {
+            // Spawn a new object and throw it
+            GameObject throwableToSpawn = null;
+            switch (heldObjectType)
+            {
+                case PickupableObject.PickupableType.Box:
+                    throwableToSpawn = (GameObject)Instantiate(throwableBox, dropBox.transform.position, dropBox.transform.rotation);
+                    break;
+                case PickupableObject.PickupableType.Vase:
+                    throwableToSpawn = (GameObject)Instantiate(throwableVase, dropBox.transform.position, dropBox.transform.rotation);
+                    break;
+                case PickupableObject.PickupableType.Torch:
+                    throwableToSpawn = (GameObject)Instantiate(torch, dropBox.transform.position, dropBox.transform.rotation);
+                    throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
+                    throwableToSpawn.GetComponent<Collider>().isTrigger = false;
+                    break;
+            }
+
+            NetworkServer.Spawn(throwableToSpawn);
+        }
     }
 
     [Command]
