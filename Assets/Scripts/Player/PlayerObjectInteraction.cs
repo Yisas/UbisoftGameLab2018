@@ -352,6 +352,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if (touchedPoint.y > transform.position.y) return;
 
         playerMove.transform.LookAt(touchedPoint);
+        fakePushableBox.transform.position = other.transform.position;
 
         playerMove.IsGrabingPushable = true;
         playerMove.rotateSpeed = 0;
