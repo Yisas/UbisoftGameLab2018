@@ -51,7 +51,6 @@ public class PickupableObject : NetworkBehaviour
     {
         if (!isServer)
         {
-            Debug.Log("back");
             gameObject.layer = LayerMask.NameToLayer("Default");
             notInteractingWithPlayerThatSpawnedMe = false;
         }
