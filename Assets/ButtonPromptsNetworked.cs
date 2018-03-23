@@ -118,65 +118,73 @@ public class ButtonPromptsNetworked : MonoBehaviour
         Debug.Log("happened?");
         if (playerNetID.isLocalPlayer)
         {
-            Debug.Log("here " + gameObject.name);
+            Debug.Log("LOCAL " + gameObject.name);
         }
 
         if (playerNetID.isServer)
         {
-            Debug.Log("server" + gameObject.name);
+            Debug.Log("SERVER" + gameObject.name);
+        }
+
+        if (playerNetID.isClient)
+        {
+            Debug.Log("CLIENT " + gameObject.name);
         }
         */
-
-        ////Set the oppisite players canvas to be Invisible to current player
-        //if(playerNetID.isLocalPlayer && playerID == 1)
-        //{
-        //    Debug.Log("HERE !! PLAYER 1" + playerNetID.name);
-        //    Canvas_Player.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");     
-        //    //Get the other players canvas    
-        //    //Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
-        //}
-        //if (playerNetID.isLocalPlayer && playerID == 2)
-        //{
-        //    Debug.Log("HERE !! PLAYER 2" + playerNetID.name);
-        //    Canvas_Player.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");
-        //    //Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
-        //}
 
         if (buttonprompt == ButtonPromptOn.pressureplate)  // If the prompt is suppose to appear above the preasure plate
         {
             //Here we are going to make the prompt on the Pressureplate only visible to the local player. 
             if (player.IsHoldingPickup == true) //Checking to see if a player is holding a Pickupable block
             {
-                if (playerID == 1)
+                if (playerNetID.isLocalPlayer)
                 {
-                    Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"  
-                    //Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;                  
-                }
-                if (playerID == 2)
-                {
-                    Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
-                    //Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;
+                    Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = true;
                 }
 
+                if (!player.isLocalPlayer)
+                {
+                    Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;
+                }
+                //if (playerID == 1)
+                //{
+                //    Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"  
+                //    //Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;                  
+                //}
+                //if (playerID == 2)
+                //{
+                //    Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
+                //    //Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;
+                //}
+
                 //NOTE: Will this only make the canvas of the pressureplate visible to Local Player?
-                Canvas_PresurePlate.enabled = true;
+                //Canvas_PresurePlate.enabled = true;
             }
         }
         else if (buttonprompt == ButtonPromptOn.junk)   // If the prompt is suppose to appear above the Junk Items
         {
             //Here we are going to make the prompt on the Junk Items only visible to the local player. 
-            if (playerID == 1)
+            if (playerNetID.isLocalPlayer)
             {
-                Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"                    
+                Canvas_Junk.gameObject.GetComponent<Canvas>().enabled = true;
             }
-            if (playerID == 2)
+
+            if (!player.isLocalPlayer)
             {
-                Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
+                Canvas_Junk.gameObject.GetComponent<Canvas>().enabled = false;
             }
+            //if (playerID == 1)
+            //{
+            //    Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"                    
+            //}
+            //if (playerID == 2)
+            //{
+            //    Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
+            //}
 
             //NOTE: Will this only make the canvas of the pressureplate visible to Local Player?
             //if (player.isLocalPlayer)
-            Canvas_Junk.enabled = true;
+            //Canvas_Junk.enabled = true;
         }
         else if (buttonprompt == ButtonPromptOn.player) // If the prompt is suppose to appear above the Player
         {
