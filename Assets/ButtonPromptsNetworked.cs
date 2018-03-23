@@ -29,9 +29,9 @@ public class ButtonPromptsNetworked : MonoBehaviour
 
     PlayerMove player;
     int playerID;
-    NetworkIdentity playerNetID;    // Droping this because the other objects have different parents. 
-                                    //NOTE: Instead we should use the PlayerMove player and get the player.isLocalPlayer??
-
+    NetworkIdentity playerNetID;    //NOTE: Instead we should use the PlayerMove player and get the player.isLocalPlayer??
+                                    //ATM: The code uses playerNetID--might be redunant though
+                                    
     private bool isBeingControlled;
 
     private void Awake()
@@ -90,9 +90,6 @@ public class ButtonPromptsNetworked : MonoBehaviour
         {
             InteractImg = imgType[1];
         }
-
-        //At the start of the game the prompts on player will be off
-        //Canvas_Player.enabled = false;
     }
 
     void OnTriggerStay(Collider other)
@@ -149,23 +146,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
                 if (!player.isLocalPlayer)
                 {
                     Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;
-                }
-
-                /**OLD CODE
-                if (playerID == 1)
-                {
-                    Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"  
-                    //Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;                  
-                }
-                if (playerID == 2)
-                {
-                    Canvas_PresurePlate.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
-                    //Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;
-                }
-
-                //NOTE: Will this only make the canvas of the pressureplate visible to Local Player?
-                Canvas_PresurePlate.enabled = true;
-                */
+                }                
             }
         }
         else if (buttonprompt == ButtonPromptOn.junk)   // If the prompt is suppose to appear above the Junk Items
@@ -180,62 +161,34 @@ public class ButtonPromptsNetworked : MonoBehaviour
             {
                 Canvas_Junk.gameObject.GetComponent<Canvas>().enabled = false;
             }
-
-            /**OLD CODE
-            if (playerID == 1)
-            {
-                Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"                    
-            }
-            if (playerID == 2)
-            {
-                Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
-            }
-
-            //NOTE: Will this only make the canvas of the pressureplate visible to Local Player?
-            if (player.isLocalPlayer)
-                Canvas_Junk.enabled = true;
-            */
         }
         else if (buttonprompt == ButtonPromptOn.player) // If the prompt is suppose to appear above the Player
         {
-            //if (player.isLocalPlayer)
-            //{
-
-            //Setting the visiblity of the player seeing eachothers canvas.
-            Debug.Log("HI im Player " + playerID + "and Im the LocalPlayer? " + playerNetID.isLocalPlayer);
-
-            if (playerNetID.isLocalPlayer)
-            {
-                Debug.Log("LocalPlayer: Player " + playerID);
-                //Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
-            }
-
-            if (!player.isLocalPlayer)
-            {
-                Debug.Log("NOT LocalPlayer: Player " + playerID);
-                //Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
-            }
 
             //Switching the image prompts           
             if (gameObject.name == "JumpPromptTrigger")     //(A: Jumpp)
             {
                 if (player.jumpPromptConter > 0)
                 {
-                    Debug.Log("Swaping Image to Jump!!!");
+                    Debug.Log("Swaping Image to Jump!!! Player: " + playerID);
                     JumpImg.enabled = true;
                     InteractImg.enabled = false;
-                    if (playerNetID.isLocalPlayer)
+
+                    if (playerNetID.isLocalPlayer && playerID == 1)
                     {
-                        Canvas_Player.enabled = true;
+                        Debug.Log("INSTANCE 1: Local Player " + playerID);
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
-                    if (!playerNetID.isLocalPlayer)
+                    
+                    if (playerNetID.isLocalPlayer && playerID == 2)
                     {
-                        Canvas_Player.enabled = false;
+                        Debug.Log("INSTANCE 2: Local Player " + playerID);
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
                 }
                 else
                 {
-                    Debug.Log("No more jumps tuts required !");
+                    Debug.Log("No more jumps tuts required ! Player: " + playerID);
                     JumpImg.enabled = false;
                 }
             }
@@ -252,52 +205,57 @@ public class ButtonPromptsNetworked : MonoBehaviour
             {
                 if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Debug.Log("1: player-" + playerID);
-                    if (playerNetID.isLocalPlayer)
+                    Debug.Log("1: player-" + playerID + " name of object: " + gameObject.name);
+                    if (playerNetID.isLocalPlayer && playerID == 1)
                     {
-                        Canvas_Player.enabled = true;
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
-                    if (!playerNetID.isLocalPlayer)
+
+                    if (playerNetID.isLocalPlayer && playerID == 2)
                     {
-                        Canvas_Player.enabled = false;
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
 
                     isBeingControlled = true;
                 }
                 else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
                 {
-                    Debug.Log("2: player-" + playerID);
-                    if (playerNetID.isLocalPlayer)
+                    Debug.Log("2: player-" + playerID + " name of object: " + gameObject.name);
+                    if (playerNetID.isLocalPlayer && playerID == 1)
                     {
-                        Canvas_Player.enabled = true;
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
-                    if (!playerNetID.isLocalPlayer)
+                    if (playerNetID.isLocalPlayer && playerID == 2)
                     {
-                        Canvas_Player.enabled = false;
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Debug.Log("3: player-" + playerID);
-                    if (playerNetID.isLocalPlayer)
+                    Debug.Log("3: player-" + playerID + " name of object: " + gameObject.name);
+                    if (playerNetID.isLocalPlayer && playerID == 1)
                     {
-                        Canvas_Player.enabled = true;
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
-                    if (!playerNetID.isLocalPlayer)
+                    if (playerNetID.isLocalPlayer && playerID == 2)
                     {
-                        Canvas_Player.enabled = false;
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
                 {
-                    Debug.Log("4: player-" + playerID);
-                    Canvas_Player.enabled = false;
+                    Debug.Log("4: player-" + playerID + " name of object: " + gameObject.name);
+                    if (playerNetID.isLocalPlayer && playerID == 1)
+                    {
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
+                    }
+                    if (playerNetID.isLocalPlayer && playerID == 2)
+                    {
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
+                    }
                     isBeingControlled = false;
                 }
             }
-
-
-            //}
         }
     }
 
