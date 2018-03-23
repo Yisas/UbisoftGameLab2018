@@ -929,7 +929,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 FindOtherPlayer();
 
             GManager.Instance.RestoreCameraFollow(otherPlayerID);
-            otherPlayer.GetComponent<Rigidbody>().AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+            //Match velocity before applying change
+            Rigidbody otherPlayerRb = otherPlayer.GetComponent<Rigidbody>();
+            otherPlayerRb.velocity = GetComponent<Rigidbody>().velocity;
+            otherPlayerRb.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
         }
     }
 
