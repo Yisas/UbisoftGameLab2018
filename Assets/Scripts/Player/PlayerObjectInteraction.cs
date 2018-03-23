@@ -224,7 +224,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         {
             if (newHeldObj == HoldableType.Player)
             {
-                //dropplaeyr
+                DropPlayer();
             }
             else if (newHeldObj == HoldableType.Pushable)
             {
@@ -755,25 +755,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
             else
                 CmdDropPickup();
         }
-
-
-        //NOTE: Added the bottom player allow and drop the top player
-        //if (heldObj.tag == "Player")
-        //{
-        //    heldObj.transform.position = dropBox.transform.position;
-        //    heldObj.GetComponent<Rigidbody>().isKinematic = false;
-        //    heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
-        //    heldObj.GetComponent<PlayerMove>().SetIsBeingHeld(false);
-        //    playerMove.CanJump = true;
-
-        //    heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
-
-        //    // Networking logic: this function now needs to be executed by the opposite version of this player instance
-        //    if (isLocalPlayer && isServer)
-        //        RpcDropPickup(playerMove.PlayerID);
-        //    else if (isLocalPlayer && !isServer)
-        //        CmdDropPickup(playerMove.PlayerID);
-        //}
     }
 
     [ClientRpc]
@@ -817,6 +798,51 @@ public class PlayerObjectInteraction : NetworkBehaviour
             NetworkServer.Spawn(throwableToSpawn);
         }
     }
+
+    private void DropPlayer()
+    {
+        CommonDropPlayer();
+
+        if (isLocalPlayer)
+        {
+            if (isServer)
+                RpcDropPlayer();
+            else
+                CmdDropPlayer();
+        }
+    }
+
+    private void CommonDropPlayer()
+    {
+        int otherPlayerID = playerMove.PlayerID == 1 ? 2 : 1;
+        //timeOfThrow = Time.time;
+        HideFakeObject();
+        newHeldObj = HoldableType.None;
+        GManager.Instance.RestorePlayerOverride(dropBox.transform.position, dropBox.transform.rotation, otherPlayerID);
+
+        // If you're not the local player, apply force to the one that is
+        if (!isLocalPlayer)
+        {
+            if (!otherPlayer)
+                FindOtherPlayer();
+
+            GManager.Instance.RestoreCameraFollow(otherPlayerID);
+        }
+    }
+
+    [ClientRpc]
+    private void RpcDropPlayer()
+    {
+        if (!isLocalPlayer)
+            CommonDropPlayer();
+    }
+
+    [Command]
+    private void CmdDropPlayer()
+    {
+        CommonDropPlayer();
+    }
+
 
     [Command]
     private void CmdServerSpawnObject(GameObject objectToSpawn)
