@@ -114,6 +114,8 @@ public class GManager : MonoBehaviour
         if (!player1 || !player2)
             FindPlayers();
 
+        Debug.Log("Overriding player " + playerID);
+
         if (playerID == 1)
         {
             player1.SetActive(false);
@@ -129,9 +131,31 @@ public class GManager : MonoBehaviour
         if (!cameraFollow)
             cameraFollow = Camera.main.GetComponent<CameraFollow>();
 
-        if(idOfPlayerOverriding == 1)
+        if (idOfPlayerOverriding == 1)
             cameraFollow.target = player1.GetComponent<PlayerObjectInteraction>().fakePlayer.transform;
         else
             cameraFollow.target = player2.GetComponent<PlayerObjectInteraction>().fakePlayer.transform;
+    }
+
+    public void RestorePlayerOverride(Vector3 positionToRestoreTo, Quaternion rotationToRestoreTo, int idOfPlayerToRestore)
+    {
+        if (!player1 || !player2)
+            FindPlayers();
+
+        Debug.Log("Restoring player " + idOfPlayerToRestore);
+
+        if (idOfPlayerToRestore == 1)
+        {
+            player1.transform.position = positionToRestoreTo;
+            player1.transform.rotation = rotationToRestoreTo;
+            player1.SetActive(true);
+        }
+        else if (idOfPlayerToRestore == 2)
+        {
+            player2.transform.position = positionToRestoreTo;
+            player2.transform.rotation = rotationToRestoreTo;
+            player2.SetActive(true);
+            Debug.Log(player2.active);
+        }
     }
 }

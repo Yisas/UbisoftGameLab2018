@@ -147,7 +147,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
             else if (newHeldObj == HoldableType.Player && Time.time > timeOfPickup + throwPlayerCooldownTime)
             {
-                //ThrowPickup();
+                ThrowPlayer();
             }
             else if (newHeldObj == HoldableType.Pushable && Time.time > timeOfPickup + throwPlayerCooldownTime)
                 LetGoOFPushable();
@@ -364,6 +364,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void PickupPlayer(Collider other)
     {
+        Debug.Log("Player " + playerMove.PlayerID + " is picking up the other. islocal? " + isLocalPlayer + " isServer?" + isServer);
+
         if (isLocalPlayer)
         {
             //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
@@ -597,6 +599,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 break;
             case PickupableObject.PickupableType.BigBox:
                 fakePushableBox.SetActive(false);
+                break;
+            case PickupableObject.PickupableType.Player:
+                fakePlayer.SetActive(false);
                 break;
         }
 
@@ -900,6 +905,55 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private void CmdThrowPickup()
     {
         CommonThrowPickup();
+    }
+
+    private void ThrowPlayer()
+    {
+        Debug.Log("Throwing player from player " + playerMove.PlayerID + " isLocalPlayer? " + isLocalPlayer + " isServer? " + isServer);
+
+        if (isLocalPlayer)
+        {
+            CommonThrowPlayer();
+
+            if (isServer)
+            {
+                RpcThrowPlayer();
+            }
+            else
+            {
+                CmdThrowPlayer();
+            }
+        }
+    }
+
+    private void CommonThrowPlayer()
+    {
+        timeOfThrow = Time.time;
+        HideFakeObject();
+        newHeldObj = HoldableType.None;
+        GManager.Instance.RestorePlayerOverride(fakePlayer.transform.position, fakePlayer.transform.rotation, playerMove.PlayerID == 1 ? 2 : 1);
+
+        // If you're not the local player, apply force to the one that is
+        if (!isLocalPlayer)
+        {
+            if (!otherPlayer)
+                FindOtherPlayer();
+
+            otherPlayer.GetComponent<Rigidbody>().AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+        }
+    }
+
+    [Command]
+    private void CmdThrowPlayer()
+    {
+        CommonThrowPlayer();
+    }
+
+    [ClientRpc]
+    private void RpcThrowPlayer()
+    {
+        if (!isLocalPlayer)
+            CommonThrowPlayer();
     }
 
     //Adding:
