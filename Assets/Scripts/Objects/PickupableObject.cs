@@ -15,12 +15,21 @@ public class PickupableObject : NetworkBehaviour
     private float timeSpanwed;
     [SyncVar]
     private bool notInteractingWithPlayerThatSpawnedMe = false;
+    [HideInInspector]
+    [SyncVar]
+    public bool turnOnPhysicsAtStart = false;
 
     private void Start()
     {
         if (notInteractingWithPlayerThatSpawnedMe)
         {
             gameObject.layer = LayerMask.NameToLayer("Player " + (idOfPlayerThatSpawnedMe == 1 ? 2 : 1) + " While Carried");
+        }
+
+        if (turnOnPhysicsAtStart)
+        {
+            GetComponent<Rigidbody>().useGravity = true;
+            GetComponent<Collider>().isTrigger = false;
         }
     }
 

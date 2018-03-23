@@ -915,6 +915,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     throwableToSpawn = (GameObject)Instantiate(torch, fakeTorch.transform.position, fakeTorch.transform.rotation);
                     throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
                     throwableToSpawn.GetComponent<Collider>().isTrigger = false;
+                    // use syncvared value to turn on physics in client after spawn
+                    throwableToSpawn.GetComponent<PickupableObject>().turnOnPhysicsAtStart = true;
                     break;
             }
 
