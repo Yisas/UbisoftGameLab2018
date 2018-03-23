@@ -365,11 +365,14 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         Debug.Log("Grabbing pushable from player " + playerMove.PlayerID + " islocal? " + isLocalPlayer + " isServer?" + isServer);
 
+        // Avoid any physics while in the process of grabbing
+        other.GetComponent<Collider>().isTrigger = true;
+
         Vector3 touchedPoint = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
         if (touchedPoint.y > transform.position.y) return;
 
         playerMove.transform.LookAt(touchedPoint);
-        fakePushableBox.transform.position = other.transform.position;
+        //fakePushableBox.transform.position = other.transform.position;
 
         playerMove.IsGrabingPushable = true;
         playerMove.rotateSpeed = 0;
