@@ -26,6 +26,7 @@ GameObject:
   - component: {fileID: 136335751973164812}
   - component: {fileID: 114016278404791856}
   - component: {fileID: 114194640766167770}
+  - component: {fileID: 114788662247238246}
   m_Layer: 0
   m_Name: Vase
   m_TagString: Pickup
@@ -40,7 +41,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1174809156514424}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 5.8792653, y: 1.422474, z: 7.9930973}
+  m_LocalPosition: {x: 25.237219, y: 2.201, z: -4.8087816}
   m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children: []
   m_Father: {fileID: 0}
@@ -153,8 +154,8 @@ MonoBehaviour:
   m_MovementTheshold: 0.001
   m_VelocityThreshold: 0.0001
   m_SnapThreshold: 5
-  m_InterpolateRotation: 5
-  m_InterpolateMovement: 1.2
+  m_InterpolateRotation: 1.5
+  m_InterpolateMovement: 1
 --- !u!114 &114459806341266528
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -168,6 +169,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bamParticleEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 2}
   powCooldown: 0.75
+--- !u!114 &114788662247238246
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1174809156514424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a34343892ed5fc47814e5960da553ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
+  timeToRenableInteractionWithSpawningPlayer: 0.1
+  turnOnPhysicsAtStart: 0
 --- !u!136 &136335751973164812
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -177,7 +192,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.030404376
-  m_Height: 0.13384342
+  m_Radius: 0.02542539
+  m_Height: 0.1219254
   m_Direction: 2
-  m_Center: {x: 0, y: -0.0000000079472855, z: 0}
+  m_Center: {x: 0, y: 0, z: -0.004}
