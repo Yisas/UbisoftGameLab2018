@@ -170,25 +170,21 @@ public class ButtonPromptsNetworked : MonoBehaviour
             {
                 if (player.jumpPromptConter > 0)
                 {
-                    Debug.Log("Swaping Image to Jump!!! Player: " + playerID);
                     JumpImg.enabled = true;
                     InteractImg.enabled = false;
 
                     if (playerNetID.isLocalPlayer && playerID == 1)
                     {
-                        Debug.Log("INSTANCE 1: Local Player " + playerID);
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
                     
                     if (playerNetID.isLocalPlayer && playerID == 2)
                     {
-                        Debug.Log("INSTANCE 2: Local Player " + playerID);
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
                 }
                 else
                 {
-                    Debug.Log("No more jumps tuts required ! Player: " + playerID);
                     JumpImg.enabled = false;
                 }
             }
@@ -201,11 +197,12 @@ public class ButtonPromptsNetworked : MonoBehaviour
                 }
             }
 
+            //REQUIRES SOME TYPE OF FIX-- THE CONDITIONS ARE NOT BEING STATISFIED BY THE PLAYER INDUVIDUALLY eg. isBeingControlled
             if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerButtonPrompt")
             {
                 if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Debug.Log("1: player-" + playerID + " name of object: " + gameObject.name);
+                    Debug.Log("1: player- " + playerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled);
                     if (playerNetID.isLocalPlayer && playerID == 1)
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
@@ -220,7 +217,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
                 }
                 else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
                 {
-                    Debug.Log("2: player-" + playerID + " name of object: " + gameObject.name);
+                    Debug.Log("2: player- " + playerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled);
                     if (playerNetID.isLocalPlayer && playerID == 1)
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
@@ -232,7 +229,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Debug.Log("3: player-" + playerID + " name of object: " + gameObject.name);
+                    Debug.Log("3: player- " + playerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled);
                     if (playerNetID.isLocalPlayer && playerID == 1)
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
@@ -244,7 +241,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
                 }
                 else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
                 {
-                    Debug.Log("4: player-" + playerID + " name of object: " + gameObject.name);
+                    Debug.Log("4: player- " + playerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled);
                     if (playerNetID.isLocalPlayer && playerID == 1)
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
