@@ -65,7 +65,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private RigidbodyInterpolation objectDefInterpolation;
     private Rigidbody rb;
     private NetworkIdentity networkIdentity;
-    public float vibrationDuration = 0.5f;
+    public float bumpVibrationDuration = 0.5f;
+    public float invalidDropVibrationDuration = 0.2f;
     private float vibrationTime = 0;
     public float vibrationIntensity = 0.1f;
 
@@ -233,7 +234,17 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 LetGoOFPushable();
             }
             else
-                DropPickup();
+            {
+                if (!Physics.CheckSphere(dropBox.transform.position, checkRadius, LayerMask.NameToLayer("Player 2")))
+                    DropPickup();
+                else
+                {
+                    Debug.Log("Trying to drop inside something");
+                    gizmoColor = Color.red;
+                    XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
+                    vibrationTime = invalidDropVibrationDuration;
+                }
+            }
         }
 
         checkIfBoxIsHanging();
@@ -257,7 +268,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
         {
             XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
-            vibrationTime = vibrationDuration;
+            vibrationTime = bumpVibrationDuration;
         }
 
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
