@@ -815,6 +815,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     break;
             }
 
+            throwableToSpawn.GetComponent<PickupableObject>().Spawned(Time.time, playerMove.PlayerID);
             NetworkServer.Spawn(throwableToSpawn);
         }
     }
@@ -914,6 +915,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     break;
             }
 
+            throwableToSpawn.GetComponent<PickupableObject>().Spawned(Time.time, playerMove.PlayerID);
             NetworkServer.Spawn(throwableToSpawn);
             throwableToSpawn.GetComponent<Rigidbody>().AddRelativeForce(throwForce, ForceMode.VelocityChange);
         }

@@ -41,7 +41,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1174809156514424}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 5.8792653, y: 1.422474, z: 7.9930973}
+  m_LocalPosition: {x: 25.237219, y: 2.201, z: -4.8087816}
   m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children: []
   m_Father: {fileID: 0}
@@ -181,6 +181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
+  timeToRenableInteractionWithSpawningPlayer: 0.3
 --- !u!136 &136335751973164812
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -190,7 +191,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.030404376
-  m_Height: 0.13384342
+  m_Radius: 0.02542539
+  m_Height: 0.1219254
   m_Direction: 2
-  m_Center: {x: 0, y: -0.0000000079472855, z: 0}
+  m_Center: {x: 0, y: 0, z: -0.004}
