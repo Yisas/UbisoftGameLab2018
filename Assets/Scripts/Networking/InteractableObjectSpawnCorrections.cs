@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class InteractableObjectSpawnCorrections : NetworkBehaviour
 {
-
+    [SyncVar]
     public float timeToRenableInteractionWithSpawningPlayer;
     [SyncVar]
     private int idOfPlayerThatSpawnedMe;
