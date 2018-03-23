@@ -308,7 +308,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
                 return;
             }
-            if (other.tag == "Player" && newHeldObj == HoldableType.None)
+            if (other.tag == "Player" && newHeldObj == HoldableType.None && timeOfThrow + 0.2f < Time.time)
             {
                 PickupPlayer(other);
                 return;
@@ -371,16 +371,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
             if (!Physics.CheckSphere(fakePlayer.transform.position, checkRadius, 2))
             {
-                ShowFakeObject(PickupableObject.PickupableType.Player);
-                newHeldObj = HoldableType.Player;
-
-                //heldObj.GetComponent<PlayerMove>().LockMovementToOtherPlayer(holdPlayerPos.transform);
-
-                //playerMove.CanJump = false;   //Bottom player cannot jump
-
-                timeOfPickup = Time.time;
-
-                OverrideOtherPlayer();
+                CommonPickupPlayer();
             }
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
@@ -395,16 +386,16 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private void RpcPickupPlayer()
     {
         if (!isLocalPlayer)
-            CommonPickupPlayerCommand();
+            CommonPickupPlayer();
     }
 
     [Command]
     private void CmdPickupPlayer()
     {
-        CommonPickupPlayerCommand();
+        CommonPickupPlayer();
     }
 
-    private void CommonPickupPlayerCommand()
+    private void CommonPickupPlayer()
     {
         ShowFakeObject(PickupableObject.PickupableType.Player);
         newHeldObj = HoldableType.Player;
@@ -414,6 +405,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
         //playerMove.CanJump = false;   //Bottom player cannot jump
 
         timeOfPickup = Time.time;
+
+        OverrideOtherPlayer();
     }
 
     /// <summary>
@@ -422,11 +415,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private void OverrideOtherPlayer()
     {
         CommonOverrideOtherPlayer();
-
-        if (isServer)
-            RpcOverrideOtherPlayer();
-        else
-            CmdOverrideOtherPlayer();
     }
 
     private void CommonOverrideOtherPlayer()
