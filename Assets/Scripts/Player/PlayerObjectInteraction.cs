@@ -23,6 +23,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private PickupableObject.PickupableType heldObjectType;
 
     public GameObject holdPlayerPos;
+    public Transform airbornePickupDropPosition;
     public GameObject particlesObjectAppear;
 
     public GameObject grabBox;                                  //objects inside this trigger box can be picked up by the player (think of this as your reach)
@@ -817,13 +818,22 @@ public class PlayerObjectInteraction : NetworkBehaviour
             switch (heldObjectType)
             {
                 case PickupableObject.PickupableType.Box:
-                    throwableToSpawn = (GameObject)Instantiate(throwableBox, dropBox.transform.position, dropBox.transform.rotation);
+                    if (playerMove.Grounded)
+                        throwableToSpawn = (GameObject)Instantiate(throwableBox, dropBox.transform.position, dropBox.transform.rotation);
+                    else
+                        throwableToSpawn = (GameObject)Instantiate(throwableBox, airbornePickupDropPosition.transform.position, dropBox.transform.rotation);
                     break;
                 case PickupableObject.PickupableType.Vase:
-                    throwableToSpawn = (GameObject)Instantiate(throwableVase, dropBox.transform.position, dropBox.transform.rotation);
+                    if (playerMove.Grounded)
+                        throwableToSpawn = (GameObject)Instantiate(throwableVase, dropBox.transform.position, dropBox.transform.rotation);
+                    else
+                        throwableToSpawn = (GameObject)Instantiate(throwableVase, airbornePickupDropPosition.transform.position, dropBox.transform.rotation);
                     break;
                 case PickupableObject.PickupableType.Torch:
-                    throwableToSpawn = (GameObject)Instantiate(torch, dropBox.transform.position, dropBox.transform.rotation);
+                    if (playerMove.Grounded)
+                        throwableToSpawn = (GameObject)Instantiate(torch, dropBox.transform.position, dropBox.transform.rotation);
+                    else
+                        throwableToSpawn = (GameObject)Instantiate(torch, airbornePickupDropPosition.transform.position, dropBox.transform.rotation);
                     throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
                     throwableToSpawn.GetComponent<Collider>().isTrigger = false;
                     // use syncvared value to turn on physics in client after spawn

@@ -138,6 +138,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1088644813114020
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4157377177073050}
+  m_Layer: 14
+  m_Name: airborneDropPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1105201625298358
 GameObject:
   m_ObjectHideFlags: 1
@@ -2391,6 +2406,19 @@ Transform:
   m_Father: {fileID: 4248727670222262}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 14.147656, y: 0.00004182277, z: 106.0674}
+--- !u!4 &4157377177073050
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1088644813114020}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.012, y: -0.85, z: 1.369}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4175546158936422}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4159229474323428
 Transform:
   m_ObjectHideFlags: 1
@@ -2493,7 +2521,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1415557474296722}
   m_LocalRotation: {x: -0, y: 0.012523852, z: -0, w: -0.9999216}
-  m_LocalPosition: {x: 28.523567, y: 0.9532976, z: 10.163652}
+  m_LocalPosition: {x: 4.9187107, y: 2.109, z: -12.495775}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4909744962977230}
@@ -2504,6 +2532,7 @@ Transform:
   - {fileID: 4794662483281434}
   - {fileID: 4696622267550600}
   - {fileID: 4172982909682194}
+  - {fileID: 4157377177073050}
   - {fileID: 4333121749656634}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -2754,7 +2783,7 @@ Transform:
   - {fileID: 4937601677088422}
   - {fileID: 4253362203094236}
   m_Father: {fileID: 4175546158936422}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4334271582974204
 Transform:
@@ -6237,6 +6266,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf834097aa74eb4e86aa91a4b6ab25b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  newHeldObj: 3
   fakeBox: {fileID: 1588457647377194}
   throwableBox: {fileID: 1956651292723708, guid: 49d5bff6e55e7ac4d9fac21e72456bd2,
     type: 2}
@@ -6250,6 +6280,7 @@ MonoBehaviour:
     type: 2}
   fakePlayer: {fileID: 1905659119879170}
   holdPlayerPos: {fileID: 1901748987976732}
+  airbornePickupDropPosition: {fileID: 4157377177073050}
   particlesObjectAppear: {fileID: 100000, guid: a6b884d400e6d2244a29b0550830c6da,
     type: 2}
   grabBox: {fileID: 1913262883672236}
@@ -6267,7 +6298,8 @@ MonoBehaviour:
   armsAnimationLayer: 1
   boxHangThreshold: 0
   heldObj: {fileID: 0}
-  vibrationDuration: 0.5
+  bumpVibrationDuration: 0.5
+  invalidDropVibrationDuration: 0.2
   vibrationIntensity: 0.1
 --- !u!114 &114529846741435150
 MonoBehaviour:
