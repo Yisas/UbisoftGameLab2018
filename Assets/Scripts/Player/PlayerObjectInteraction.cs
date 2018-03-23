@@ -927,6 +927,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     break;
             }
 
+            if (!playerMove.Grounded)
+            {
+                throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().timeToRenableInteractionWithSpawningPlayer += 0.5f;
+            }
+
             throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().Spawned(Time.time, playerMove.PlayerID);
             NetworkServer.Spawn(throwableToSpawn);
             throwableToSpawn.GetComponent<Rigidbody>().AddRelativeForce(throwForce, ForceMode.VelocityChange);
