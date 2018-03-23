@@ -916,10 +916,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void CommonThrowPlayer()
     {
+        int otherPlayerID = playerMove.PlayerID == 1 ? 2 : 1;
         timeOfThrow = Time.time;
         HideFakeObject();
         newHeldObj = HoldableType.None;
-        GManager.Instance.RestorePlayerOverride(fakePlayer.transform.position, fakePlayer.transform.rotation, playerMove.PlayerID == 1 ? 2 : 1);
+        GManager.Instance.RestorePlayerOverride(fakePlayer.transform.position, fakePlayer.transform.rotation, otherPlayerID);
 
         // If you're not the local player, apply force to the one that is
         if (!isLocalPlayer)
@@ -927,6 +928,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             if (!otherPlayer)
                 FindOtherPlayer();
 
+            GManager.Instance.RestoreCameraFollow(otherPlayerID);
             otherPlayer.GetComponent<Rigidbody>().AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
         }
     }

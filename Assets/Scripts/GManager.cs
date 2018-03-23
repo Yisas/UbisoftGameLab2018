@@ -155,7 +155,24 @@ public class GManager : MonoBehaviour
             player2.transform.position = positionToRestoreTo;
             player2.transform.rotation = rotationToRestoreTo;
             player2.SetActive(true);
-            Debug.Log(player2.active);
+        }
+    }
+
+    public void RestoreCameraFollow(int idOfPlayerToRestore)
+    {
+        if (!player1 || !player2)
+            FindPlayers();
+
+        if (!cameraFollow)
+            cameraFollow = Camera.main.GetComponent<CameraFollow>();
+
+        if (idOfPlayerToRestore == 1)
+        {
+            cameraFollow.target = player1.transform;
+        }
+        else if (idOfPlayerToRestore == 2)
+        {
+            cameraFollow.target = player2.transform;
         }
     }
 }
