@@ -72,7 +72,13 @@ public class ResettableObject : NetworkBehaviour
     {
         if(transform.tag == "Pickup" && !preventRespawnEffect)
         {
-            Vector3 positionToSpawnAt = new Vector3(ogPosition.x, ogPosition.y - GetComponent<MeshRenderer>().bounds.extents.y, ogPosition.z);
+            MeshRenderer meshRenderer;
+            if (GetComponent<MeshRenderer>() != null)
+                meshRenderer = GetComponent<MeshRenderer>();
+            else 
+                meshRenderer = GetComponentInChildren<MeshRenderer>();
+
+            Vector3 positionToSpawnAt = new Vector3(ogPosition.x, ogPosition.y - meshRenderer.bounds.extents.y, ogPosition.z);
 
             GManager.Instance.TriggerRespawnThrowableEffect(positionToSpawnAt);
         }

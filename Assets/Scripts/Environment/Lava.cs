@@ -14,11 +14,6 @@ public class Lava : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            // Start particle effect when player sinks into lava
-            Vector3 particlePosition = other.transform.position;
-            particlePosition.y = transform.position.y + lavaParticleHeight;
-            Instantiate(lavaSinkParticles, particlePosition, transform.rotation);
-
             // Deactivate camera follow
             int playerID = other.GetComponent<PlayerMove>().PlayerID;
 
@@ -26,6 +21,17 @@ public class Lava : MonoBehaviour
             cameraFollow.enabled = false;
             cameraDeactivated = true;
             cameraFollowTime = other.GetComponent<PlayerMove>().cameraDelayTimerBeforeRespawn;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            // Start particle effect when player sinks into lava
+            Vector3 particlePosition = other.transform.position;
+            particlePosition.y = transform.position.y + lavaParticleHeight;
+            Instantiate(lavaSinkParticles, particlePosition, transform.rotation);
         }
     }
 
