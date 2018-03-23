@@ -589,7 +589,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             CommonShowFakeObject(type);
     }
 
-    private void HideFakeObject()
+    public void HideFakeObject()
     {
         CommonHideFakeObject();
 
@@ -897,7 +897,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         AkSoundEngine.PostEvent("Throw", gameObject);
 
-        HideFakeObject();
+        if (isLocalPlayer && !isClient)
+        {
+            // local client has to wait for the object to spawn from the server to hide its object otherwise fakeobj dissapears before object appears
+        }
+        else
+            HideFakeObject();
 
         if (isServer)
         {

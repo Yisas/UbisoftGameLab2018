@@ -24,6 +24,12 @@ public class PickupableObject : NetworkBehaviour
         if (notInteractingWithPlayerThatSpawnedMe)
         {
             gameObject.layer = LayerMask.NameToLayer("Player " + (idOfPlayerThatSpawnedMe == 1 ? 2 : 1) + " While Carried");
+
+            // Tell the local client they are ready to hide the fake object
+            if (!isServer)
+            {
+                GManager.Instance.ForceHideFakeObject(idOfPlayerThatSpawnedMe);
+            }
         }
 
         if (turnOnPhysicsAtStart)

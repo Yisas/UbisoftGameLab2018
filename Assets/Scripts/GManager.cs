@@ -175,4 +175,19 @@ public class GManager : MonoBehaviour
             cameraFollow.target = player2.transform;
         }
     }
+
+    public void ForceHideFakeObject(int playerID)
+    {
+        if (!player1 || !player2)
+            FindPlayers();
+
+        if (playerID == 1)
+        {
+            player1.GetComponent<PlayerObjectInteraction>().HideFakeObject();
+        }
+        else
+        {
+            player2.GetComponent<PlayerObjectInteraction>().HideFakeObject();
+        }
+    }
 }
