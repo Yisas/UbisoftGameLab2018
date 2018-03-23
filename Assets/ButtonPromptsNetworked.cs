@@ -33,6 +33,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
                                     //ATM: The code uses playerNetID--might be redunant though
                                     
     private bool isBeingControlled;
+    ResettableObject isBeingHeld;
 
     private void Awake()
     {
@@ -197,12 +198,13 @@ public class ButtonPromptsNetworked : MonoBehaviour
                 }
             }
 
-            //REQUIRES SOME TYPE OF FIX-- THE CONDITIONS ARE NOT BEING STATISFIED BY THE PLAYER INDUVIDUALLY eg. isBeingControlled
+            //REQUIRES SOME TYPE OF FIX-- THE CONDITIONS ARE NOT BEING STATISFIED BY THE PLAYER INDUVIDUALLY eg. isBeingHeld
+            isBeingHeld = gameObject.GetComponentInParent<ResettableObject>();
             if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerButtonPrompt")
             {
-                if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
+                if (isBeingHeld.IsHeld == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Debug.Log("1: player- " + playerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled);
+                    Debug.Log("1: player- " + playerID + " name of object: " + gameObject.name + " isBeingHeld: " + isBeingHeld.IsHeld);
                     if (playerNetID.isLocalPlayer && playerID == 1)
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
@@ -212,45 +214,48 @@ public class ButtonPromptsNetworked : MonoBehaviour
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
+                    
+                    isBeingHeld.IsHeld = true;
+                    //isBeingControlled = true;
+                }
+                else if (isBeingHeld.IsHeld == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
+                {
+                    Debug.Log("2: player- " + playerID + " name of object: " + gameObject.name + " isBeingHeld: " + isBeingHeld.IsHeld);
+                    if (playerNetID.isLocalPlayer && playerID == 1)
+                    {
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
+                    }
+                    if (playerNetID.isLocalPlayer && playerID == 2)
+                    {
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
+                    }
+                }
+                else if (isBeingHeld.IsHeld == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
+                {
+                    Debug.Log("3: player- " + playerID + " name of object: " + gameObject.name + " isBeingHeld: " + isBeingHeld.IsHeld);
+                    if (playerNetID.isLocalPlayer && playerID == 1)
+                    {
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
+                    }
+                    if (playerNetID.isLocalPlayer && playerID == 2)
+                    {
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
+                    }
+                }
+                else if (isBeingHeld.IsHeld == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
+                {
+                    Debug.Log("4: player- " + playerID + " name of object: " + gameObject.name + " isBeingHeld: " + isBeingHeld.IsHeld);
+                    if (playerNetID.isLocalPlayer && playerID == 1)
+                    {
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
+                    }
+                    if (playerNetID.isLocalPlayer && playerID == 2)
+                    {
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
+                    }
 
-                    isBeingControlled = true;
-                }
-                else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
-                {
-                    Debug.Log("2: player- " + playerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled);
-                    if (playerNetID.isLocalPlayer && playerID == 1)
-                    {
-                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
-                    }
-                    if (playerNetID.isLocalPlayer && playerID == 2)
-                    {
-                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
-                    }
-                }
-                else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
-                {
-                    Debug.Log("3: player- " + playerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled);
-                    if (playerNetID.isLocalPlayer && playerID == 1)
-                    {
-                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
-                    }
-                    if (playerNetID.isLocalPlayer && playerID == 2)
-                    {
-                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
-                    }
-                }
-                else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
-                {
-                    Debug.Log("4: player- " + playerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled);
-                    if (playerNetID.isLocalPlayer && playerID == 1)
-                    {
-                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
-                    }
-                    if (playerNetID.isLocalPlayer && playerID == 2)
-                    {
-                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
-                    }
-                    isBeingControlled = false;
+                    isBeingHeld.IsHeld = false;
+                    //isBeingControlled = false;
                 }
             }
         }
