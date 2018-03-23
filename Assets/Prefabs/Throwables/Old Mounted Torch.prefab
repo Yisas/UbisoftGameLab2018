@@ -3202,6 +3202,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   timeToRenableInteractionWithSpawningPlayer: 0.1
+  turnOnPhysicsAtStart: 0
 --- !u!114 &114288751707329298
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3266,8 +3267,8 @@ MonoBehaviour:
   m_MovementTheshold: 0.001
   m_VelocityThreshold: 0.0001
   m_SnapThreshold: 5
-  m_InterpolateRotation: 5
-  m_InterpolateMovement: 1.2
+  m_InterpolateRotation: 1
+  m_InterpolateMovement: 1.5
 --- !u!136 &136995704138079122
 CapsuleCollider:
   m_ObjectHideFlags: 1
