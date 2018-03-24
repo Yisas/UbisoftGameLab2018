@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class GManager : MonoBehaviour
+public class GManager : NetworkBehaviour
 {
     public static float lastLevelFinishedTime;
     public static float currentLevelTime;
@@ -27,7 +27,11 @@ public class GManager : MonoBehaviour
     private GameObject player1;
     private GameObject player2;
 
+    public GameObject vase;
+    public GameObject cachedVase;
+
     private int localPlayerID;
+    private bool clientsConnected = false;
 
     private void Awake()
     {
@@ -38,6 +42,15 @@ public class GManager : MonoBehaviour
     {
         lastLevelFinishedTime = currentLevelTime;
         currentLevelTime = 0;
+
+        if (isServer)
+        {
+            //cachedVase = CacheNewObject(PickupableObject.PickupableType.Vase);
+        }
+        else
+        {
+
+        }
 
         if (lastLevelFinishedTime == 0) return;
 
@@ -50,11 +63,32 @@ public class GManager : MonoBehaviour
         lastLevelFixedTime = currentLevelFixedTime;
     }
 
+    public GameObject CacheNewObject(PickupableObject.PickupableType type)
+    {
+        switch (type)
+        {
+            case PickupableObject.PickupableType.Vase:
+                cachedVase = Instantiate(vase, new Vector3(0, 1000, 0), vase.transform.rotation);
+                cachedVase.SetActive(false);
+                NetworkServer.Spawn(cachedVase);
+                return cachedVase;
+        }
+
+        return null;
+    }
+
     private void Update()
     {
         if (!isPaused)
         {
             currentLevelTime += Time.deltaTime;
+        }
+
+        if(!clientsConnected && GetComponent<NetworkIdentity>().observers.Count == 2)
+        {
+            clientsConnected = true;
+            FindPlayers();
+            cachedVase = CacheNewObject(PickupableObject.PickupableType.Vase);
         }
     }
 
