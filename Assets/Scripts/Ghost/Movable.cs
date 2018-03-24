@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public abstract class Movable : MonoBehaviour {
+public abstract class Movable : NetworkBehaviour {
     public Vector3 velocity;
     public float accelerationMax;
     public float velocityMax;
