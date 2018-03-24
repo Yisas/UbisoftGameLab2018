@@ -117,14 +117,12 @@ public class CameraFollow : MonoBehaviour
 
     void setAutoTransparentOnObject(GameObject alphaObject)
     {
+        if (alphaObject.GetComponent<InvisibleToVisible>()) return;
+        if (alphaObject.GetComponent<InvisibleToVisible2>()) return;
+        if (alphaObject.GetComponent<VisibleToInvisible>()) return;
+        
         AutoTransparent AT = alphaObject.GetComponent<AutoTransparent>();
-        InvisibleToVisible ITV = alphaObject.GetComponent<InvisibleToVisible>();
-        VisibleToInvisible VTI = alphaObject.GetComponent<VisibleToInvisible>();
-
-        if (ITV != null || VTI != null)
-        {
-            return;
-        }
+ 
 
         if (AT == null) // if no script is attached, attach one
         {
