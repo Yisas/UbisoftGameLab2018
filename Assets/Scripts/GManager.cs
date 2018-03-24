@@ -77,10 +77,28 @@ public class GManager : NetworkBehaviour
                 cachedVase = Instantiate(vase, new Vector3(0, 1000, 0), vase.transform.rotation);
                 cachedVase.SetActive(false);
                 NetworkServer.Spawn(cachedVase);
+                if (isServer)
+                {
+                    RpcCacheNewObject(cachedVase, type);
+                }
                 return cachedVase;
         }
 
         return null;
+    }
+
+    [ClientRpc]
+    private void RpcCacheNewObject(GameObject go, PickupableObject.PickupableType type)
+    {
+        if (isServer)
+            return;
+
+        switch (type)
+        {
+            case PickupableObject.PickupableType.Vase:
+                cachedVase = go;
+                break;
+        }
     }
 
     private void Update()
