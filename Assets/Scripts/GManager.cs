@@ -29,6 +29,12 @@ public class GManager : MonoBehaviour
 
     private int localPlayerID;
 
+    private List<ResettableObject> resettableObjects = new List<ResettableObject>();
+    private List<Vector3> positionsOfResettableObjects = new List<Vector3>();
+    private List<Quaternion> rotationsOfResettableObjects = new List<Quaternion>();
+    private int lastResettableObjectDestroyed;
+    private bool restoringResettableObject = false;
+
     private void Awake()
     {
         Instance = this;
@@ -56,6 +62,38 @@ public class GManager : MonoBehaviour
         {
             currentLevelTime += Time.deltaTime;
         }
+    }
+
+    public void RegisterResettableObject(ResettableObject ro)
+    {
+        if (!restoringResettableObject)
+        {
+            ro.id = resettableObjects.Count;
+            resettableObjects.Add(ro);
+            positionsOfResettableObjects.Add(ro.transform.position);
+            rotationsOfResettableObjects.Add(ro.transform.rotation);
+        }
+        else
+        {
+            ro.id = lastResettableObjectDestroyed;
+            resettableObjects[lastResettableObjectDestroyed] = (ro);
+        }
+    }
+
+    public void RegisterResettableObjectDestroyed(int id)
+    {
+        lastResettableObjectDestroyed = id;
+        restoringResettableObject = true;
+    }
+
+    public Vector3 GetPositionOfResettableObject(int id)
+    {
+        return positionsOfResettableObjects[id];
+    }
+
+    public Quaternion GetRotationOfResettableObject(int id)
+    {
+        return rotationsOfResettableObjects[id];
     }
 
     public void ResetAllResetableObjects(bool resetPlayers)

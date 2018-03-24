@@ -8,10 +8,9 @@ public class ResettableObject : NetworkBehaviour
     // Particle effect that happens hen bumping into objects
     public GameObject bamParticleEffect;
     public float powCooldown;
+    public int id;
 
     //Properties
-    private Vector3 ogPosition;
-    private Quaternion ogRotation;
     private bool isMoved;
     private bool isOnPressurePlate;
     [SyncVar]
@@ -27,13 +26,13 @@ public class ResettableObject : NetworkBehaviour
     // Use this for initialization
     void Start()
     {
-        ogPosition = transform.position;
-        ogRotation = transform.rotation;
         usesGravity = GetComponent<Rigidbody>().useGravity;
 
         Collider col = GetComponent<Collider>();
         if (col)
             isTrigger = GetComponent<Collider>().isTrigger;
+
+        GManager.Instance.RegisterResettableObject(this);
     }
 
     private void Update()
@@ -70,7 +69,10 @@ public class ResettableObject : NetworkBehaviour
 
     public void Reset(bool preventRespawnEffect = false)
     {
-        if(transform.tag == "Pickup" && !preventRespawnEffect)
+        Vector3 ogPosition = GManager.Instance.GetPositionOfResettableObject(id);
+        Quaternion ogRotation = GManager.Instance.GetRotationOfResettableObject(id);
+
+        if (transform.tag == "Pickup" && !preventRespawnEffect)
         {
             Vector3 positionToSpawnAt = new Vector3(ogPosition.x, ogPosition.y - GetComponent<MeshRenderer>().bounds.extents.y, ogPosition.z);
 
@@ -88,11 +90,16 @@ public class ResettableObject : NetworkBehaviour
         transform.rotation = ogRotation;
     }
 
+    private void OnDestroy()
+    {
+        GManager.Instance.RegisterResettableObjectDestroyed(id);
+    }
+
     public bool IsMoved
     {
         get
         {
-            if (Vector3.Distance(ogPosition, transform.position) > distanceMovedThreshold)
+            if (Vector3.Distance(GManager.Instance.GetPositionOfResettableObject(id), transform.position) > distanceMovedThreshold)
                 isMoved = true;
             else
                 isMoved = false;
@@ -114,7 +121,7 @@ public class ResettableObject : NetworkBehaviour
 
     public Vector3 OriginalPosition
     {
-        get { return ogPosition; }
+        get { return GManager.Instance.GetPositionOfResettableObject(id); }
     }
 
 
