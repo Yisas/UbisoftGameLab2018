@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class GManager : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class GManager : MonoBehaviour
     private CameraFollow cameraFollow;
     private GameObject player1;
     private GameObject player2;
+
+    private int localPlayerID;
 
     private void Awake()
     {
@@ -100,10 +103,16 @@ public class GManager : MonoBehaviour
             if (playerMove.PlayerID == 1)
             {
                 player1 = player;
+
+                if (player.GetComponent<NetworkIdentity>().isLocalPlayer)
+                    localPlayerID = 1;
             }
             else if (playerMove.PlayerID == 2)
             {
                 player2 = player;
+
+                if (player.GetComponent<NetworkIdentity>().isLocalPlayer)
+                    localPlayerID = 2;
             }
         }
     }
@@ -188,6 +197,41 @@ public class GManager : MonoBehaviour
         else
         {
             player2.GetComponent<PlayerObjectInteraction>().HideFakeObject();
+        }
+    }
+
+    public GameObject GetLocalPlayer()
+    {
+        if (!player1 || !player2)
+            FindPlayers();
+
+        return (localPlayerID == 1 ? player1 : player2);
+    }
+
+    public GameObject GetNonLocalPlayer()
+    {
+        if (!player1 || !player2)
+            FindPlayers();
+
+        return (localPlayerID == 1 ? player2 : player1);
+    }
+
+    public GameObject GetPlayer(int playerID)
+    {
+        if (!player1 || !player2)
+            FindPlayers();
+
+        return (playerID == 1 ? player1 : player2);
+    }
+
+    public int LocalPlayerID
+    {
+        get
+        {
+            if (!player1 || !player2)
+                FindPlayers();
+
+            return localPlayerID;
         }
     }
 }
