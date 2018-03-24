@@ -296,9 +296,15 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     if (isServer)
                         GManager.Instance.SetPlayerAuthorityToHeldObject(networkIdentity, other.GetComponent<NetworkIdentity>());
                     else
-                        GManager.Instance.CmdSetPlayerAuthorityToHeldObject(networkIdentity, other.GetComponent<NetworkIdentity>());
+                        CmdSetPlayerAuthorityToHeldObject(networkIdentity, other.GetComponent<NetworkIdentity>());
             }
         }
+    }
+
+    [Command]
+    private void CmdSetPlayerAuthorityToHeldObject(NetworkIdentity clientToReceiveAuthority, NetworkIdentity netIdentityOfObj)
+    {
+        GManager.Instance.SetPlayerAuthorityToHeldObject(clientToReceiveAuthority, netIdentityOfObj);
     }
 
     //pickup/grab
@@ -903,7 +909,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
 
         if (isServer)
-            GManager.Instance.CachedObjectWasUsed(heldObjectType);
+            GManager.Instance.CachedObjectWasUsed(heldObjectType, playerMove.PlayerID == 1);
 
     }
 

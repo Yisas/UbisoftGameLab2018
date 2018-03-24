@@ -66,7 +66,7 @@ public class GManager : NetworkBehaviour
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    public GameObject CacheNewObject(PickupableObject.PickupableType type)
+    public GameObject CacheNewObject(PickupableObject.PickupableType type, bool isArespawn = false, bool respawnTriggerdByServer = true)
     {
         if (!isServer)
         {
@@ -75,21 +75,24 @@ public class GManager : NetworkBehaviour
 
         GameObject modelToSpawn = spawnableInteractableObjects[(int)type];
 
-        serverAuthorityCachedObjects[(int)type] = Instantiate(modelToSpawn, new Vector3(0, 200 * ((int)type + 1), 0), Quaternion.identity);
-        serverAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = (false);
-        serverAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().isKinematic = (false);
-        serverAuthorityCachedObjects[(int)type] = serverAuthorityCachedObjects[(int)type];
-        NetworkServer.Spawn(serverAuthorityCachedObjects[(int)type]);
-
-        clientAuthoriteCachedObjects[(int)type] = Instantiate(modelToSpawn, new Vector3(0, 210 * ((int)type + 1), 0), modelToSpawn.transform.rotation);
-        clientAuthoriteCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = (false);
-        clientAuthoriteCachedObjects[(int)type].GetComponent<Rigidbody>().isKinematic = (false);
-        NetworkServer.Spawn(clientAuthoriteCachedObjects[(int)type]);
-        SetPlayerAuthorityToHeldObject(GetNonLocalPlayer().GetComponent<NetworkIdentity>(), clientAuthoriteCachedObjects[(int)type].GetComponent<NetworkIdentity>());
-        clientAuthoriteCachedObjects[(int)type] = clientAuthoriteCachedObjects[(int)type];
-
-        if (isServer)
+        if (!isArespawn || (isArespawn && respawnTriggerdByServer))
         {
+            serverAuthorityCachedObjects[(int)type] = Instantiate(modelToSpawn, new Vector3(0, 200 * ((int)type + 1), 0), Quaternion.identity);
+            serverAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = (false);
+            serverAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().isKinematic = (false);
+            serverAuthorityCachedObjects[(int)type] = serverAuthorityCachedObjects[(int)type];
+            NetworkServer.Spawn(serverAuthorityCachedObjects[(int)type]);
+        }
+
+        if (!isArespawn || (isArespawn && !respawnTriggerdByServer))
+        {
+            clientAuthoriteCachedObjects[(int)type] = Instantiate(modelToSpawn, new Vector3(0, 210 * ((int)type + 1), 0), modelToSpawn.transform.rotation);
+            clientAuthoriteCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = (false);
+            clientAuthoriteCachedObjects[(int)type].GetComponent<Rigidbody>().isKinematic = (false);
+            NetworkServer.Spawn(clientAuthoriteCachedObjects[(int)type]);
+            SetPlayerAuthorityToHeldObject(GetNonLocalPlayer().GetComponent<NetworkIdentity>(), clientAuthoriteCachedObjects[(int)type].GetComponent<NetworkIdentity>());
+            clientAuthoriteCachedObjects[(int)type] = clientAuthoriteCachedObjects[(int)type];
+
             RpcCacheNewObject(clientAuthoriteCachedObjects[(int)type], type);
         }
 
@@ -118,24 +121,17 @@ public class GManager : NetworkBehaviour
     /// Should only be called from server
     /// </summary>
     /// <param name="type"></param>
-    public void CachedObjectWasUsed(PickupableObject.PickupableType type)
+    public void CachedObjectWasUsed(PickupableObject.PickupableType type, bool usedByServer)
     {
         if (isServer)
         {
-            serverAuthorityCachedObjects[(int)type] = CacheNewObject(type);
+            serverAuthorityCachedObjects[(int)type] = CacheNewObject(type, true, usedByServer);
         }
         else
         {
             Debug.LogError("CacheObjectWas used called from server");
         }
     }
-
-    [Command]
-    private void CmdCachedObjectWasUsed(PickupableObject.PickupableType type)
-    {
-        CachedObjectWasUsed(type);
-    }
-
 
     private void Update()
     {
