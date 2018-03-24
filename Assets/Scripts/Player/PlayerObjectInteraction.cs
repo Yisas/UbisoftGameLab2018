@@ -298,9 +298,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
                 if (!pickupableNetID.hasAuthority)
                     if (isServer)
-                        SetPlayerAuthorityToHeldObject(networkIdentity, playerMove.PlayerID, other.GetComponent<NetworkIdentity>());
+                        GManager.Instance.SetPlayerAuthorityToHeldObject(networkIdentity, other.GetComponent<NetworkIdentity>());
                     else
-                        CmdSetPlayerAuthorityToHeldObject(networkIdentity, playerMove.PlayerID, other.GetComponent<NetworkIdentity>());
+                        GManager.Instance.CmdSetPlayerAuthorityToHeldObject(networkIdentity, other.GetComponent<NetworkIdentity>());
             }
         }
     }
@@ -701,39 +701,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 }
             }
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="targetNetworkIdentity">Client to receive authority of the object</param>
-    /// <param name="playerID"></param>
-    /// <param name="netIdentityOfObj">Network identity of the gameObject that will have its player auth modified</param>
-    public void SetPlayerAuthorityToHeldObject(NetworkIdentity targetNetworkIdentity, int playerID, NetworkIdentity netIdentityOfObj)
-    {
-        Debug.Log("Changing authority of " + netIdentityOfObj.gameObject.name + " to " + playerID);
-
-        if (otherPlayer == null)
-        {
-            FindOtherPlayer();
-        }
-
-        // Remove prior ownership if necessary
-        // TODO: consider removing authority (back to server) after letting go of heldObj
-        if (netIdentityOfObj.clientAuthorityOwner != null)
-            if (netIdentityOfObj.clientAuthorityOwner != targetNetworkIdentity.connectionToClient)
-            {
-                netIdentityOfObj.RemoveClientAuthority(otherPlayer.GetComponent<NetworkIdentity>().connectionToClient);
-            }
-
-        netIdentityOfObj.AssignClientAuthority((targetNetworkIdentity.connectionToClient));
-
-    }
-
-    [Command]
-    public void CmdSetPlayerAuthorityToHeldObject(NetworkIdentity networkIdentity, int playerID, NetworkIdentity objToChangeAuthNetIdentity)
-    {
-        SetPlayerAuthorityToHeldObject(networkIdentity, playerID, objToChangeAuthNetIdentity);
     }
 
     public void LetGoOFPushable()

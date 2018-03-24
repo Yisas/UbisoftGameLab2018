@@ -28,7 +28,8 @@ public class GManager : NetworkBehaviour
     private GameObject player2;
 
     public GameObject vase;
-    public GameObject cachedVase;
+    public GameObject serverAuthorityCachedVase;
+    public GameObject clientAuthorityCachedVase;
 
     private int localPlayerID;
     private bool clientsConnected = false;
@@ -49,15 +50,6 @@ public class GManager : NetworkBehaviour
         lastLevelFinishedTime = currentLevelTime;
         currentLevelTime = 0;
 
-        if (isServer)
-        {
-            //cachedVase = CacheNewObject(PickupableObject.PickupableType.Vase);
-        }
-        else
-        {
-
-        }
-
         if (lastLevelFinishedTime == 0) return;
 
         float extraPercentageTime = (lastLevelFinishedTime - lastLevelFixedTime) / lastLevelFinishedTime;
@@ -69,19 +61,36 @@ public class GManager : NetworkBehaviour
         lastLevelFixedTime = currentLevelFixedTime;
     }
 
+    /// <summary>
+    /// Should only be called from server
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public GameObject CacheNewObject(PickupableObject.PickupableType type)
     {
+        if (!isServer)
+        {
+            Debug.LogError("Should only be called from server");
+        }
+
         switch (type)
         {
             case PickupableObject.PickupableType.Vase:
-                cachedVase = Instantiate(vase, new Vector3(0, 1000, 0), vase.transform.rotation);
-                cachedVase.SetActive(false);
-                NetworkServer.Spawn(cachedVase);
+                serverAuthorityCachedVase = Instantiate(vase, new Vector3(0, 1000, 0), vase.transform.rotation);
+                serverAuthorityCachedVase.GetComponent<Rigidbody>().useGravity = (false);
+                NetworkServer.Spawn(serverAuthorityCachedVase);
+
+                clientAuthorityCachedVase = Instantiate(vase, new Vector3(0, 1010, 0), vase.transform.rotation);
+                clientAuthorityCachedVase.GetComponent<Rigidbody>().useGravity = (false);
+                NetworkServer.Spawn(clientAuthorityCachedVase);
+                SetPlayerAuthorityToHeldObject(GetNonLocalPlayer().GetComponent<NetworkIdentity>(), clientAuthorityCachedVase.GetComponent<NetworkIdentity>());
+
                 if (isServer)
                 {
-                    RpcCacheNewObject(cachedVase, type);
+                    RpcCacheNewObject(clientAuthorityCachedVase, type);
                 }
-                return cachedVase;
+
+                return serverAuthorityCachedVase;
         }
 
         return null;
@@ -96,7 +105,8 @@ public class GManager : NetworkBehaviour
         switch (type)
         {
             case PickupableObject.PickupableType.Vase:
-                cachedVase = go;
+                clientAuthorityCachedVase = go;
+                clientAuthorityCachedVase.GetComponent<Rigidbody>().useGravity = false;
                 break;
         }
     }
@@ -108,11 +118,11 @@ public class GManager : NetworkBehaviour
             currentLevelTime += Time.deltaTime;
         }
 
-        if(!clientsConnected && GetComponent<NetworkIdentity>().observers.Count == 2)
+        if (isServer && !clientsConnected && GetComponent<NetworkIdentity>().observers.Count == 2)
         {
             clientsConnected = true;
             FindPlayers();
-            cachedVase = CacheNewObject(PickupableObject.PickupableType.Vase);
+            serverAuthorityCachedVase = CacheNewObject(PickupableObject.PickupableType.Vase);
         }
     }
 
@@ -288,6 +298,44 @@ public class GManager : NetworkBehaviour
         {
             player2.GetComponent<PlayerObjectInteraction>().HideFakeObject();
         }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="clientToReceiveAuthority">Client to receive authority of the object</param>
+    /// <param name="netIdentityOfObj">Network identity of the gameObject that will have its player auth modified</param>
+    public void SetPlayerAuthorityToHeldObject(NetworkIdentity clientToReceiveAuthority, NetworkIdentity netIdentityOfObj)
+    {
+        Debug.Log("Changing authority of " + netIdentityOfObj.gameObject.name + " to " + clientToReceiveAuthority.GetComponent<PlayerMove>().PlayerID);
+
+        // Remove prior ownership if necessary
+        // TODO: consider removing authority (back to server) after letting go of heldObj
+        if (netIdentityOfObj.clientAuthorityOwner != null)
+            if (netIdentityOfObj.clientAuthorityOwner != clientToReceiveAuthority.connectionToClient)
+            {
+                NetworkIdentity netIdentityToRemove = null;
+
+                if (clientToReceiveAuthority.isLocalPlayer)
+                {
+                    netIdentityToRemove = GetNonLocalPlayer().GetComponent<NetworkIdentity>();
+                }
+                else
+                {
+                    netIdentityToRemove = GetLocalPlayer().GetComponent<NetworkIdentity>();
+                }
+
+                netIdentityOfObj.RemoveClientAuthority(netIdentityToRemove.GetComponent<NetworkIdentity>().connectionToClient);
+            }
+
+        netIdentityOfObj.AssignClientAuthority((clientToReceiveAuthority.connectionToClient));
+
+    }
+
+    [Command]
+    public void CmdSetPlayerAuthorityToHeldObject(NetworkIdentity clientToReceiveAuthority, NetworkIdentity netIdentityOfObj)
+    {
+        SetPlayerAuthorityToHeldObject(clientToReceiveAuthority, netIdentityOfObj);
     }
 
     public GameObject GetLocalPlayer()
