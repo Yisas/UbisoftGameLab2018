@@ -11,15 +11,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
     public enum HoldableType { Pickup, Player, Pushable, None }
     public HoldableType newHeldObj = HoldableType.None;
 
-    public GameObject fakeBox;
+    public GameObject[] fakeObjects = new GameObject[5];
     public GameObject throwableBox;
-    public GameObject fakeVase;
     public GameObject throwableVase;
-    public GameObject fakeTorch;
     public GameObject torch;
-    public GameObject fakePushableBox;
     public GameObject pushableBox;
-    public GameObject fakePlayer;
     private PickupableObject.PickupableType heldObjectType;
 
     public GameObject holdPlayerPos;
@@ -385,13 +381,14 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
         playerMove.transform.LookAt(touchedPoint);
 
-        fakePushableBox.transform.position = other.transform.position;
-        fakePushableBox.transform.rotation = other.transform.rotation;
+        fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.position = other.transform.position;
+        fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.rotation = other.transform.rotation;
 
         // also modify client side
         if (!isServer)
         {
-            CmdChangeFakePushableBoxOrientation(fakePushableBox.transform.localPosition, fakePushableBox.transform.localRotation);
+            CmdChangeFakePushableBoxOrientation(fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localPosition,
+                fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localRotation);
         }
 
         playerMove.IsGrabingPushable = true;
@@ -415,8 +412,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
     [Command]
     private void CmdChangeFakePushableBoxOrientation(Vector3 position, Quaternion rotation)
     {
-        fakePushableBox.transform.localPosition = position;
-        fakePushableBox.transform.localRotation = rotation;
+        fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localPosition = position;
+        fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localRotation = rotation;
     }
 
     private void PickupPlayer(Collider other)
@@ -426,7 +423,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if (isLocalPlayer)
         {
             //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
-            if (!Physics.CheckSphere(fakePlayer.transform.position, checkRadius, 2))
+            if (!Physics.CheckSphere(fakeObjects[(int)PickupableObject.PickupableType.Player].transform.position, checkRadius, 2))
             {
                 CommonPickupPlayer();
             }
@@ -581,25 +578,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void CommonShowFakeObject(PickupableObject.PickupableType type)
     {
-        switch (type)
-        {
-            case PickupableObject.PickupableType.Box:
-                fakeBox.SetActive(true);
-                break;
-            case PickupableObject.PickupableType.Vase:
-                fakeVase.SetActive(true);
-                break;
-            case PickupableObject.PickupableType.Torch:
-                fakeTorch.SetActive(true);
-                break;
-            case PickupableObject.PickupableType.BigBox:
-                fakePushableBox.SetActive(true);
-                break;
-            case PickupableObject.PickupableType.Player:
-                fakePlayer.SetActive(true);
-                break;
-        }
-
+        fakeObjects[(int)type].SetActive(true);
         heldObjectType = type;
     }
 
@@ -631,25 +610,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void CommonHideFakeObject()
     {
-        switch (heldObjectType)
-        {
-            case PickupableObject.PickupableType.Box:
-                fakeBox.SetActive(false);
-                break;
-            case PickupableObject.PickupableType.Vase:
-                fakeVase.SetActive(false);
-                break;
-            case PickupableObject.PickupableType.Torch:
-                fakeTorch.SetActive(false);
-                break;
-            case PickupableObject.PickupableType.BigBox:
-                fakePushableBox.SetActive(false);
-                break;
-            case PickupableObject.PickupableType.Player:
-                fakePlayer.SetActive(false);
-                break;
-        }
-
+        fakeObjects[(int)heldObjectType].SetActive(false);
         newHeldObj = HoldableType.None;
     }
 
@@ -733,7 +694,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
             if (heldObjectType == PickupableObject.PickupableType.BigBox)
             {
-                pushableToSpawn = (GameObject)Instantiate(pushableBox, fakePushableBox.transform.position, fakePushableBox.transform.rotation);
+                pushableToSpawn = (GameObject)Instantiate(pushableBox, fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.position,
+                    fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.rotation);
             }
             else
             {
@@ -915,28 +877,18 @@ public class PlayerObjectInteraction : NetworkBehaviour
         GameObject throwableToSpawn = null;
         if (isLocalPlayer)
         {
-            switch (heldObjectType)
-            {
-                case PickupableObject.PickupableType.Box:
-                    throwableToSpawn = (GameObject)Instantiate(throwableBox, fakeBox.transform.position, fakeBox.transform.rotation);
-                    break;
-                case PickupableObject.PickupableType.Vase:
 
-                    throwableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
+            throwableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
 
-                    throwableToSpawn.transform.position = fakeVase.transform.position;
-                    throwableToSpawn.transform.rotation = fakeVase.transform.rotation;
-                    throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
+            throwableToSpawn.transform.position = fakeObjects[(int)heldObjectType].transform.position;
+            throwableToSpawn.transform.rotation = fakeObjects[(int)heldObjectType].transform.rotation;
+            throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
+            throwableToSpawn.GetComponent<Rigidbody>().isKinematic = false;
+            throwableToSpawn.GetComponent<Collider>().isTrigger = false;
 
-                    break;
-                case PickupableObject.PickupableType.Torch:
-                    throwableToSpawn = (GameObject)Instantiate(torch, fakeTorch.transform.position, fakeTorch.transform.rotation);
-                    throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
-                    throwableToSpawn.GetComponent<Collider>().isTrigger = false;
-                    // use syncvared value to turn on physics in client after spawn
-                    throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().turnOnPhysicsAtStart = true;
-                    break;
-            }
+            if (heldObjectType == PickupableObject.PickupableType.Torch)
+                // use syncvared value to turn on physics in client after spawn
+                throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().turnOnPhysicsAtStart = true;
         }
 
         if (!playerMove.Grounded)
@@ -990,7 +942,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
         timeOfThrow = Time.time;
         HideFakeObject();
         newHeldObj = HoldableType.None;
-        GManager.Instance.RestorePlayerOverride(fakePlayer.transform.position, fakePlayer.transform.rotation, otherPlayerID);
+        GManager.Instance.RestorePlayerOverride(fakeObjects[(int)PickupableObject.PickupableType.Player].transform.position,
+            fakeObjects[(int)PickupableObject.PickupableType.Player].transform.rotation, otherPlayerID);
 
         // If you're not the local player, apply force to the one that is
         if (!isLocalPlayer)

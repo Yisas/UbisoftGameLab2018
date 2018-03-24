@@ -35,7 +35,7 @@ public class PlayerNetworkingSetup : NetworkBehaviour
             gameObject.name = "Player 2";
             playerMove.PlayerID = 2;
             playerMeshRenderer.material = player2Material;
-            playerObjectInteraction.fakePlayer.GetComponentInChildren<SkinnedMeshRenderer>().material = player1Material;
+            playerObjectInteraction.fakeObjects[(int)PickupableObject.PickupableType.Player].GetComponentInChildren<SkinnedMeshRenderer>().material = player1Material;
             playerObjectInteraction.dropBox.transform.Translate(new Vector3(0, 0, clientExtraDropGap));
 
             int player2Layer = LayerMask.NameToLayer("Player 2");

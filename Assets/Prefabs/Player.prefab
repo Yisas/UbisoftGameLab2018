@@ -2521,7 +2521,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1415557474296722}
   m_LocalRotation: {x: -0, y: 0.012523852, z: -0, w: -0.9999216}
-  m_LocalPosition: {x: 4.9187107, y: 2.109, z: -12.495775}
+  m_LocalPosition: {x: 9.61, y: 2.109, z: -12.495775}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4909744962977230}
@@ -6255,6 +6255,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bamParticleEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 2}
   powCooldown: 0.75
+  id: 0
 --- !u!114 &114293771151829488
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6267,6 +6268,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   newHeldObj: 3
+  fakeObjects:
+  - {fileID: 1588457647377194}
+  - {fileID: 1537289870187582}
+  - {fileID: 1401143558654694}
+  - {fileID: 1485956833610278}
+  - {fileID: 1905659119879170}
   fakeBox: {fileID: 1588457647377194}
   throwableBox: {fileID: 1956651292723708, guid: 49d5bff6e55e7ac4d9fac21e72456bd2,
     type: 2}

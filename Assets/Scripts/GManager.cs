@@ -262,9 +262,9 @@ public class GManager : NetworkBehaviour
             cameraFollow = Camera.main.GetComponent<CameraFollow>();
 
         if (idOfPlayerOverriding == 1)
-            cameraFollow.target = player1.GetComponent<PlayerObjectInteraction>().fakePlayer.transform;
+            cameraFollow.target = player1.GetComponent<PlayerObjectInteraction>().fakeObjects[(int)PickupableObject.PickupableType.Player].transform;
         else
-            cameraFollow.target = player2.GetComponent<PlayerObjectInteraction>().fakePlayer.transform;
+            cameraFollow.target = player2.GetComponent<PlayerObjectInteraction>().fakeObjects[(int)PickupableObject.PickupableType.Player].transform;
     }
 
     public void RestorePlayerOverride(Vector3 positionToRestoreTo, Quaternion rotationToRestoreTo, int idOfPlayerToRestore)
