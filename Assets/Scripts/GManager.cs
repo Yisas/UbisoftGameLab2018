@@ -125,6 +125,29 @@ public class GManager : NetworkBehaviour
         }
     }
 
+    public void CachedObjectWasUsed(PickupableObject.PickupableType type)
+    {
+        Debug.Log(type);
+        if (isServer)
+        {
+            switch (type)
+            {
+                case PickupableObject.PickupableType.Vase:
+                    serverAuthorityCachedVase = CacheNewObject(type);
+                    break;
+            }
+        }
+        else
+            RpcCachedObjectWasUsed(type);
+    }
+
+    [ClientRpc]
+    private void RpcCachedObjectWasUsed(PickupableObject.PickupableType type)
+    {
+        CachedObjectWasUsed(type);
+    }
+
+
     private void Update()
     {
         if (!isPaused)

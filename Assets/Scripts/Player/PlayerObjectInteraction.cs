@@ -948,6 +948,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         {
             throwableToSpawn.GetComponent<Rigidbody>().velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             throwableToSpawn.GetComponent<Rigidbody>().AddRelativeForce(throwForce, ForceMode.VelocityChange);
+            GManager.Instance.CachedObjectWasUsed(heldObjectType);
         }
     }
 
