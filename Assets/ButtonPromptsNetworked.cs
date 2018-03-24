@@ -31,8 +31,9 @@ public class ButtonPromptsNetworked : MonoBehaviour
     int playerID;
     NetworkIdentity playerNetID;    //NOTE: Instead we should use the PlayerMove player and get the player.isLocalPlayer??
                                     //ATM: The code uses playerNetID--might be redunant though
-                                    
+    //[SyncVar]
     private bool isBeingControlled;
+
     ResettableObject isBeingHeld;
 
     private void Awake()
@@ -147,7 +148,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
                 if (!player.isLocalPlayer)
                 {
                     Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = false;
-                }                
+                }
             }
         }
         else if (buttonprompt == ButtonPromptOn.junk)   // If the prompt is suppose to appear above the Junk Items
@@ -178,7 +179,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
-                    
+
                     if (playerNetID.isLocalPlayer && playerID == 2)
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
@@ -202,9 +203,9 @@ public class ButtonPromptsNetworked : MonoBehaviour
             isBeingHeld = gameObject.GetComponentInParent<ResettableObject>();
             if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerButtonPrompt")
             {
-                if (isBeingHeld.IsHeld == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
+                if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Debug.Log("1: player- " + playerID + " name of object: " + gameObject.name + " isBeingHeld: " + isBeingHeld.IsHeld);
+                    Debug.Log("1: player- " + playerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled);
                     if (playerNetID.isLocalPlayer && playerID == 1)
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
@@ -215,12 +216,15 @@ public class ButtonPromptsNetworked : MonoBehaviour
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
                     
-                    isBeingHeld.IsHeld = true;
-                    //isBeingControlled = true;
+                    isBeingControlled = true;
+                    if(!playerNetID.isServer)
+                    {
+                        CmdPrompt(isBeingControlled);
+                    }
                 }
-                else if (isBeingHeld.IsHeld == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
+                else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
                 {
-                    Debug.Log("2: player- " + playerID + " name of object: " + gameObject.name + " isBeingHeld: " + isBeingHeld.IsHeld);
+                    Debug.Log("2: player- " + playerID + " name of object: " + gameObject.name + " w: " + isBeingControlled);
                     if (playerNetID.isLocalPlayer && playerID == 1)
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
@@ -230,9 +234,9 @@ public class ButtonPromptsNetworked : MonoBehaviour
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
                 }
-                else if (isBeingHeld.IsHeld == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
+                else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
                 {
-                    Debug.Log("3: player- " + playerID + " name of object: " + gameObject.name + " isBeingHeld: " + isBeingHeld.IsHeld);
+                    Debug.Log("3: player- " + playerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled);
                     if (playerNetID.isLocalPlayer && playerID == 1)
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
@@ -242,9 +246,9 @@ public class ButtonPromptsNetworked : MonoBehaviour
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     }
                 }
-                else if (isBeingHeld.IsHeld == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
+                else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
                 {
-                    Debug.Log("4: player- " + playerID + " name of object: " + gameObject.name + " isBeingHeld: " + isBeingHeld.IsHeld);
+                    Debug.Log("4: player- " + playerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled);
                     if (playerNetID.isLocalPlayer && playerID == 1)
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
@@ -253,9 +257,11 @@ public class ButtonPromptsNetworked : MonoBehaviour
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
                     }
-
-                    isBeingHeld.IsHeld = false;
-                    //isBeingControlled = false;
+                    isBeingControlled = false;
+                    if (!playerNetID.isServer)
+                    {
+                        CmdPrompt(isBeingControlled);
+                    }
                 }
             }
         }
@@ -279,4 +285,18 @@ public class ButtonPromptsNetworked : MonoBehaviour
             }
         }
     }
+
+    [Command] // client to the server. 
+    void CmdPrompt(bool m_isBeingControlled)
+    {
+        RcpUpdatePrompt(m_isBeingControlled);
+    }
+
+    [ClientRpc]
+    void RcpUpdatePrompt(bool m_isBeingControlled)
+    {
+        isBeingControlled = m_isBeingControlled;
+    }
+
+
 }
