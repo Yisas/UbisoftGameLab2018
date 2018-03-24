@@ -28,6 +28,7 @@ GameObject:
   - component: {fileID: 114635861402112588}
   - component: {fileID: 114487747196897214}
   - component: {fileID: 114454833472093418}
+  - component: {fileID: 114394128347243214}
   m_Layer: 0
   m_Name: Pushable Box
   m_TagString: Pushable
@@ -256,6 +257,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bamParticleEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 2}
   powCooldown: 0.75
+  id: 0
+--- !u!114 &114394128347243214
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1664857145387040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 112f4af93771c094d8e96778ff1ef84d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeToRenableInteractionWithSpawningPlayer: 0
+  turnOnPhysicsAtStart: 0
 --- !u!114 &114454833472093418
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -268,7 +283,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
-  timeToRenableInteractionWithSpawningPlayer: 0
 --- !u!114 &114487747196897214
 MonoBehaviour:
   m_ObjectHideFlags: 1

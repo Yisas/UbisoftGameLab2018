@@ -758,10 +758,17 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 Debug.LogWarning("Letting go of pushable you don't have?");
             }
 
+            pushableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().Spawned(Time.time, playerMove.PlayerID);
             NetworkServer.Spawn(pushableToSpawn);
         }
 
-        HideFakeObject();
+        if (isLocalPlayer && !isServer)
+        {
+            // local client has to wait for the object to spawn from the server to hide its object otherwise fakeobj dissapears before object appears
+        }
+        else
+            HideFakeObject();
+
         playerMove.IsGrabingPushable = false;
         playerMove.rotateSpeed = defRotateSpeed;
     }
