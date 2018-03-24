@@ -384,7 +384,15 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if (touchedPoint.y > transform.position.y) return;
 
         playerMove.transform.LookAt(touchedPoint);
-        //fakePushableBox.transform.position = other.transform.position;
+
+        fakePushableBox.transform.position = other.transform.position;
+        fakePushableBox.transform.rotation = other.transform.rotation;
+
+        // also modify client side
+        if (!isServer)
+        {
+            CmdChangeFakePushableBoxOrientation(fakePushableBox.transform.localPosition, fakePushableBox.transform.localRotation);
+        }
 
         playerMove.IsGrabingPushable = true;
         playerMove.rotateSpeed = 0;
@@ -402,6 +410,13 @@ public class PlayerObjectInteraction : NetworkBehaviour
         timeOfPickup = Time.time;
         newHeldObj = HoldableType.Pushable;
         ShowFakeObject(PickupableObject.PickupableType.BigBox);
+    }
+
+    [Command]
+    private void CmdChangeFakePushableBoxOrientation(Vector3 position, Quaternion rotation)
+    {
+        fakePushableBox.transform.localPosition = position;
+        fakePushableBox.transform.localRotation = rotation;
     }
 
     private void PickupPlayer(Collider other)
@@ -758,10 +773,17 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 Debug.LogWarning("Letting go of pushable you don't have?");
             }
 
+            pushableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().Spawned(Time.time, playerMove.PlayerID);
             NetworkServer.Spawn(pushableToSpawn);
         }
 
-        HideFakeObject();
+        if (isLocalPlayer && !isServer)
+        {
+            // local client has to wait for the object to spawn from the server to hide its object otherwise fakeobj dissapears before object appears
+        }
+        else
+            HideFakeObject();
+
         playerMove.IsGrabingPushable = false;
         playerMove.rotateSpeed = defRotateSpeed;
     }

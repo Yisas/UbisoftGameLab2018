@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 /* States used in state machine
    Pursuit means the ghost is moving towards a point.
@@ -8,10 +9,10 @@ using UnityEngine;
    Return; the ghost is returning a moved object.
    AvoidingWall: the ghost is prioritizing avoiding a wall it has collided with through raycasting.
 */
-public enum MovementState { Pursuit, Wander, Return, AvoidingWall}
+public enum MovementState { Pursuit, Wander, Return, AvoidingWall }
 
 public class Ghost : Movable
-{   
+{
     // Inspector values
     // This radius begins at the ghost's position. The ghost picks up all moved objects within this radius
     public float awarenessRadius;
@@ -38,7 +39,7 @@ public class Ghost : Movable
     public MovementState movementState;
 
     // Internal values hidden from inspector   
-    internal bool isCarryingObject;  
+    internal bool isCarryingObject;
 
     //Scripts
     GhostObjectInteraction ghostObjectInteraction;
@@ -63,43 +64,52 @@ public class Ghost : Movable
     // Used for initialization
     void Start()
     {
-        pickupableList = new List<ResettableObject>();
-        ghostObjectInteraction = gameObject.GetComponent<GhostObjectInteraction>();
-        targetRotation = Vector3.zero;
-        cloth = GetComponentInChildren<Cloth>();
+        if (isServer)
+        {
+            pickupableList = new List<ResettableObject>();
+            ghostObjectInteraction = gameObject.GetComponent<GhostObjectInteraction>();
+            targetRotation = Vector3.zero;
+            cloth = GetComponentInChildren<Cloth>();
 
-        floorCheckers = new Transform[floorChecks.childCount];
-        for (int i = 0; i < floorCheckers.Length; i++)
-            floorCheckers[i] = floorChecks.GetChild(i);
+            floorCheckers = new Transform[floorChecks.childCount];
+            for (int i = 0; i < floorCheckers.Length; i++)
+                floorCheckers[i] = floorChecks.GetChild(i);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        gatherInfo();
-        avoidWalls();
-        updateState();
-        move();
-        AddVelocityToCloth();
-        isGrounded = checkIfGrounded();
+        if (isServer)
+        {
+            gatherInfo();
+            avoidWalls();
+            updateState();
+            move();
+            AddVelocityToCloth();
+            isGrounded = checkIfGrounded();
+        }
     }
 
     /*
      * As the ghost moves towards moved objects, it consistently checks if the object it bumps into is
      * the object it is seeking. If it is then the ghost will carry it, provided it isn't already carrying an object.
-     */ 
+     */
     void OnTriggerStay(Collider collider)
     {
-        if (collider.tag == "Pickup")
+        if (isServer)
         {
-            ResettableObject pickupableObject = collider.GetComponent<ResettableObject>();
-            if (!isCarryingObject && pickupableObject == closestResettableObject)
+            if (collider.tag == "Pickup")
             {
-                ghostObjectInteraction.GrabObject(collider);
-                pickupableObject.GetComponent<Rigidbody>().useGravity = false;
-                collider.isTrigger = true;
-                carriedObject = pickupableObject;
-                isCarryingObject = true;
+                ResettableObject pickupableObject = collider.GetComponent<ResettableObject>();
+                if (!isCarryingObject && pickupableObject == closestResettableObject)
+                {
+                    ghostObjectInteraction.GrabObject(collider);
+                    pickupableObject.GetComponent<Rigidbody>().useGravity = false;
+                    collider.isTrigger = true;
+                    carriedObject = pickupableObject;
+                    isCarryingObject = true;
+                }
             }
         }
     }
@@ -131,8 +141,8 @@ public class Ghost : Movable
             // Only add pickup object to list if it has been moved, is not being held and is not on pressure plate
             if (collider.tag == "Pickup")
             {
-                ResettableObject pickupableObject = collider.GetComponent<ResettableObject>();                
-                if (pickupableObject != null && pickupableObject.IsMoved && !pickupableObject.IsOnPressurePlate 
+                ResettableObject pickupableObject = collider.GetComponent<ResettableObject>();
+                if (pickupableObject != null && pickupableObject.IsMoved && !pickupableObject.IsOnPressurePlate
                     && !pickupableObject.IsBeingHeld)
                     pickupableList.Add(pickupableObject);
             }
@@ -182,7 +192,7 @@ public class Ghost : Movable
                 // Return the carried object
                 MovementUtilityArrive.SteerArrive(this, carriedObject.OriginalPosition);
                 // Drop the object if we're close enough to its original position
-                if(Vector3.Distance(transform.position, carriedObject.OriginalPosition) < itemDropDistance)
+                if (Vector3.Distance(transform.position, carriedObject.OriginalPosition) < itemDropDistance)
                 {
                     ghostObjectInteraction.DropPickup();
                     // These are now handled by the reseter
@@ -266,7 +276,7 @@ public class Ghost : Movable
         ResettableObject closestObject = null;
         float shortestDistance = float.MaxValue;
         Vector3 currentPosition = transform.position;
-        float distance; 
+        float distance;
         foreach (ResettableObject resettableObject in objects)
         {
             distance = Vector3.Distance(currentPosition, resettableObject.transform.position);
@@ -294,8 +304,8 @@ public class Ghost : Movable
             RaycastHit hit;
             // Cast rays down to see if we hit the floor. Also cast rays up to bring us back above ground.
             if (Physics.Raycast(check.position, Vector3.down, out hit, groundedRayCastDownDistance) || Physics.Raycast(check.position, Vector3.up, out hit, groundedRayCastUpDistance))
-            {               
-              return true;
+            {
+                return true;
             }
         }
 
