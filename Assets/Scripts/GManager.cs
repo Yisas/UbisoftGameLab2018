@@ -62,7 +62,7 @@ public class GManager : NetworkBehaviour
     }
 
     /// <summary>
-    /// Should only be called from server
+    /// Should only be called from server. Will also make RpcCommand to cache client-side
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
@@ -114,6 +114,10 @@ public class GManager : NetworkBehaviour
             return clientAuthoriteCachedObjects[(int)type];
     }
 
+    /// <summary>
+    /// Should only be called from server
+    /// </summary>
+    /// <param name="type"></param>
     public void CachedObjectWasUsed(PickupableObject.PickupableType type)
     {
         if (isServer)
@@ -121,11 +125,13 @@ public class GManager : NetworkBehaviour
             serverAuthorityCachedObjects[(int)type] = CacheNewObject(type);
         }
         else
-            RpcCachedObjectWasUsed(type);
+        {
+            Debug.LogError("CacheObjectWas used called from server");
+        }
     }
 
-    [ClientRpc]
-    private void RpcCachedObjectWasUsed(PickupableObject.PickupableType type)
+    [Command]
+    private void CmdCachedObjectWasUsed(PickupableObject.PickupableType type)
     {
         CachedObjectWasUsed(type);
     }
