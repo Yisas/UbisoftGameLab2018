@@ -909,24 +909,25 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         AkSoundEngine.PostEvent("Throw", gameObject);
 
-        if (isLocalPlayer && !isServer)
-        {
-            // local client has to wait for the object to spawn from the server to hide its object otherwise fakeobj dissapears before object appears
-        }
-        else
-            HideFakeObject();
+        HideFakeObject();
 
-        if (isServer)
+        // Spawn a new object and throw it
+        GameObject throwableToSpawn = null;
+        if (isLocalPlayer)
         {
-            // Spawn a new object and throw it
-            GameObject throwableToSpawn = null;
             switch (heldObjectType)
             {
                 case PickupableObject.PickupableType.Box:
                     throwableToSpawn = (GameObject)Instantiate(throwableBox, fakeBox.transform.position, fakeBox.transform.rotation);
                     break;
                 case PickupableObject.PickupableType.Vase:
-                    throwableToSpawn = (GameObject)Instantiate(throwableVase, fakeVase.transform.position, fakeVase.transform.rotation);
+
+                    throwableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
+
+                    throwableToSpawn.transform.position = fakeVase.transform.position;
+                    throwableToSpawn.transform.rotation = fakeVase.transform.rotation;
+                    throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
+
                     break;
                 case PickupableObject.PickupableType.Torch:
                     throwableToSpawn = (GameObject)Instantiate(torch, fakeTorch.transform.position, fakeTorch.transform.rotation);
@@ -936,15 +937,15 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().turnOnPhysicsAtStart = true;
                     break;
             }
+        }
 
-            if (!playerMove.Grounded)
-            {
-                throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().timeToRenableInteractionWithSpawningPlayer += 0.5f;
-            }
+        if (!playerMove.Grounded)
+        {
+            throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().timeToRenableInteractionWithSpawningPlayer += 0.5f;
+        }
 
-            throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().Spawned(Time.time, playerMove.PlayerID);
-            NetworkServer.Spawn(throwableToSpawn);
-
+        if (isLocalPlayer)
+        {
             throwableToSpawn.GetComponent<Rigidbody>().velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             throwableToSpawn.GetComponent<Rigidbody>().AddRelativeForce(throwForce, ForceMode.VelocityChange);
         }

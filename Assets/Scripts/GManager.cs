@@ -76,7 +76,7 @@ public class GManager : NetworkBehaviour
         switch (type)
         {
             case PickupableObject.PickupableType.Vase:
-                serverAuthorityCachedVase = Instantiate(vase, new Vector3(0, 1000, 0), vase.transform.rotation);
+                serverAuthorityCachedVase = Instantiate(vase, new Vector3(0, 1000, 0), Quaternion.identity);
                 serverAuthorityCachedVase.GetComponent<Rigidbody>().useGravity = (false);
                 NetworkServer.Spawn(serverAuthorityCachedVase);
 
@@ -108,6 +108,20 @@ public class GManager : NetworkBehaviour
                 clientAuthorityCachedVase = go;
                 clientAuthorityCachedVase.GetComponent<Rigidbody>().useGravity = false;
                 break;
+        }
+    }
+
+    public GameObject GetCachedObject(PickupableObject.PickupableType type)
+    {
+        switch (type)
+        {
+            case PickupableObject.PickupableType.Vase:
+                if (isServer)
+                    return serverAuthorityCachedVase;
+                else
+                    return clientAuthorityCachedVase;
+            default:
+                return null;
         }
     }
 
