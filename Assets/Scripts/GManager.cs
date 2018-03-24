@@ -27,9 +27,9 @@ public class GManager : NetworkBehaviour
     private GameObject player1;
     private GameObject player2;
 
-    public GameObject vase;
-    public GameObject serverAuthorityCachedVase;
-    public GameObject clientAuthorityCachedVase;
+    public GameObject[] spawnableInteractableObjects;
+    public GameObject[] serverAuthorityCachedObjects = new GameObject[4];
+    public GameObject[] clientAuthoriteCachedObjects = new GameObject[4];
 
     private int localPlayerID;
     private bool clientsConnected = false;
@@ -73,27 +73,27 @@ public class GManager : NetworkBehaviour
             Debug.LogError("Should only be called from server");
         }
 
-        switch (type)
+        GameObject modelToSpawn = spawnableInteractableObjects[(int)type];
+
+        serverAuthorityCachedObjects[(int)type] = Instantiate(modelToSpawn, new Vector3(0, 200 * ((int)type + 1), 0), Quaternion.identity);
+        serverAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = (false);
+        serverAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().isKinematic = (false);
+        serverAuthorityCachedObjects[(int)type] = serverAuthorityCachedObjects[(int)type];
+        NetworkServer.Spawn(serverAuthorityCachedObjects[(int)type]);
+
+        clientAuthoriteCachedObjects[(int)type] = Instantiate(modelToSpawn, new Vector3(0, 210 * ((int)type + 1), 0), modelToSpawn.transform.rotation);
+        clientAuthoriteCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = (false);
+        clientAuthoriteCachedObjects[(int)type].GetComponent<Rigidbody>().isKinematic = (false);
+        NetworkServer.Spawn(clientAuthoriteCachedObjects[(int)type]);
+        SetPlayerAuthorityToHeldObject(GetNonLocalPlayer().GetComponent<NetworkIdentity>(), clientAuthoriteCachedObjects[(int)type].GetComponent<NetworkIdentity>());
+        clientAuthoriteCachedObjects[(int)type] = clientAuthoriteCachedObjects[(int)type];
+
+        if (isServer)
         {
-            case PickupableObject.PickupableType.Vase:
-                serverAuthorityCachedVase = Instantiate(vase, new Vector3(0, 1000, 0), Quaternion.identity);
-                serverAuthorityCachedVase.GetComponent<Rigidbody>().useGravity = (false);
-                NetworkServer.Spawn(serverAuthorityCachedVase);
-
-                clientAuthorityCachedVase = Instantiate(vase, new Vector3(0, 1010, 0), vase.transform.rotation);
-                clientAuthorityCachedVase.GetComponent<Rigidbody>().useGravity = (false);
-                NetworkServer.Spawn(clientAuthorityCachedVase);
-                SetPlayerAuthorityToHeldObject(GetNonLocalPlayer().GetComponent<NetworkIdentity>(), clientAuthorityCachedVase.GetComponent<NetworkIdentity>());
-
-                if (isServer)
-                {
-                    RpcCacheNewObject(clientAuthorityCachedVase, type);
-                }
-
-                return serverAuthorityCachedVase;
+            RpcCacheNewObject(clientAuthoriteCachedObjects[(int)type], type);
         }
 
-        return null;
+        return serverAuthorityCachedObjects[(int)type];
     }
 
     [ClientRpc]
@@ -102,40 +102,23 @@ public class GManager : NetworkBehaviour
         if (isServer)
             return;
 
-        switch (type)
-        {
-            case PickupableObject.PickupableType.Vase:
-                clientAuthorityCachedVase = go;
-                clientAuthorityCachedVase.GetComponent<Rigidbody>().useGravity = false;
-                break;
-        }
+        clientAuthoriteCachedObjects[(int)type] = go;
+        clientAuthoriteCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = false;
     }
 
     public GameObject GetCachedObject(PickupableObject.PickupableType type)
     {
-        switch (type)
-        {
-            case PickupableObject.PickupableType.Vase:
-                if (isServer)
-                    return serverAuthorityCachedVase;
-                else
-                    return clientAuthorityCachedVase;
-            default:
-                return null;
-        }
+        if (isServer)
+            return serverAuthorityCachedObjects[(int)type];
+        else
+            return clientAuthoriteCachedObjects[(int)type];
     }
 
     public void CachedObjectWasUsed(PickupableObject.PickupableType type)
     {
-        Debug.Log(type);
         if (isServer)
         {
-            switch (type)
-            {
-                case PickupableObject.PickupableType.Vase:
-                    serverAuthorityCachedVase = CacheNewObject(type);
-                    break;
-            }
+            serverAuthorityCachedObjects[(int)type] = CacheNewObject(type);
         }
         else
             RpcCachedObjectWasUsed(type);
@@ -159,7 +142,8 @@ public class GManager : NetworkBehaviour
         {
             clientsConnected = true;
             FindPlayers();
-            serverAuthorityCachedVase = CacheNewObject(PickupableObject.PickupableType.Vase);
+            for (int i = 0; i < spawnableInteractableObjects.Length; i++)
+                serverAuthorityCachedObjects[i] = CacheNewObject((PickupableObject.PickupableType)i);
         }
     }
 
