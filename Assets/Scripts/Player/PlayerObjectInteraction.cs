@@ -897,11 +897,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().turnOnPhysicsAtStart = true;
         }
 
-        if (!playerMove.Grounded)
-        {
-            throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().timeToRenableInteractionWithSpawningPlayer += 0.5f;
-        }
-
         if (isLocalPlayer)
         {
             throwableToSpawn.GetComponent<Rigidbody>().velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
