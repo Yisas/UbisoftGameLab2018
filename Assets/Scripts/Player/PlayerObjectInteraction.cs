@@ -12,7 +12,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
     public HoldableType newHeldObj = HoldableType.None;
 
     public GameObject[] fakeObjects = new GameObject[5];
-    public GameObject pushableBox;
     private PickupableObject.PickupableType heldObjectType;
 
     public GameObject holdPlayerPos;
@@ -147,7 +146,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 ThrowPlayer();
             }
             else if (newHeldObj == HoldableType.Pushable && Time.time > timeOfPickup + throwPlayerCooldownTime)
-                LetGoOFPushable();
+                LetGoOfPushable();
         }
 
         //set animation value for arms layer
@@ -225,7 +224,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
             else if (newHeldObj == HoldableType.Pushable)
             {
-                LetGoOFPushable();
+                LetGoOfPushable();
             }
             else
             {
@@ -667,7 +666,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
     }
 
-    public void LetGoOFPushable()
+    public void LetGoOfPushable()
     {
         Debug.Log("Letting go pushable from player " + playerMove.PlayerID + " islocal? " + isLocalPlayer + " isServer?" + isServer);
 
@@ -690,31 +689,29 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void CommonLetGoOfPushable()
     {
-        if (isServer)
-        {
-            // Spawn a new object and throw it
-            GameObject pushableToSpawn = null;
+        HideFakeObject();
 
+        GameObject pushableToSpawn = null;
+        if (isLocalPlayer)
+        {
             if (heldObjectType == PickupableObject.PickupableType.BigBox)
             {
-                pushableToSpawn = (GameObject)Instantiate(pushableBox, fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.position,
-                    fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.rotation);
+                pushableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
+                pushableToSpawn.transform.position = fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.position;
+                pushableToSpawn.transform.rotation = fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.rotation;
+                pushableToSpawn.GetComponent<Rigidbody>().useGravity = true;
+                pushableToSpawn.GetComponent<Rigidbody>().isKinematic = false;
+                pushableToSpawn.GetComponent<Collider>().isTrigger = false;
             }
             else
             {
                 Debug.LogWarning("Letting go of pushable you don't have?");
             }
 
-            pushableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().Spawned(Time.time, playerMove.PlayerID);
-            NetworkServer.Spawn(pushableToSpawn);
         }
 
-        if (isLocalPlayer && !isServer)
-        {
-            // local client has to wait for the object to spawn from the server to hide its object otherwise fakeobj dissapears before object appears
-        }
-        else
-            HideFakeObject();
+        if (isServer)
+            GManager.Instance.CachedObjectWasUsed(heldObjectType, playerMove.PlayerID == 1);
 
         playerMove.IsGrabingPushable = false;
         playerMove.rotateSpeed = defRotateSpeed;
