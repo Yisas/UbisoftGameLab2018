@@ -62,7 +62,7 @@ public class ResettableObject : NetworkBehaviour
         if (currentPowCooldown > powCooldown && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
             && other.gameObject.layer != 2 /*ignore raycast*/ && !isBeingHeld)
         {
-            Instantiate(bamParticleEffect, transform.position + transform.forward * 0.5f + transform.up, transform.rotation);
+            Instantiate(bamParticleEffect, transform.position + transform.forward * 0.3f + transform.up, transform.rotation);
             currentPowCooldown = 0;
         }
     }

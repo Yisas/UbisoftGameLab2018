@@ -9,8 +9,11 @@ public class GManager : NetworkBehaviour
     public static float currentLevelTime;
     public static float adaptedCurrentLevelTime;
     public static bool isPaused = false;
-    public float currentLevelFixedTime = 120; //120secs or any set. Delay time. After this time stuff will start appearing
-    public float timeToMakeEverythingVisible = 200; //200secs to fade in everything
+    public float currentLevelInvisibleTime = 120; //120secs or any set. Delay time. After this time stuff will start appearing
+    public float blinkTime = 5; //200secs*numberOfBlinks to fade in everything
+    public float blinkAlphaTresholdTop = 0.5f;
+    public float blinkAlphaTresholdBottom = 0.05f;
+    public int numberOfBlinks = 5; //flickering
     public static float lastLevelFixedTime;
     public static GManager Instance;
     public bool resetPlayers = false;
@@ -57,8 +60,8 @@ public class GManager : NetworkBehaviour
         {
             extraPercentageTime = 0;
         }
-        adaptedCurrentLevelTime = currentLevelFixedTime + (currentLevelFixedTime * extraPercentageTime);
-        lastLevelFixedTime = currentLevelFixedTime;
+        adaptedCurrentLevelTime = currentLevelInvisibleTime + (currentLevelInvisibleTime * extraPercentageTime);
+        lastLevelFixedTime = currentLevelInvisibleTime;
     }
 
     /// <summary>
@@ -201,9 +204,12 @@ public class GManager : NetworkBehaviour
         {
             if (go.layer == layer) //9: Invisible player 1 or 12: Invisible player 2
             {
-                go.AddComponent<InvisibleToVisible>();
-                go.GetComponent<InvisibleToVisible>().delayToFadeInTime = currentLevelFixedTime;
-                go.GetComponent<InvisibleToVisible>().FadeInTimeout = timeToMakeEverythingVisible;
+                go.AddComponent<InvisibleToVisible2>();
+                go.GetComponent<InvisibleToVisible2>().regressionTresholdBottom = blinkAlphaTresholdBottom;
+                go.GetComponent<InvisibleToVisible2>().regressionTresholdTop = blinkAlphaTresholdTop;
+                go.GetComponent<InvisibleToVisible2>().numberOfRegressions = numberOfBlinks;
+                go.GetComponent<InvisibleToVisible2>().delayToFadeInTime = currentLevelInvisibleTime;
+                go.GetComponent<InvisibleToVisible2>().FadeInTimeout = blinkTime;
             }
             else if (go.layer == layerNoSecretToPlayer)
             {
