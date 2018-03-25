@@ -431,7 +431,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private void LiftPickup(Collider other)
     {
         //get where to move item once its picked up
-        Mesh otherMesh = other.GetComponent<MeshFilter>().mesh;
+        MeshFilter otherMeshFilter = other.GetComponent<MeshFilter>();
+        Mesh otherMesh;
+        if (otherMeshFilter != null)
+            otherMesh = otherMeshFilter.mesh;
+        else           
+            otherMesh = other.GetComponentInChildren<MeshFilter>().mesh;
         holdPos = transform.position;
         holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + gap;
 

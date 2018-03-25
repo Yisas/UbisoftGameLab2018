@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class Lava : MonoBehaviour
 {
-
+    public GameObject lavaSinkParticles;
+    public float lavaParticleHeight;
     private CameraFollow cameraFollow;
     private bool cameraDeactivated = false;
     private float cameraFollowTime = 0;
+    private GameObject menu;
+
+    private void Start()
+    {
+        menu = GameObject.FindGameObjectWithTag("MenuUI");
+    }
 
     private void OnTriggerStay(Collider other)
     {
@@ -20,6 +27,25 @@ public class Lava : MonoBehaviour
             cameraFollow.enabled = false;
             cameraDeactivated = true;
             cameraFollowTime = other.GetComponent<PlayerMove>().cameraDelayTimerBeforeRespawn;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            // Start particle effect when player sinks into lava
+            Vector3 particlePosition = other.transform.position;
+            particlePosition.y = transform.position.y + lavaParticleHeight;
+            Instantiate(lavaSinkParticles, particlePosition, transform.rotation);
+
+            // Fade out camera
+            if (menu != null)
+            {
+                // Player can't move while camera is black
+                PlayerMove player = other.GetComponent<PlayerMove>();
+                menu.GetComponent<StartOptions>().FadeOutThenIn(player);
+            }
         }
     }
 
