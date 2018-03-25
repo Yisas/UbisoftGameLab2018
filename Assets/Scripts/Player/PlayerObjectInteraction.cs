@@ -12,9 +12,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
     public HoldableType newHeldObj = HoldableType.None;
 
     public GameObject[] fakeObjects = new GameObject[5];
-    public GameObject throwableBox;
-    public GameObject throwableVase;
-    public GameObject torch;
     public GameObject pushableBox;
     private PickupableObject.PickupableType heldObjectType;
 
@@ -768,39 +765,30 @@ public class PlayerObjectInteraction : NetworkBehaviour
         HideFakeObject();
         newHeldObj = HoldableType.None;
 
-        if (isServer)
+        GameObject throwableToSpawn = null;
+        if (isLocalPlayer)
         {
-            // Spawn a new object and throw it
-            GameObject throwableToSpawn = null;
-            switch (heldObjectType)
-            {
-                case PickupableObject.PickupableType.Box:
-                    if (playerMove.Grounded)
-                        throwableToSpawn = (GameObject)Instantiate(throwableBox, dropBox.transform.position, dropBox.transform.rotation);
-                    else
-                        throwableToSpawn = (GameObject)Instantiate(throwableBox, airbornePickupDropPosition.transform.position, dropBox.transform.rotation);
-                    break;
-                case PickupableObject.PickupableType.Vase:
-                    if (playerMove.Grounded)
-                        throwableToSpawn = (GameObject)Instantiate(throwableVase, dropBox.transform.position, dropBox.transform.rotation);
-                    else
-                        throwableToSpawn = (GameObject)Instantiate(throwableVase, airbornePickupDropPosition.transform.position, dropBox.transform.rotation);
-                    break;
-                case PickupableObject.PickupableType.Torch:
-                    if (playerMove.Grounded)
-                        throwableToSpawn = (GameObject)Instantiate(torch, dropBox.transform.position, dropBox.transform.rotation);
-                    else
-                        throwableToSpawn = (GameObject)Instantiate(torch, airbornePickupDropPosition.transform.position, dropBox.transform.rotation);
-                    throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
-                    throwableToSpawn.GetComponent<Collider>().isTrigger = false;
-                    // use syncvared value to turn on physics in client after spawn
-                    throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().turnOnPhysicsAtStart = true;
-                    break;
-            }
+            throwableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
+            Transform positionToSpawnAt = null;
 
-            throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().Spawned(Time.time, playerMove.PlayerID);
-            NetworkServer.Spawn(throwableToSpawn);
+            if (playerMove.Grounded)
+                positionToSpawnAt = dropBox.transform;
+            else
+                positionToSpawnAt = airbornePickupDropPosition.transform;
+
+            if (heldObjectType == PickupableObject.PickupableType.Torch)
+                // use syncvared value to turn on physics in client after spawn
+                throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().turnOnPhysicsAtStart = true;
+
+            throwableToSpawn.transform.position = positionToSpawnAt.position;
+            throwableToSpawn.transform.rotation = positionToSpawnAt.rotation;
+            throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
+            throwableToSpawn.GetComponent<Rigidbody>().isKinematic = false;
+            throwableToSpawn.GetComponent<Collider>().isTrigger = false;
         }
+
+        if (isServer)
+            GManager.Instance.CachedObjectWasUsed(heldObjectType, playerMove.PlayerID == 1);
     }
 
     private void DropPlayer()
@@ -879,11 +867,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
         HideFakeObject();
 
-        // Spawn a new object and throw it
         GameObject throwableToSpawn = null;
         if (isLocalPlayer)
         {
-
             throwableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
 
             throwableToSpawn.transform.position = fakeObjects[(int)heldObjectType].transform.position;
@@ -895,10 +881,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             if (heldObjectType == PickupableObject.PickupableType.Torch)
                 // use syncvared value to turn on physics in client after spawn
                 throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().turnOnPhysicsAtStart = true;
-        }
 
-        if (isLocalPlayer)
-        {
             throwableToSpawn.GetComponent<Rigidbody>().velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             throwableToSpawn.GetComponent<Rigidbody>().AddForce(throwableToSpawn.transform.forward * throwForce.z, ForceMode.VelocityChange);
             throwableToSpawn.GetComponent<Rigidbody>().AddForce(throwableToSpawn.transform.up * throwForce.y, ForceMode.VelocityChange);
