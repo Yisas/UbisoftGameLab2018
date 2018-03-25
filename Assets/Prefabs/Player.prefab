@@ -6181,7 +6181,7 @@ MonoBehaviour:
   backCameraPosition: {fileID: 4666026748221386}
   floorChecks: {fileID: 4909744962977230}
   animator: {fileID: 95374153907054944}
-  landingSoundLength: 0.3
+  landingSoundLength: 0.05
   lastFeetTouched: {fileID: 0}
   accel: 50
   airAccel: 18
@@ -6193,6 +6193,7 @@ MonoBehaviour:
   slopeLimit: 40
   slideAmount: 35
   movingPlatformFriction: 7.7
+  canMove: 0
   jumpForce: {x: 0, y: 13, z: 0}
   jumpForceWhileCarried: {x: 0, y: 10, z: 20}
   jumpDelay: 0.1
@@ -6274,18 +6275,6 @@ MonoBehaviour:
   - {fileID: 1401143558654694}
   - {fileID: 1485956833610278}
   - {fileID: 1905659119879170}
-  fakeBox: {fileID: 1588457647377194}
-  throwableBox: {fileID: 1956651292723708, guid: 49d5bff6e55e7ac4d9fac21e72456bd2,
-    type: 2}
-  fakeVase: {fileID: 1537289870187582}
-  throwableVase: {fileID: 1174809156514424, guid: 470eeb37ef1859d4e8628f53c08833b6,
-    type: 2}
-  fakeTorch: {fileID: 1401143558654694}
-  torch: {fileID: 1347668835503844, guid: f9c188b1e488ac040babe91a0178c571, type: 2}
-  fakePushableBox: {fileID: 1485956833610278}
-  pushableBox: {fileID: 1664857145387040, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e,
-    type: 2}
-  fakePlayer: {fileID: 1905659119879170}
   holdPlayerPos: {fileID: 1901748987976732}
   airbornePickupDropPosition: {fileID: 4157377177073050}
   particlesObjectAppear: {fileID: 100000, guid: a6b884d400e6d2244a29b0550830c6da,

@@ -187,6 +187,24 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="Level" ID="{49A675C3-9ABF-413D-B42C-B99A7B015EAB}" ShortID="794063890">
+					<ChildrenList>
+						<Event Name="LevelComplete" ID="{41DA234A-01B6-4FE5-A738-52BC1DCD1973}">
+							<ChildrenList>
+								<Action Name="" ID="{6C558E55-1F20-4966-A406-C833B572ABA6}" ShortID="925570415">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="EXCLAMATION_Male_B_WoahahahaYes_01_mono" ID="{1C1C4DAB-C72A-4334-B835-73D5F2DE1888}" WorkUnitID="{6A821E18-0412-474D-85EF-B4AD6DB72841}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

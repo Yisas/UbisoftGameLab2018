@@ -22,6 +22,8 @@ GameObject:
   - component: {fileID: 33882440457282718}
   - component: {fileID: 23570307775140654}
   - component: {fileID: 114885147491703324}
+  - component: {fileID: 65416539095444478}
+  - component: {fileID: 114185750807730706}
   m_Layer: 0
   m_Name: Lava_diffuse
   m_TagString: Untagged
@@ -40,6 +42,8 @@ GameObject:
   - component: {fileID: 33502221544103496}
   - component: {fileID: 23363826164238346}
   - component: {fileID: 114098548382336624}
+  - component: {fileID: 65286836020150964}
+  - component: {fileID: 114485111659125942}
   m_Layer: 0
   m_Name: Lava_diffuse
   m_TagString: Untagged
@@ -94,9 +98,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1970234786982788}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -25.64, y: 3.27, z: -1.3}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -45.8, y: 0.5, z: 0.09}
+  m_LocalScale: {x: 35.083138, y: 1, z: 38.700005}
   m_Children:
   - {fileID: 4340141353882282}
   - {fileID: 4817054149969074}
@@ -185,6 +189,30 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1674452365426722}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &65286836020150964
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1789429019652326}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.9999998, z: 6.123233e-17}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &65416539095444478
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1674452365426722}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.9999998, z: 6.123233e-17}
+  m_Center: {x: 0.00000011920929, y: 0, z: 0}
 --- !u!114 &114098548382336624
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -198,6 +226,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uvAnimationRate: {x: 0.06, y: 0}
   textureName: _LavaTex
+--- !u!114 &114185750807730706
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1674452365426722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e94c47493fd114e448a5595adc153038, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lavaSinkParticles: {fileID: 100010, guid: 0574a2b4245221a4285b52144dfcc783, type: 2}
+  lavaParticleHeight: 1
+--- !u!114 &114485111659125942
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1789429019652326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e94c47493fd114e448a5595adc153038, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lavaSinkParticles: {fileID: 100010, guid: 0574a2b4245221a4285b52144dfcc783, type: 2}
+  lavaParticleHeight: 1
 --- !u!114 &114885147491703324
 MonoBehaviour:
   m_ObjectHideFlags: 1
