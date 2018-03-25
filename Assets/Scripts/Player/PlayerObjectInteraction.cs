@@ -218,7 +218,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
             if (vibrationTime <= 0)
             {
-                XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, 1f, 1f);
+                XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, 0.5f, 0.5f);
             }
         }
     }
