@@ -232,23 +232,29 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     DropPickup();
                 else
                 {
-                    Debug.Log("Trying to drop inside something");
-                    gizmoColor = Color.red;
-                    XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
-                    vibrationTime = invalidDropVibrationDuration;
+                    if (isLocalPlayer)
+                    {
+                        Debug.Log("Trying to drop inside something");
+                        gizmoColor = Color.red;
+                        XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
+                        vibrationTime = invalidDropVibrationDuration;
+                    }
                 }
             }
         }
 
         checkIfBoxIsHanging();
 
-        if (vibrationTime > 0)
+        if (isLocalPlayer)
         {
-            vibrationTime -= Time.deltaTime;
-
-            if (vibrationTime <= 0)
+            if (vibrationTime > 0)
             {
-                XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, 0f, 0f);
+                vibrationTime -= Time.deltaTime;
+
+                if (vibrationTime <= 0)
+                {
+                    XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, 0f, 0f);
+                }
             }
         }
     }
@@ -257,11 +263,14 @@ public class PlayerObjectInteraction : NetworkBehaviour
     #region Collision
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
-            && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
+        if (isLocalPlayer)
         {
-            XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
-            vibrationTime = bumpVibrationDuration;
+            if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
+                && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
+            {
+                XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
+                vibrationTime = bumpVibrationDuration;
+            }
         }
 
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
