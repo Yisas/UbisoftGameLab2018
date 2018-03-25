@@ -401,6 +401,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
             CmdChangeFakePushableBoxOrientation(fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localPosition,
                 fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localRotation);
         }
+        else
+        {
+            RpcChangeFakePushableBoxOrientation(fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localPosition,
+                fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localRotation);
+        }
 
         playerMove.IsGrabingPushable = true;
         playerMove.rotateSpeed = 0;
@@ -425,6 +430,16 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localPosition = position;
         fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localRotation = rotation;
+    }
+
+    [Command]
+    private void RpcChangeFakePushableBoxOrientation(Vector3 position, Quaternion rotation)
+    {
+        if (!isServer)
+        {
+            fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localPosition = position;
+            fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localRotation = rotation;
+        }
     }
 
     private void PickupPlayer(Collider other)
@@ -698,16 +713,17 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void CommonLetGoOfPushable()
     {
-        HideFakeObject();
-
         GameObject pushableToSpawn = null;
         if (isLocalPlayer)
         {
+            HideFakeObject();
+
             if (heldObjectType == PickupableObject.PickupableType.BigBox)
             {
                 pushableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
                 pushableToSpawn.transform.position = fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.position;
                 pushableToSpawn.transform.rotation = fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.rotation;
+                pushableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().LocalPlayerSpawningObject(Time.time, playerMove.PlayerID, fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.position, fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.rotation);
                 pushableToSpawn.GetComponent<Rigidbody>().useGravity = true;
                 pushableToSpawn.GetComponent<Rigidbody>().isKinematic = false;
                 pushableToSpawn.GetComponent<Collider>().isTrigger = false;
