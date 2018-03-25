@@ -218,7 +218,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
             if (vibrationTime <= 0)
             {
-                XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, 0f, 0f);
+                XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, 1f, 1f);
             }
         }
     }
@@ -431,12 +431,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private void LiftPickup(Collider other)
     {
         //get where to move item once its picked up
-        MeshFilter otherMeshFilter = other.GetComponent<MeshFilter>();
-        Mesh otherMesh;
-        if (otherMeshFilter != null)
-            otherMesh = otherMeshFilter.mesh;
-        else           
-            otherMesh = other.GetComponentInChildren<MeshFilter>().mesh;
+        Mesh otherMesh = other.GetComponent<MeshFilter>().mesh;
         holdPos = transform.position;
         holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + gap;
 
