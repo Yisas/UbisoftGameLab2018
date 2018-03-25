@@ -423,7 +423,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localRotation = rotation;
     }
 
-    [Command]
+    [ClientRpc]
     private void RpcChangeFakePushableBoxOrientation(Vector3 position, Quaternion rotation)
     {
         if (!isServer)
