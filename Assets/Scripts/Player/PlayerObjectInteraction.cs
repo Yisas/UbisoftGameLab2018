@@ -212,13 +212,13 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
         checkIfBoxIsHanging();
 
-        if (vibrationTime > 0)
+        if (isLocalPlayer && vibrationTime > 0)
         {
             vibrationTime -= Time.deltaTime;
 
             if (vibrationTime <= 0)
             {
-                XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, 0f, 0f);
+                XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, 0f, 0f);
             }
         }
     }
@@ -227,10 +227,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
     #region Collision
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
+        if (isLocalPlayer && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
             && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
         {
-            XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
+            XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, 0f, 0f);
             vibrationTime = vibrationDuration;
         }
 
