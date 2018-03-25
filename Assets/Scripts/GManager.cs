@@ -80,7 +80,7 @@ public class GManager : NetworkBehaviour
 
         if (!isArespawn || (isArespawn && respawnTriggerdByServer))
         {
-            serverAuthorityCachedObjects[(int)type] = Instantiate(modelToSpawn, new Vector3(0, 200 * ((int)type + 1), 0), Quaternion.identity);
+            serverAuthorityCachedObjects[(int)type] = Instantiate(modelToSpawn, new Vector3(0, 200 * ((int)type + 1), 0), modelToSpawn.transform.rotation);
             serverAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = (false);
             serverAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().isKinematic = (false);
             serverAuthorityCachedObjects[(int)type] = serverAuthorityCachedObjects[(int)type];

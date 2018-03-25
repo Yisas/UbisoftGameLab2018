@@ -17,7 +17,7 @@ public class InteractableObjectSpawnCorrections : NetworkBehaviour
     [SyncVar]
     public bool turnOnPhysicsAtStart = false;
 
-    private void Start()
+    private void SpawnedOnOtherSide()
     {
         if (notInteractingWithPlayerThatSpawnedMe)
         {
@@ -43,6 +43,7 @@ public class InteractableObjectSpawnCorrections : NetworkBehaviour
         {
             gameObject.layer = LayerMask.NameToLayer("Default");
             notInteractingWithPlayerThatSpawnedMe = false;
+            GManager.Instance.ForceHideFakeObject(idOfPlayerThatSpawnedMe);
 
             if (isServer)
             {
@@ -51,12 +52,48 @@ public class InteractableObjectSpawnCorrections : NetworkBehaviour
         }
     }
 
-    public void Spawned(float timeSpawned, int spawningPlayer)
+    /// <summary>
+    /// this function should be called from the local player throwing object
+    /// </summary>
+    /// <param name="timeSpawned"></param>
+    /// <param name="spawningPlayer"></param>
+    /// <param name="position"></param>
+    /// <param name="rotation"></param>
+    public void LocalPlayerSpawningObject(float timeSpawned, int spawningPlayer, Vector3 position, Quaternion rotation)
+    {
+        if (GManager.Instance.LocalPlayerID == spawningPlayer)
+        {
+            if (isServer)
+                RpcNonLocalPlayerSpawnCorrections(timeSpanwed, spawningPlayer, position, rotation);
+            else
+                CmdNonLocalPlayerSpawnCorrections(timeSpawned, spawningPlayer, position, rotation);
+
+        }
+    }
+
+    private void NonLocalPlayerSpawnCorrections(float timeSpawned, int spawningPlayer, Vector3 position, Quaternion rotation)
     {
         idOfPlayerThatSpawnedMe = spawningPlayer;
         notInteractingWithPlayerThatSpawnedMe = true;
         gameObject.layer = LayerMask.NameToLayer("Player " + (idOfPlayerThatSpawnedMe == 1 ? 2 : 1) + " While Carried");
         this.timeSpanwed = timeSpawned;
+        transform.position = position;
+        transform.rotation = rotation;
+    }
+
+    [Command]
+    public void CmdNonLocalPlayerSpawnCorrections(float timeSpawned, int spawningPlayer, Vector3 position, Quaternion rotation)
+    {
+        NonLocalPlayerSpawnCorrections(timeSpanwed, spawningPlayer, position, rotation);
+    }
+
+    [ClientRpc]
+    public void RpcNonLocalPlayerSpawnCorrections(float timeSpawned, int spawningPlayer, Vector3 position, Quaternion rotation)
+    {
+        if (!isServer)
+        {
+            NonLocalPlayerSpawnCorrections(timeSpanwed, spawningPlayer, position, rotation);
+        }
     }
 
     [ClientRpc]

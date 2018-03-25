@@ -871,15 +871,18 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         AkSoundEngine.PostEvent("Throw", gameObject);
 
-        HideFakeObject();
-
         GameObject throwableToSpawn = null;
         if (isLocalPlayer)
         {
+            // Hiding of non-local player will be handled by InteractableObjectSpawnCorrections attatched to object
+            HideFakeObject();
             throwableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
 
             throwableToSpawn.transform.position = fakeObjects[(int)heldObjectType].transform.position;
             throwableToSpawn.transform.rotation = fakeObjects[(int)heldObjectType].transform.rotation;
+
+            throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().LocalPlayerSpawningObject(Time.time, playerMove.PlayerID, throwableToSpawn.transform.position, throwableToSpawn.transform.rotation);
+          
             throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
             throwableToSpawn.GetComponent<Rigidbody>().isKinematic = false;
             throwableToSpawn.GetComponent<Collider>().isTrigger = false;
