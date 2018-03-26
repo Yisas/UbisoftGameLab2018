@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public abstract class Movable : NetworkBehaviour {
+    [SyncVar]
     public Vector3 velocity;
     public float accelerationMax;
     public float velocityMax;
