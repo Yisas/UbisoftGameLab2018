@@ -28,6 +28,7 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
     public Image InteractImg;
 
     PlayerMove player;
+    int lastPlayerID;
     //int playerID;
     NetworkIdentity playerNetID;    //NOTE: Instead we should use the PlayerMove player and get the player.isLocalPlayer??
                                     //ATM: The code uses playerNetID--might be redunant though
@@ -168,9 +169,9 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
                 {
                     JumpImg.enabled = true;
                     InteractImg.enabled = false;
-                                   
+
                     Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
-                  
+
                 }
                 else
                 {
@@ -195,13 +196,18 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
                 {
                     NetworkIdentity gameObjectNetID = gameObject.GetComponentInParent<NetworkIdentity>();
                     if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
-                    {                        
-                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;                       
-                        //isBeingHeld.IsHeld = true;
+                    {
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
+                        lastPlayerID = player.PlayerID;
                         isBeingControlled = true;
-                        //BeingControlled(true, playerNetID.isServer);
+                        if (!player.isServer)
+                        {
+                            Debug.Log("1: COMMAND");
+                            CmdButtonPrompt(isBeingControlled);
+                        }
+
                         Debug.Log("1: player- " + player.PlayerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled
-                                    + "\n...SERVER? " + player.isServer + "   CLIENT? " + player.isClient);
+                                + "\n...SERVER? " + player.isServer + "   CLIENT? " + player.isClient);
 
                         #region TRYING COMMAND & CLIENTRPC ----Comments
                         //if (!playerNetID.isServer)
@@ -218,72 +224,57 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
                         #endregion
                     }
                     else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
-                    {                      
+                    {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
 
                         Debug.Log("2: player- " + player.PlayerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled
                                         + "\n...SERVER? " + player.isServer + "   CLIENT? " + player.isClient);
                     }
-                    else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
-                    {                        
-                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
+                    #region old conditions
+                    //Might not require this condition...
+                    //else if (isBeingControlled == true && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
+                    //{                        
+                    //    Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
 
-                        Debug.Log("3: player- " + player.PlayerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled
-                                        + "\n...SERVER? " + player.isServer + "   CLIENT? " + player.isClient);
-                    }
-                    else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
-                    {
-                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
-                        isBeingControlled = false;
-                        //BeingControlled(false, playerNetID.isServer);
-                        Debug.Log("4: player- " + player.PlayerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled
-                                        + "\n...SERVER? " + player.isServer + "   CLIENT? " + player.isClient);
+                    //    Debug.Log("3: player- " + player.PlayerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled
+                    //                    + "\n...SERVER? " + player.isServer + "   CLIENT? " + player.isClient);
+                    //}
+                    //else if (isBeingControlled == true && (player.IsGrabingPushable == false || player.IsHoldingPickup == false))
+                    //{
+                    //    Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
+                    //    isBeingControlled = false;
+                    //    //BeingControlled(false, playerNetID.isServer);
+                    //    Debug.Log("4: player- " + player.PlayerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled
+                    //                    + "\n...SERVER? " + player.isServer + "   CLIENT? " + player.isClient);
 
-                        #region TRYING COMMAND & CLIENTRPC ----Comments
-                        //if (!playerNetID.isServer)
-                        //{
-                        //    return;
-                        //}
+                    #region TRYING COMMAND & CLIENTRPC ----Comments
+                    //    //if (!playerNetID.isServer)
+                    //    //{
+                    //    //    return;
+                    //    //}
 
-                        //if (playerNetID.isLocalPlayer && playerNetID.isServer)
-                        //    RpcUpdatePrompt(isBeingControlled, playerNetID.isServer);
-                        //else if (playerNetID.isLocalPlayer && !playerNetID.isServer)
-                        //    CmdPrompt(isBeingControlled);
+                    //    //if (playerNetID.isLocalPlayer && playerNetID.isServer)
+                    //    //    RpcUpdatePrompt(isBeingControlled, playerNetID.isServer);
+                    //    //else if (playerNetID.isLocalPlayer && !playerNetID.isServer)
+                    //    //    CmdPrompt(isBeingControlled);
 
-                        //    CmdPrompt(isBeingControlled);
-                        #endregion
-                    }
+                    //    //    CmdPrompt(isBeingControlled);
+                    #endregion
+                    //}
+                    #endregion
                 }
 
-                //if (playerNetID.isLocalPlayer && playerNetID.isServer)
-                //{
-                //    RpcUpdatePrompt(isBeingControlled, playerNetID.isServer);
-                //}
-                //else if (playerNetID.isLocalPlayer && !playerNetID.isServer)
-                //{
-                //    CmdPrompt(isBeingControlled, playerNetID.isServer);
-                //}
             }
         }
     }
 
-    //OLD COMMAND AND CLIENT RCP STUFF
-    //void BeingControlled(bool controlled, bool server)
-    //{
-    //    if (!server)
-    //    {
-    //        return;
-    //    }
-    //    isBeingControlled = controlled;
-    //}
 
-    //[Command] // client to the server. 
-    //void CmdPrompt(bool m_isBeingControlled, bool server)
-    //{
-    //    Debug.Log("COMMAND: m_beingControlled--> " + m_isBeingControlled);
-    //    //RpcUpdatePrompt(m_isBeingControlled);
-    //    isBeingControlled = m_isBeingControlled;
-    //}
+    [Command] // client to the server. 
+    void CmdButtonPrompt(bool m_isBeingControlled)
+    {
+        Debug.Log("COMMAND: m_beingControlled--> " + m_isBeingControlled);
+        isBeingControlled = m_isBeingControlled;
+    }
 
     //[ClientRpc]
     //void RpcUpdatePrompt(bool m_isBeingControlled, bool server)
@@ -315,6 +306,20 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
             if (Canvas_Player != null)
             {
                 Canvas_Player.enabled = false;
+            }
+
+            if (player.PlayerID != lastPlayerID)
+            {
+                isBeingControlled = true;
+            }
+            else
+            {
+                isBeingControlled = false;
+                if (!player.isServer)
+                {
+                    Debug.Log("EXIT: COMMAND");
+                    CmdButtonPrompt(isBeingControlled);
+                }
             }
         }
     }

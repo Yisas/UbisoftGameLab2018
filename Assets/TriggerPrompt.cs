@@ -14,20 +14,21 @@ public class TriggerPrompt : MonoBehaviour {
 
     void OnTriggerStay(Collider other)
     {
-        if(Net_Prompt.isBeingControlled)
+
+        if (Net_Prompt.isBeingControlled)   //Local player and isBeingControlled
         {
             return;
         }
-             
+
         if (other.tag == "Player")
         {
             m_Player = other.gameObject.GetComponent<PlayerMove>();
 
-            if (!m_Player.isLocalPlayer)
+            if (!m_Player.isLocalPlayer)    //Not the local player then return
             {
                 return;
             }
-
+           
             Net_Prompt.Player = m_Player;
             Net_Prompt.TurnOnPrompt();
         }
