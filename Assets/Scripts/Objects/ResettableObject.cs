@@ -31,8 +31,6 @@ public class ResettableObject : NetworkBehaviour
         Collider col = GetComponent<Collider>();
         if (col)
             isTrigger = GetComponent<Collider>().isTrigger;
-
-        GManager.Instance.RegisterResettableObject(this);
     }
 
     private void Update()
@@ -98,7 +96,7 @@ public class ResettableObject : NetworkBehaviour
 
     private void OnDestroy()
     {
-        GManager.Instance.RegisterResettableObjectDestroyed(id);
+        GManager.Instance.RegisterResettableObjectDestroyed(id, GetComponent<PickupableObject>().Type);
     }
 
     public bool IsMoved
