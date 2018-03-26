@@ -55,7 +55,7 @@ public class ResettableObject : NetworkBehaviour
     {
         // If a resettable object bumps into something then make a 'pow' particle effect
         if (currentPowCooldown > powCooldown && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
-            && other.gameObject.layer != 2 /*ignore raycast*/ && !isBeingHeld)
+            && other.gameObject.layer != 2 /*ignore raycast*/ && !isBeingHeld && other.collider.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
         {
             Instantiate(bamParticleEffect, transform.position + transform.forward * 0.3f + transform.up, transform.rotation);
             currentPowCooldown = 0;
