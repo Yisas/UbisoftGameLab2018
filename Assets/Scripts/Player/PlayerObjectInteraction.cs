@@ -228,8 +228,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
             else
             {
-                if (!Physics.CheckSphere(dropBox.transform.position, checkRadius, LayerMask.NameToLayer("Player 2")))
+                if (!Physics.CheckSphere(dropBox.transform.position, checkRadius, 17))
+                {
                     DropPickup();
+                }
                 else
                 {
                     if (isLocalPlayer)
