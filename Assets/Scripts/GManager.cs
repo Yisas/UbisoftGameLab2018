@@ -152,9 +152,24 @@ public class GManager : NetworkBehaviour
                 RegisterResettableObject(ro);
             }
 
+            RpcRegisterAllResettableObjects();
+
             // Spawn cached objects
             for (int i = 0; i < spawnableInteractableObjects.Length; i++)
                 serverAuthorityCachedObjects[i] = CacheNewObject((PickupableObject.PickupableType)i);
+        }
+    }
+
+    [ClientRpc]
+    private void RpcRegisterAllResettableObjects()
+    {
+        if (!isServer)
+        {
+            // Register resettable objects positions
+            foreach (ResettableObject ro in GameObject.FindObjectsOfType<ResettableObject>())
+            {
+                RegisterResettableObject(ro);
+            }
         }
     }
 
