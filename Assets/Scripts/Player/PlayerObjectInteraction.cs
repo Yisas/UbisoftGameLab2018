@@ -120,6 +120,16 @@ public class PlayerObjectInteraction : NetworkBehaviour
             return;
         }
 
+        if (vibrationTime > 0)
+        {
+            vibrationTime -= Time.deltaTime;
+
+            if (vibrationTime <= 0)
+            {
+                XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, 0, 0);
+            }
+        }
+
         // Defensive programing: if the carried player ever ends up inside the carrying player due to networking issues, reset
         // the position to where it should be above the carrying players head
         if (playerMove.IsBeingHeld)
@@ -246,16 +256,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
         }
 
         checkIfBoxIsHanging();
-
-        if (isLocalPlayer && vibrationTime > 0)
-        {
-            vibrationTime -= Time.deltaTime;
-
-            if (vibrationTime <= 0)
-            {
-                XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, 0, 0);
-            }
-        }
     }
     #endregion
 
@@ -265,7 +265,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if (isLocalPlayer && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
             && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
         {
-            XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, 0f, 0f);
+            XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, vibrationIntensity, vibrationIntensity);
             vibrationTime = bumpVibrationDuration;
         }
 
