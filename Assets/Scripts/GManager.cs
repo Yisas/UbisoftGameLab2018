@@ -404,6 +404,26 @@ public class GManager : NetworkBehaviour
         SetPlayerAuthorityToHeldObject(clientToReceiveAuthority, netIdentityOfObj);
     }
 
+    /// <summary>
+    /// Server will receive authority of the netidentity passed to it
+    /// </summary>
+    /// <param name="netIdentityOfObj"></param>
+    public void AssignPlayerAuthorityToServer(NetworkIdentity netIdentityOfObj)
+    {
+        if (!isServer)
+        {
+            CmdAssignPlayerAuthorityToServer(netIdentityOfObj);
+        }
+
+        SetPlayerAuthorityToHeldObject(GetLocalPlayer().GetComponent<NetworkIdentity>(), netIdentityOfObj);
+    }
+
+    [Command]
+    public void CmdAssignPlayerAuthorityToServer(NetworkIdentity netIdentityOfObj)
+    {
+        AssignPlayerAuthorityToServer(netIdentityOfObj);
+    }
+
     public GameObject GetLocalPlayer()
     {
         if (!player1 || !player2)
