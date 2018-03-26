@@ -69,7 +69,6 @@ public class GManager : NetworkBehaviour
     /// <returns></returns>
     public GameObject CacheNewObject(PickupableObject.PickupableType type, bool isArespawn = false, bool respawnTriggerdByServer = true)
     {
-        Debug.Log("here");
         if (!isServer)
         {
             Debug.LogError("Should only be called from server");
