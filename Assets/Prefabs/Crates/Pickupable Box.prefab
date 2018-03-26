@@ -43,6 +43,8 @@ GameObject:
   - component: {fileID: 114069379058567864}
   - component: {fileID: 114623214572431136}
   - component: {fileID: 114016553445858288}
+  - component: {fileID: 114537176676008738}
+  - component: {fileID: 114756132349076082}
   m_Layer: 0
   m_Name: Pickupable Box
   m_TagString: Pickup
@@ -57,7 +59,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1956651292723708}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.68, y: 0.66, z: 1.97}
+  m_LocalPosition: {x: 29.089025, y: 1.4532976, z: 1.6600227}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4979847781418590}
@@ -157,7 +159,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 3
-  m_SendInterval: 0.06666667
+  m_SendInterval: 0.033333335
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
@@ -165,7 +167,7 @@ MonoBehaviour:
   m_VelocityThreshold: 0.0001
   m_SnapThreshold: 5
   m_InterpolateRotation: 10
-  m_InterpolateMovement: 2
+  m_InterpolateMovement: 0.95
 --- !u!114 &114069379058567864
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -179,6 +181,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bamParticleEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 2}
   powCooldown: 0.75
+  id: 0
+--- !u!114 &114537176676008738
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1956651292723708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a34343892ed5fc47814e5960da553ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
 --- !u!114 &114623214572431136
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -211,6 +226,19 @@ MonoBehaviour:
     i15: 210
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
+--- !u!114 &114756132349076082
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1956651292723708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 112f4af93771c094d8e96778ff1ef84d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeToRenableInteractionWithSpawningPlayer: 0.2
+  turnOnPhysicsAtStart: 0
 --- !u!114 &114994325704070614
 MonoBehaviour:
   m_ObjectHideFlags: 1

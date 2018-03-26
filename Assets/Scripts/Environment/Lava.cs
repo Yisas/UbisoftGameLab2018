@@ -5,7 +5,7 @@ using UnityEngine;
 public class Lava : MonoBehaviour
 {
     public GameObject lavaSinkParticles;
-    public float lavaParticleHeight;
+    public float lavaParticleHeight = 1f;
     private CameraFollow cameraFollow;
     private bool cameraDeactivated = false;
     private float cameraFollowTime = 0;
@@ -20,6 +20,12 @@ public class Lava : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            // Do nothing if not local player
+            if (!other.GetComponent<UnityEngine.Networking.NetworkIdentity>().isLocalPlayer)
+            {
+                return;
+            }
+
             // Deactivate camera follow
             int playerID = other.GetComponent<PlayerMove>().PlayerID;
 
@@ -27,6 +33,15 @@ public class Lava : MonoBehaviour
             cameraFollow.enabled = false;
             cameraDeactivated = true;
             cameraFollowTime = other.GetComponent<PlayerMove>().cameraDelayTimerBeforeRespawn;
+
+            PlayerObjectInteraction playerObjectInteraction = other.GetComponent<PlayerObjectInteraction>();
+
+            // Reset held object if carrying
+            if (playerObjectInteraction.newHeldObj != PlayerObjectInteraction.HoldableType.None)
+            {
+                playerObjectInteraction.HideFakeObject();
+                GManager.Instance.ResetCachedObject(playerObjectInteraction.HeldObjType);
+            }
         }
     }
 
