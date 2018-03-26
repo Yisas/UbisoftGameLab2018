@@ -15,7 +15,6 @@ public class ResettableObject : NetworkBehaviour
     private bool isOnPressurePlate;
     [SyncVar]
     private bool isBeingHeld;
-    private bool usesGravity = true;
     private bool isTrigger;
 
     private float currentPowCooldown;
@@ -26,8 +25,6 @@ public class ResettableObject : NetworkBehaviour
     // Use this for initialization
     void Start()
     {
-        usesGravity = GetComponent<Rigidbody>().useGravity;
-
         Collider col = GetComponent<Collider>();
         if (col)
             isTrigger = GetComponent<Collider>().isTrigger;
@@ -75,7 +72,7 @@ public class ResettableObject : NetworkBehaviour
             MeshRenderer meshRenderer;
             if (GetComponent<MeshRenderer>() != null)
                 meshRenderer = GetComponent<MeshRenderer>();
-            else 
+            else
                 meshRenderer = GetComponentInChildren<MeshRenderer>();
 
             Vector3 positionToSpawnAt = new Vector3(ogPosition.x, ogPosition.y - meshRenderer.bounds.extents.y, ogPosition.z);
@@ -84,7 +81,11 @@ public class ResettableObject : NetworkBehaviour
         }
 
         GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-        GetComponent<Rigidbody>().useGravity = usesGravity;
+
+        // If a torch, turn off gravity
+        PickupableObject pickup = GetComponent<PickupableObject>();
+        if (pickup)
+            GetComponent<Rigidbody>().useGravity = (pickup.Type == PickupableObject.PickupableType.Torch) ? false : true;
 
         Collider col = GetComponent<Collider>();
         if (col)
