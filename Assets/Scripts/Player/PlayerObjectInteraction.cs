@@ -8,8 +8,14 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerObjectInteraction : NetworkBehaviour
 {
+    public enum HoldableType { Pickup, Player, Pushable, None }
+    public HoldableType newHeldObj = HoldableType.None;
+
+    public GameObject[] fakeObjects = new GameObject[5];
+    private PickupableObject.PickupableType heldObjectType;
+
     public GameObject holdPlayerPos;
-    public GameObject particlesBoxCollide;
+    public Transform airbornePickupDropPosition;
     public GameObject particlesObjectAppear;
 
     public GameObject grabBox;                                  //objects inside this trigger box can be picked up by the player (think of this as your reach)
@@ -18,7 +24,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     public Vector3 throwForce = new Vector3(0, 5, 7);           //the throw force of the player on the ojects
     public Vector3 throwForcePlayer = new Vector3(0, 10, 20);   //Added: the throw force of the player on the player
     [Tooltip("Amount of time it takes before the player can use the 'throw' button again")]
-    private float throwThrowableCooldownTime = 0.1f;            
+    private float throwThrowableCooldownTime = 0.1f;
     public float throwPlayerCooldownTime = 0.1f;
     public float rotateToBlockSpeed = 3;                        //how fast to face the "Pushable" object you're holding/pulling
     public float checkRadius = 0.5f;                            //how big a radius to check above the players head, to see if anything is in the way of your pickup
@@ -37,12 +43,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private Vector3 holdPos;
     private FixedJoint joint;
     private Color gizmoColor;
-    private ResetButton resetButton = null;
     private PlayerMove otherPlayer = null;
 
     // State attributes
     private float timeOfPickup, timeOfThrow, defRotateSpeed;
-    private bool canPushButton = false;
 
     private float originalMass;
 
@@ -53,9 +57,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private TriggerParent triggerParent;
     private RigidbodyInterpolation objectDefInterpolation;
     private Rigidbody rb;
-    public float powCooldown = 0.75f;
-    private float currentPowCooldown = 0;
-    public float vibrationDuration = 0.5f;
+    private NetworkIdentity networkIdentity;
+    public float bumpVibrationDuration = 0.5f;
+    public float invalidDropVibrationDuration = 0.2f;
     private float vibrationTime = 0;
     public float vibrationIntensity = 0.1f;
 
@@ -63,6 +67,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        networkIdentity = GetComponent<NetworkIdentity>();
 
         //create grabBox is none has been assigned
         if (!grabBox)
@@ -115,35 +120,52 @@ public class PlayerObjectInteraction : NetworkBehaviour
             return;
         }
 
-        //when we press grab button, throw object if we're holding one
-        if (Input.GetButtonDown("Grab") && heldObj)
+        if (vibrationTime > 0)
         {
-            if (heldObj.tag == "Pickup" && Time.time > timeOfPickup + throwThrowableCooldownTime)
+            vibrationTime -= Time.deltaTime;
+
+            if (vibrationTime <= 0)
             {
-                ThrowPickup();
+                XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, 0, 0);
             }
-            else if (heldObj.tag == "Player" && Time.time > timeOfPickup + throwPlayerCooldownTime)    //NOTE: can combine with above 'if' ---Added for player to pick up another player
-            {
-                ThrowPickup();
-            }
-            else if (heldObj.tag == "Pushable")
-                DropPickup();
         }
 
-        if (Input.GetButtonDown("Grab") && heldObj == null && canPushButton)
+        // Defensive programing: if the carried player ever ends up inside the carrying player due to networking issues, reset
+        // the position to where it should be above the carrying players head
+        if (playerMove.IsBeingHeld)
         {
-            PushButton();
-            // TODO: huh?
-            return;
+            Collider col = GetComponent<Collider>();
+            FindOtherPlayer();
+
+            if (col.bounds.Intersects(otherPlayer.GetComponent<Collider>().bounds))
+            {
+                otherPlayer.GetComponent<PlayerObjectInteraction>().ResetHoldPosition();
+            }
+        }
+
+        //when we press grab button, throw object if we're holding one
+        if (Input.GetButtonDown("Grab") && newHeldObj != HoldableType.None)
+        {
+            if (newHeldObj == HoldableType.Pickup && Time.time > timeOfPickup + throwThrowableCooldownTime)
+            {
+                Debug.Log("Throwing pickup from player " + playerMove.PlayerID + ", isServer? " + isServer);
+                ThrowPickup();
+            }
+            else if (newHeldObj == HoldableType.Player && Time.time > timeOfPickup + throwPlayerCooldownTime)
+            {
+                ThrowPlayer();
+            }
+            else if (newHeldObj == HoldableType.Pushable && Time.time > timeOfPickup + throwPlayerCooldownTime)
+                LetGoOfPushable();
         }
 
         //set animation value for arms layer
         if (animator)
         {
-            if (heldObj)
+            if (newHeldObj != HoldableType.None)
             {
                 // --------- Holding animations ---------
-                if (heldObj.tag == "Pickup")
+                if (newHeldObj == HoldableType.Pickup)
                 {
                     animator.SetBool("HoldingPickup", true);
                     if (isServer)
@@ -151,7 +173,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     else
                         CmdUpdateClientAnimator("HoldingPickup", true);
                 }
-                else if (heldObj.tag.StartsWith("Player"))
+                else if (newHeldObj == HoldableType.Player)
                 //**TODO NOTE: Add Animation for picking up the player. 
                 {
                     animator.SetBool("HoldingPickup", true);
@@ -170,7 +192,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 }
 
                 // --------- Pushing animations ---------
-                if (heldObj && heldObj.tag == "Pushable")
+                if (newHeldObj == HoldableType.Pushable)
                 {
                     animator.SetBool("HoldingPushable", true);
                     if (isServer)
@@ -204,71 +226,86 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
         }
         //when grab is released, let go of any pushable objects were holding
-        if (Input.GetButtonDown("Drop") && heldObj != null)
+        if (Input.GetButtonDown("Drop") && newHeldObj != HoldableType.None)
         {
-            DropPickup();
+            if (newHeldObj == HoldableType.Player)
+            {
+                DropPlayer();
+            }
+            else if (newHeldObj == HoldableType.Pushable)
+            {
+                LetGoOfPushable();
+            }
+            else
+            {
+                if (!Physics.CheckSphere(dropBox.transform.position, checkRadius, 17))
+                {
+                    DropPickup();
+                }
+                else
+                {
+                    if (isLocalPlayer)
+                    {
+                        Debug.Log("Trying to drop inside something");
+                        gizmoColor = Color.red;
+                        XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, vibrationIntensity, vibrationIntensity);
+                        vibrationTime = invalidDropVibrationDuration;
+                    }
+                }
+            }
         }
 
         checkIfBoxIsHanging();
-
-        if (currentPowCooldown < powCooldown)
-            currentPowCooldown += Time.deltaTime;
-
-        if (vibrationTime > 0)
-        {
-            vibrationTime -= Time.deltaTime;
-
-            if (vibrationTime <= 0)
-            {
-                XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, 0f, 0f);
-            }
-        }
     }
     #endregion
 
     #region Collision
     void OnTriggerEnter(Collider other)
     {
-        if (currentPowCooldown > powCooldown && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
+        if (isLocalPlayer && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
             && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
         {
-            Instantiate(particlesBoxCollide, transform.position + transform.forward * 0.5f + transform.up, transform.rotation);
-            currentPowCooldown = 0;
-            XInputDotNetPure.GamePad.SetVibration(playerMove.PlayerID == 1 ? XInputDotNetPure.PlayerIndex.One : XInputDotNetPure.PlayerIndex.Two, vibrationIntensity, vibrationIntensity);
-            vibrationTime = vibrationDuration; 
+            XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, vibrationIntensity, vibrationIntensity);
+            vibrationTime = bumpVibrationDuration;
         }
 
         if (other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
         {
-                AppearingObject ao = other.GetComponent<AppearingObject>();
+            AppearingObject ao = other.GetComponent<AppearingObject>();
 
-                if (ao && other.gameObject.layer != LayerMask.NameToLayer("Default"))
+            if (ao && other.gameObject.layer != LayerMask.NameToLayer("Default"))
+            {
+                if (ao.playerToAppearTo == playerMove.PlayerID)
                 {
-                    if (ao.playerToAppearTo == playerMove.PlayerID)
-                    {
-                        AkSoundEngine.PostEvent("AppearObject", gameObject);
-                    }
+                    AkSoundEngine.PostEvent("AppearObject", gameObject);
                 }
-                else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
-                {
-                    AkSoundEngine.PostEvent("BoxCollide", gameObject);
-                }
+            }
+            else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
+            {
+                AkSoundEngine.PostEvent("BoxCollide", gameObject);
+            }
         }
 
-        if (other.tag == "Button")
+
+        if (other.tag == "Pickup")
         {
-            canPushButton = true;
-            resetButton = other.GetComponent<ResetButton>();
+            if (isLocalPlayer)
+            {
+                NetworkIdentity pickupableNetID = other.GetComponent<NetworkIdentity>();
+
+                if (!pickupableNetID.hasAuthority)
+                    if (isServer)
+                        GManager.Instance.SetPlayerAuthorityToHeldObject(networkIdentity, other.GetComponent<NetworkIdentity>());
+                    else
+                        CmdSetPlayerAuthorityToHeldObject(networkIdentity, other.GetComponent<NetworkIdentity>());
+            }
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    [Command]
+    private void CmdSetPlayerAuthorityToHeldObject(NetworkIdentity clientToReceiveAuthority, NetworkIdentity netIdentityOfObj)
     {
-        if (other.tag == "Button")
-        {
-            canPushButton = false;
-            resetButton = null;
-        }
+        GManager.Instance.SetPlayerAuthorityToHeldObject(clientToReceiveAuthority, netIdentityOfObj);
     }
 
     //pickup/grab
@@ -285,20 +322,22 @@ public class PlayerObjectInteraction : NetworkBehaviour
             if (other.tag != "Pickup" && other.tag != "Pushable" && other.tag != "Player")
                 return;
 
+            ResettableObject resettableObject = other.GetComponent<ResettableObject>();
+
             // Give the object either host or client authority, depending on which player is picking it up
             if (other.tag != "Player")
             {
                 //pickup
-                if (other.tag == "Pickup" && heldObj == null && timeOfThrow + 0.2f < Time.time)
+                if (other.tag == "Pickup" && other.GetComponent<PickupableObject>() && newHeldObj == HoldableType.None && timeOfThrow + 0.2f < Time.time)
                 {
-                    ResettableObject resettableObject = other.GetComponent<ResettableObject>();
-                    if (resettableObject != null && !resettableObject.IsHeld)
-                        LiftPickup(other);
+                    Debug.Log("Lifting pickup from player " + playerMove.PlayerID + ", isServer? " + isServer);
+                    LiftPickup(other.transform, other.GetComponent<PickupableObject>().Type);
                 }
                 //grab
-                else if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && heldObj == null && timeOfThrow + 0.2f < Time.time)
+                else if (other.tag == "Pushable" && (other.gameObject.layer != LayerMask.NameToLayer(("Invisible Player " + playerMove.PlayerID))) && newHeldObj == HoldableType.None && timeOfThrow + 0.2f < Time.time)
                 {
-                    if (playerMove.FullyGrounded && playerMove.lastFeetTouched != other.transform)
+                    // Never grab off another player's hands
+                    if (playerMove.FullyGrounded && playerMove.lastFeetTouched != other.transform && !resettableObject.IsBeingHeld)
                     {
                         Vector3 heading = other.transform.position - playerMove.transform.position;
                         float dot = Vector3.Dot(heading, playerMove.transform.forward);
@@ -308,367 +347,640 @@ public class PlayerObjectInteraction : NetworkBehaviour
                     }
                 }
 
-                // Give the object either host or client authority, depending on which player is picking it up
-                if (isServer)
-                    SetPlayerAuthorityToHeldObject(GetComponent<NetworkIdentity>(), playerMove.PlayerID, other.GetComponent<NetworkIdentity>());
-                else
-                    CmdSetPlayerAuthorityToHeldObject(GetComponent<NetworkIdentity>(), playerMove.PlayerID, other.GetComponent<NetworkIdentity>());
-
                 return;
             }
-            //NOTE: Added to pickup the player:
-            if (other.tag == "Player" && heldObj == null && timeOfThrow + 0.2f < Time.time)
+            if (other.tag == "Player" && newHeldObj == HoldableType.None && timeOfThrow + 0.2f < Time.time)
             {
-                PickupPlayer(other);    //Created new function.
+                PickupPlayer(other);
                 return;
             }
         }
     }
     #endregion
 
-    public void PushButton()
+    /// <summary>
+    /// Places the carried player above this players head. Used in networking transform corrections
+    /// </summary>
+    public void ResetHoldPosition()
     {
-        if (resetButton)
-            resetButton.Push(playerMove.PlayerID);
-        else
-            Debug.LogError("Button reference is missing dude!");
+        if (!heldObj)
+        {
+            Debug.LogWarning("Held object was missing when resetting. Did this break something in the game?");
+            return;
+        }
+
+        holdPos = transform.position;
+        holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (heldObj.GetComponent<Collider>().bounds.extents.y) + gap;
+        heldObj.transform.position = holdPos;
+        heldObj.transform.rotation = transform.rotation;
     }
 
     #region Interactions
     private void GrabPushable(Collider other)
     {
+        Debug.Log("Grabbing pushable from player " + playerMove.PlayerID + " islocal? " + isLocalPlayer + " isServer?" + isServer);
+
+        // Avoid any physics while in the process of grabbing
+        other.GetComponent<Collider>().isTrigger = true;
+
         Vector3 touchedPoint = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
         if (touchedPoint.y > transform.position.y) return;
 
         playerMove.transform.LookAt(touchedPoint);
 
-        heldObj = other.gameObject;
-        objectDefInterpolation = heldObj.GetComponent<Rigidbody>().interpolation;
-        heldObj.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-        AddJoint();
-        //Is grabbing pushable box?
+        fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.position = other.transform.position;
+        fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.rotation = other.transform.rotation;
+
+        // also modify client side
+        if (!isServer)
+        {
+            CmdChangeFakePushableBoxOrientation(fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localPosition,
+                fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localRotation);
+        }
+        else
+        {
+            RpcChangeFakePushableBoxOrientation(fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localPosition,
+                fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localRotation);
+        }
+
         playerMove.IsGrabingPushable = true;
-        //set limits for when player will let go of object
-        //joint.breakForce = holdingBreakForce;
-        //joint.breakTorque = holdingBreakTorque;
-        //stop player rotating in direction of movement, so they can face the block theyre pulling
         playerMove.rotateSpeed = 0;
 
-        //playerMove.SetRestrictToBackCamera(true);
-
-        PushableObject po = other.GetComponent<PushableObject>();
-        if (po)
-            po.SetIsBeingPushed(true);
+        // Only destroy objects on the server
+        if (isServer)
+        {
+            NetworkServer.Destroy(other.gameObject);
+        }
         else
-            Debug.LogError("Unasignsed PushableObject component");
+        {
+            CmdServerDestroy(other.gameObject);
+        }
+
+        timeOfPickup = Time.time;
+        newHeldObj = HoldableType.Pushable;
+        ShowFakeObject(PickupableObject.PickupableType.BigBox);
+    }
+
+    [Command]
+    private void CmdChangeFakePushableBoxOrientation(Vector3 position, Quaternion rotation)
+    {
+        fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localPosition = position;
+        fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localRotation = rotation;
+    }
+
+    [ClientRpc]
+    private void RpcChangeFakePushableBoxOrientation(Vector3 position, Quaternion rotation)
+    {
+        if (!isServer)
+        {
+            fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localPosition = position;
+            fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.localRotation = rotation;
+        }
     }
 
     private void PickupPlayer(Collider other)
     {
-        Collider otherMesh = other.GetComponent<Collider>();
-        holdPos = transform.position;
-        holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + gap;
+        Debug.Log("Player " + playerMove.PlayerID + " is picking up the other. islocal? " + isLocalPlayer + " isServer?" + isServer);
 
-        //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
-        if (!Physics.CheckSphere(holdPos, checkRadius, 2))
+        if (isLocalPlayer)
         {
-            heldObj = other.gameObject;
+            //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
+            if (!Physics.CheckSphere(fakeObjects[(int)PickupableObject.PickupableType.Player].transform.position, checkRadius, 2))
+            {
+                CommonPickupPlayer();
+            }
 
-            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1) + " While Carried");
-
-            Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-            heldObj.transform.position = holdPos;
-            heldObj.transform.rotation = transform.rotation;
-
-            heldObj.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-            heldObj.GetComponent<Rigidbody>().isKinematic = true;
-            heldObj.GetComponent<PlayerMove>().LockMovementToOtherPlayer(holdPlayerPos.transform);
-
-
-            playerMove.CanJump = false;   //Bottom player cannot jump
-            heldObj.GetComponent<PlayerMove>().SetIsBeingHeld(true);
-
-            timeOfPickup = Time.time;
+            // Networking logic: this function now needs to be executed by the opposite version of this player instance
+            if (isServer)
+                RpcPickupPlayer();
+            else
+                CmdPickupPlayer();
         }
-        //if not print to console (look in scene view for sphere gizmo to see whats stopping the pickup)
-        else
-        {
-            gizmoColor = Color.red;
-            print("Can't lift object here. If nothing is above the player, make sure triggers are set to layer index 2 (ignore raycast by default)");
-        }
-
-        // Networking logic: this function now needs to be executed by the opposite version of this player instance
-        if (isLocalPlayer && isServer)
-            RpcPickupPlayer(playerMove.PlayerID);
-        else if (isLocalPlayer && !isServer)
-            CmdPickupPlayer(playerMove.PlayerID);
     }
 
     [ClientRpc]
-    private void RpcPickupPlayer(int targetPlayerID)
+    private void RpcPickupPlayer()
     {
-        CommonPickupPlayerCommand(targetPlayerID);
+        if (!isLocalPlayer)
+            CommonPickupPlayer();
     }
 
     [Command]
-    private void CmdPickupPlayer(int targetPlayerID)
+    private void CmdPickupPlayer()
     {
-        CommonPickupPlayerCommand(targetPlayerID);
+        CommonPickupPlayer();
+    }
+
+    private void CommonPickupPlayer()
+    {
+        ShowFakeObject(PickupableObject.PickupableType.Player);
+        newHeldObj = HoldableType.Player;
+
+        //heldObj.GetComponent<PlayerMove>().LockMovementToOtherPlayer(holdPlayerPos.transform);
+
+        //playerMove.CanJump = false;   //Bottom player cannot jump
+
+        timeOfPickup = Time.time;
+
+        OverrideOtherPlayer();
     }
 
     /// <summary>
-    /// To be called by the networking commands to resolve the same logic from different network origins (client/server)
+    /// The other player is now faked in this screen, so pretend the other game is this instance's fake player
     /// </summary>
-    /// <param name="targetPlayerID"></param>
-    private void CommonPickupPlayerCommand(int targetPlayerID)
+    private void OverrideOtherPlayer()
     {
-        if (otherPlayer == null)
-        {
-            FindOtherPlayer();
-        }
-
-        // Execution already happened in local player at this point, so we avoid circular referencing
-        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
-            PickupPlayer(otherPlayer.GetComponent<Collider>());
+        CommonOverrideOtherPlayer();
     }
 
-    private void LiftPickup(Collider other)
+    private void CommonOverrideOtherPlayer()
     {
-        //get where to move item once its picked up
-        Mesh otherMesh = other.GetComponent<MeshFilter>().mesh;
-        holdPos = transform.position;
-        holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + gap;
+        int otherPlayerID = playerMove.PlayerID == 1 ? 2 : 1;
+        GManager.Instance.OverridePlayer(otherPlayerID);
 
-        //if there is space above our head, pick up item (layermask index 2: "Ignore Raycast", anything on this layer will be ignored)
-        if (!Physics.CheckSphere(holdPos, checkRadius, 2))
+        // Local player needs a new camera target, so if you're not local player but carrying, you're overriding camera
+        if (!isLocalPlayer)
         {
-            gizmoColor = Color.green;
-            heldObj = other.gameObject;
-            Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-            objectDefInterpolation = heldObjectRigidbody.interpolation;
-            heldObjectRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-            heldObj.transform.position = holdPos;
-            heldObj.transform.rotation = transform.rotation;
-            AddJoint();
-            //NEW: Is holding pickup box
-            playerMove.IsHoldingPickup = true;
-
-            //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            heldObjectRigidbody.mass *= weightChange;
-            //make sure we don't immediately throw object after picking it up
-            timeOfPickup = Time.time;
-        }
-        //if not print to console (look in scene view for sphere gizmo to see whats stopping the pickup)
-        else
-        {
-            gizmoColor = Color.red;
-            print("Can't lift object here. If nothing is above the player, make sure triggers are set to layer index 2 (ignore raycast by default)");
-        }
-
-        // If the object is a pickup set the boolean that its currently being held
-        ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
-        if (resettableObject != null && heldObj.CompareTag("Pickup"))
-        {
-            resettableObject.IsHeld = true;
+            GManager.Instance.OverrideCameraFollow(playerMove.PlayerID);
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="targetNetworkIdentity">Client to receive authority of the object</param>
-    /// <param name="playerID"></param>
-    /// <param name="netIdentityOfObj">Network identity of the gameObject that will have its player auth modified</param>
-    public void SetPlayerAuthorityToHeldObject(NetworkIdentity targetNetworkIdentity, int playerID, NetworkIdentity netIdentityOfObj)
+    [Command]
+    private void CmdOverrideOtherPlayer()
     {
-        if (otherPlayer == null)
-        {
-            FindOtherPlayer();
-        }
+        CommonOverrideOtherPlayer();
+    }
 
-        // Remove prior ownership if necessary
-        // TODO: consider removing authority (back to server) after letting go of heldObj
-        if (netIdentityOfObj.clientAuthorityOwner != null)
-            if (netIdentityOfObj.clientAuthorityOwner != targetNetworkIdentity.connectionToClient)
+    [ClientRpc]
+    private void RpcOverrideOtherPlayer()
+    {
+        if (!isLocalPlayer)
+            CommonOverrideOtherPlayer();
+    }
+
+    private void LiftPickup(Transform other, PickupableObject.PickupableType type)
+    {
+        if (!Physics.CheckSphere(other.position, checkRadius, LayerMask.NameToLayer("Ignore Raycast")))
+        {
+            // Only destroy objects on the server
+            if (isServer)
             {
-                netIdentityOfObj.RemoveClientAuthority(otherPlayer.GetComponent<NetworkIdentity>().connectionToClient);
+                NetworkServer.Destroy(other.gameObject);
+            }
+            else
+            {
+                CmdServerDestroy(other.gameObject);
             }
 
-        netIdentityOfObj.AssignClientAuthority((targetNetworkIdentity.connectionToClient));
+            CommonLiftPickup(type);
 
+            // Local player only
+            timeOfPickup = Time.time;
+
+            if (isLocalPlayer)
+            {
+                if (isServer)
+                {
+                    RpcLiftPickup(type);
+                }
+                else
+                {
+                    CmdLiftPickup(type);
+                }
+            }
+
+        }
+        else
+        {
+            // TODO: handle not being able to pickup if necessary
+            Debug.LogWarning("The player tried to lift something over it's head and something was in the way. Did it look/feel super bad?");
+        }
     }
 
     [Command]
-    public void CmdSetPlayerAuthorityToHeldObject(NetworkIdentity networkIdentity, int playerID, NetworkIdentity objToChangeAuthNetIdentity)
+    private void CmdLiftPickup(PickupableObject.PickupableType type)
     {
-        SetPlayerAuthorityToHeldObject(networkIdentity, playerID, objToChangeAuthNetIdentity);
+        CommonLiftPickup(type);
+    }
+
+    [ClientRpc]
+    private void RpcLiftPickup(PickupableObject.PickupableType type)
+    {
+        CommonLiftPickup(type);
+    }
+
+    private void CommonLiftPickup(PickupableObject.PickupableType type)
+    {
+        newHeldObj = HoldableType.Pickup;
+        ShowFakeObject(type);
+    }
+
+    [Command]
+    private void CmdServerDestroy(GameObject gameObjectToDestroy)
+    {
+        NetworkServer.Destroy(gameObjectToDestroy);
+    }
+
+    /// <summary>
+    /// Side effect: will set heldObjectType to type
+    /// </summary>
+    /// <param name="type"></param>
+    private void ShowFakeObject(PickupableObject.PickupableType type)
+    {
+        CommonShowFakeObject(type);
+
+        if (isLocalPlayer)
+        {
+            if (isServer)
+                RpcShowFakeObject(type);
+            else
+                CmdShowFakeObject(type);
+        }
+    }
+
+    private void CommonShowFakeObject(PickupableObject.PickupableType type)
+    {
+        fakeObjects[(int)type].SetActive(true);
+        heldObjectType = type;
+    }
+
+    [Command]
+    private void CmdShowFakeObject(PickupableObject.PickupableType type)
+    {
+        CommonShowFakeObject(type);
+    }
+
+    [ClientRpc]
+    private void RpcShowFakeObject(PickupableObject.PickupableType type)
+    {
+        if (!isLocalPlayer)
+            CommonShowFakeObject(type);
+    }
+
+    public void HideFakeObject()
+    {
+        CommonHideFakeObject();
+
+        if (isLocalPlayer)
+        {
+            if (isServer)
+                RpcHideFakeObject();
+            else
+                CmdHideFakeObject();
+        }
+    }
+
+    private void CommonHideFakeObject()
+    {
+        fakeObjects[(int)heldObjectType].SetActive(false);
+        newHeldObj = HoldableType.None;
+    }
+
+    [Command]
+    private void CmdHideFakeObject()
+    {
+        CommonHideFakeObject();
+    }
+
+    [ClientRpc]
+    private void RpcHideFakeObject()
+    {
+        if (!isLocalPlayer)
+            CommonHideFakeObject();
+    }
+
+    [Command]
+    private void CmdSetInteractableIsBeingHeld(bool value, Vector3 positionOfHeldObject, string type)
+    {
+        FindLiftedPickupInNonLocalInstance(positionOfHeldObject, type);
+        SetInteractableIsBeingHeld(value, type);
+    }
+
+    private void SetInteractableIsBeingHeld(bool value, string type)
+    {
+        // If the object is a pickup set the boolean that its currently being held
+        ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
+        if (resettableObject != null && heldObj.CompareTag(type))
+        {
+            resettableObject.IsBeingHeld = value;
+        }
+    }
+
+    /// <summary>
+    /// The non-local game instance does not lift the pickup per-se, so we gotta find it at runtime for other purposes
+    /// </summary>
+    private void FindLiftedPickupInNonLocalInstance(Vector3 positionOfHeldObject, string type)
+    {
+        Collider[] colliders;
+        if ((colliders = Physics.OverlapSphere(positionOfHeldObject, 1f)).Length > 1)
+        {
+            foreach (Collider collider in colliders)
+            {
+                GameObject go = collider.gameObject; //This is the game object you collided with
+                if (go.tag == type)
+                {
+                    heldObj = go;
+                    return;
+                }
+            }
+        }
+    }
+
+    public void LetGoOfPushable()
+    {
+        Debug.Log("Letting go pushable from player " + playerMove.PlayerID + " islocal? " + isLocalPlayer + " isServer?" + isServer);
+
+        CommonLetGoOfPushable();
+
+        if (isLocalPlayer)
+        {
+            timeOfThrow = Time.time;
+
+            if (isServer)
+            {
+                RpcLetGoOfPushable();
+            }
+            else
+            {
+                CmdLetGoOfPushable();
+            }
+        }
+    }
+
+    private void CommonLetGoOfPushable()
+    {
+        GameObject pushableToSpawn = null;
+        if (isLocalPlayer)
+        {
+            HideFakeObject();
+
+            if (heldObjectType == PickupableObject.PickupableType.BigBox)
+            {
+                pushableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
+                pushableToSpawn.transform.position = fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.position;
+                pushableToSpawn.transform.rotation = fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.rotation;
+                pushableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().LocalPlayerSpawningObject(Time.time, playerMove.PlayerID, fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.position, fakeObjects[(int)PickupableObject.PickupableType.BigBox].transform.rotation);
+                pushableToSpawn.GetComponent<Rigidbody>().useGravity = true;
+                pushableToSpawn.GetComponent<Rigidbody>().isKinematic = false;
+                pushableToSpawn.GetComponent<Collider>().isTrigger = false;
+            }
+            else
+            {
+                Debug.LogWarning("Letting go of pushable you don't have?");
+            }
+
+        }
+
+        if (isServer)
+            GManager.Instance.CachedObjectWasUsed(heldObjectType, playerMove.PlayerID == 1);
+
+        playerMove.IsGrabingPushable = false;
+        playerMove.rotateSpeed = defRotateSpeed;
+    }
+
+    [ClientRpc]
+    private void RpcLetGoOfPushable()
+    {
+        if (!isLocalPlayer)
+            CommonLetGoOfPushable();
+    }
+
+    [Command]
+    private void CmdLetGoOfPushable()
+    {
+        CommonLetGoOfPushable();
     }
 
     public void DropPickup()
     {
-        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
+        CommonDropPickup();
 
-        if (heldObj.tag == "Pickup")
+        if (isLocalPlayer)
         {
-            heldObj.layer = 0; //Default layer
-
-            heldObj.transform.position = dropBox.transform.position;
-            heldObjectRigidbody.mass /= weightChange;
-
-            heldObj.GetComponent<FixedJoint>().connectedBody = null;
-
-            // If the object is a pickup set the boolean that its currently being held                
-            ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
-            if (resettableObject != null)
-                resettableObject.IsHeld = false;
-
-            //Is holding pickup box?
-            playerMove.IsHoldingPickup = false;
-        }
-
-        //NOTE: Added the bottom player allow and drop the top player
-        if (heldObj.tag == "Player")
-        {
-            heldObj.transform.position = dropBox.transform.position;
-            heldObj.GetComponent<Rigidbody>().isKinematic = false;
-            heldObj.GetComponent<PlayerMove>().UnlockMovementToOtherPlayer();
-            heldObj.GetComponent<PlayerMove>().SetIsBeingHeld(false);
-            playerMove.CanJump = true;
-
-            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
-
-            // Networking logic: this function now needs to be executed by the opposite version of this player instance
-            if (isLocalPlayer && isServer)
-                RpcDropPickup(playerMove.PlayerID);
-            else if (isLocalPlayer && !isServer)
-                CmdDropPickup(playerMove.PlayerID);
-        }
-
-        heldObjectRigidbody.interpolation = objectDefInterpolation;
-        heldObjectRigidbody.useGravity = true;
-        heldObj.GetComponent<Collider>().isTrigger = false;
-        Destroy(joint);
-        playerMove.rotateSpeed = defRotateSpeed;
-        //playerMove.SetRestrictToBackCamera(false);
-
-        if (heldObj.tag == "Pushable")
-        {
-            heldObj.layer = 0; //Default layer
-
-            PushableObject po = heldObj.GetComponent<PushableObject>();
-            if (po)
-                po.SetIsBeingPushed(false);
+            if (isServer)
+                RpcDropPickup();
             else
-                Debug.LogError("Unasignsed PushableObject component");
-
-            //Is grabbing pushable box?
-            playerMove.IsGrabingPushable = false;
+                CmdDropPickup();
         }
-
-        heldObj = null;
-
-        timeOfThrow = Time.time;
     }
 
     [ClientRpc]
-    private void RpcDropPickup(int targetPlayerID)
+    private void RpcDropPickup()
     {
-        CommonDropPickup(targetPlayerID);
+        if (!isLocalPlayer)
+            CommonDropPickup();
     }
 
     [Command]
-    private void CmdDropPickup(int targetPlayerID)
+    private void CmdDropPickup()
     {
-        CommonDropPickup(targetPlayerID);
+        CommonDropPickup();
     }
 
-    /// <summary>
-    /// To be called by the networking commands to resolve the same logic from different network origins (client/server)
-    /// </summary>
-    /// <param name="targetPlayerID"></param>
-    private void CommonDropPickup(int targetPlayerID)
+    private void CommonDropPickup()
     {
-        // Execution already happened in local player at this point, so we avoid circular referencing
-        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
-            DropPickup();
+        //AkSoundEngine.PostEvent("Throw", gameObject);
+        HideFakeObject();
+        newHeldObj = HoldableType.None;
+
+        GameObject throwableToSpawn = null;
+        if (isLocalPlayer)
+        {
+            throwableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
+            Transform positionToSpawnAt = null;
+
+            if (playerMove.Grounded)
+                positionToSpawnAt = dropBox.transform;
+            else
+                positionToSpawnAt = airbornePickupDropPosition.transform;
+
+            if (heldObjectType == PickupableObject.PickupableType.Torch)
+                // use syncvared value to turn on physics in client after spawn
+                throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().turnOnPhysicsAtStart = true;
+
+            throwableToSpawn.transform.position = positionToSpawnAt.position;
+            throwableToSpawn.transform.rotation = positionToSpawnAt.rotation;
+            throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
+            throwableToSpawn.GetComponent<Rigidbody>().isKinematic = false;
+            throwableToSpawn.GetComponent<Collider>().isTrigger = false;
+        }
+
+        if (isServer)
+            GManager.Instance.CachedObjectWasUsed(heldObjectType, playerMove.PlayerID == 1);
+    }
+
+    private void DropPlayer()
+    {
+        CommonDropPlayer();
+
+        if (isLocalPlayer)
+        {
+            if (isServer)
+                RpcDropPlayer();
+            else
+                CmdDropPlayer();
+        }
+    }
+
+    private void CommonDropPlayer()
+    {
+        int otherPlayerID = playerMove.PlayerID == 1 ? 2 : 1;
+        //timeOfThrow = Time.time;
+        HideFakeObject();
+        newHeldObj = HoldableType.None;
+        GManager.Instance.RestorePlayerOverride(dropBox.transform.position, dropBox.transform.rotation, otherPlayerID);
+
+        // If you're not the local player, apply force to the one that is
+        if (!isLocalPlayer)
+        {
+            if (!otherPlayer)
+                FindOtherPlayer();
+
+            GManager.Instance.RestoreCameraFollow(otherPlayerID);
+        }
+    }
+
+    [ClientRpc]
+    private void RpcDropPlayer()
+    {
+        if (!isLocalPlayer)
+            CommonDropPlayer();
+    }
+
+    [Command]
+    private void CmdDropPlayer()
+    {
+        CommonDropPlayer();
+    }
+
+
+    [Command]
+    private void CmdServerSpawnObject(GameObject objectToSpawn)
+    {
+        NetworkServer.Spawn(objectToSpawn);
     }
 
     public void ThrowPickup()
     {
-        // If the object is a pickup set the boolean that its currently being held
-        ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
-        Rigidbody heldObjectRigidbody = heldObj.GetComponent<Rigidbody>();
-        if (resettableObject != null && heldObj.CompareTag("Pickup"))
-        {
-            resettableObject.IsHeld = false;
-        }
+        CommonThrowPickup();
 
-        if(heldObj.CompareTag("Pickup") || heldObj.CompareTag("Pushable"))
+        if (isLocalPlayer)
         {
-            // And modify mass
-            heldObj.GetComponent<Collider>().isTrigger = false;
-            heldObjectRigidbody.useGravity = true;
-            heldObjectRigidbody.interpolation = objectDefInterpolation;
-            heldObjectRigidbody.mass /= weightChange;
-        }
+            timeOfThrow = Time.time;
 
+            if (isServer)
+            {
+                RpcThrowPickup();
+            }
+            else
+            {
+                CmdThrowPickup();
+            }
+        }
+    }
+
+    private void CommonThrowPickup()
+    {
         AkSoundEngine.PostEvent("Throw", gameObject);
 
-        Destroy(joint);
-
-        //Note Added:
-        if (heldObj.tag == "Player")
+        GameObject throwableToSpawn = null;
+        if (isLocalPlayer)
         {
-            //throwForcePlayer
-            Debug.Log("Throwing player....");
-            PlayerMove heldPlayerMove = heldObj.GetComponent<PlayerMove>();
-            heldObj.GetComponent<Rigidbody>().isKinematic = false;
-            heldPlayerMove.UnlockMovementToOtherPlayer();
-            heldPlayerMove.SetIsBeingHeld(false);
+            // Hiding of non-local player will be handled by InteractableObjectSpawnCorrections attatched to object
+            HideFakeObject();
+            throwableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
 
-            if (heldPlayerMove.isLocalPlayer)
-                heldObjectRigidbody.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+            throwableToSpawn.transform.position = fakeObjects[(int)heldObjectType].transform.position;
+            throwableToSpawn.transform.rotation = fakeObjects[(int)heldObjectType].transform.rotation;
 
-            // Networking logic: this function now needs to be executed by the opposite version of this player instance
-            if (isLocalPlayer && isServer)
-                RpcThrowPickup(playerMove.PlayerID);
-            else if (isLocalPlayer && !isServer)
-                CmdThrowPickup(playerMove.PlayerID);
+            throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().LocalPlayerSpawningObject(Time.time, playerMove.PlayerID, throwableToSpawn.transform.position, throwableToSpawn.transform.rotation);
 
-            heldObj.layer = LayerMask.NameToLayer("Player " + (playerMove.PlayerID == 1 ? 2 : 1));
+            throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
+            throwableToSpawn.GetComponent<Rigidbody>().isKinematic = false;
+            throwableToSpawn.GetComponent<Collider>().isTrigger = false;
+
+            if (heldObjectType == PickupableObject.PickupableType.Torch)
+                // use syncvared value to turn on physics in client after spawn
+                throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().turnOnPhysicsAtStart = true;
+
+            Debug.DrawRay(throwableToSpawn.transform.position, throwableToSpawn.transform.forward, Color.red, 10f);
+            Debug.DrawRay(throwableToSpawn.transform.position, throwableToSpawn.transform.up, Color.blue, 10f);
+            throwableToSpawn.GetComponent<Rigidbody>().velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            throwableToSpawn.GetComponent<Rigidbody>().AddForce(throwableToSpawn.transform.forward * throwForce.z, ForceMode.VelocityChange);
+            throwableToSpawn.GetComponent<Rigidbody>().AddForce(throwableToSpawn.transform.up * throwForce.y, ForceMode.VelocityChange);
         }
-        else
-        {
-            heldObjectRigidbody.AddRelativeForce(throwForce, ForceMode.VelocityChange);
-            //Is holding pickup box
-            playerMove.IsHoldingPickup = false;
-        }
-        heldObj = null;
-        playerMove.CanJump = true;    //Added: lets the bottom player jump again
-        timeOfThrow = Time.time;
+
+        if (isServer)
+            GManager.Instance.CachedObjectWasUsed(heldObjectType, playerMove.PlayerID == 1);
+
     }
 
     [ClientRpc]
-    private void RpcThrowPickup(int targetPlayerID)
+    private void RpcThrowPickup()
     {
-        CommonThrowPickup(targetPlayerID);
+        if (!isLocalPlayer)
+            CommonThrowPickup();
     }
 
     [Command]
-    private void CmdThrowPickup(int targetPlayerID)
+    private void CmdThrowPickup()
     {
-        CommonThrowPickup(targetPlayerID);
+        CommonThrowPickup();
     }
 
-    /// <summary>
-    /// To be called by the networking commands to resolve the same logic from different network origins (client/server)
-    /// </summary>
-    /// <param name="targetPlayerID"></param>
-    private void CommonThrowPickup(int targetPlayerID)
+    private void ThrowPlayer()
     {
-        // Execution already happened in local player at this point, so we avoid circular referencing
-        if (!isLocalPlayer && playerMove.PlayerID == targetPlayerID)
-            ThrowPickup();
+        Debug.Log("Throwing player from player " + playerMove.PlayerID + " isLocalPlayer? " + isLocalPlayer + " isServer? " + isServer);
+
+        if (isLocalPlayer)
+        {
+            CommonThrowPlayer();
+
+            if (isServer)
+            {
+                RpcThrowPlayer();
+            }
+            else
+            {
+                CmdThrowPlayer();
+            }
+        }
+    }
+
+    private void CommonThrowPlayer()
+    {
+        int otherPlayerID = playerMove.PlayerID == 1 ? 2 : 1;
+        timeOfThrow = Time.time;
+        HideFakeObject();
+        newHeldObj = HoldableType.None;
+        GManager.Instance.RestorePlayerOverride(fakeObjects[(int)PickupableObject.PickupableType.Player].transform.position,
+            fakeObjects[(int)PickupableObject.PickupableType.Player].transform.rotation, otherPlayerID);
+
+        // If you're not the local player, apply force to the one that is
+        if (!isLocalPlayer)
+        {
+            if (!otherPlayer)
+                FindOtherPlayer();
+
+            GManager.Instance.RestoreCameraFollow(otherPlayerID);
+            //Match velocity before applying change
+            Rigidbody otherPlayerRb = otherPlayer.GetComponent<Rigidbody>();
+            otherPlayerRb.velocity = GetComponent<Rigidbody>().velocity;
+            otherPlayerRb.AddRelativeForce(throwForcePlayer, ForceMode.VelocityChange);
+        }
+    }
+
+    [Command]
+    private void CmdThrowPlayer()
+    {
+        CommonThrowPlayer();
+    }
+
+    [ClientRpc]
+    private void RpcThrowPlayer()
+    {
+        if (!isLocalPlayer)
+            CommonThrowPlayer();
     }
 
     //Adding:
@@ -686,7 +998,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
             heldObj = null;
             playerMove.CanJump = true;
-            timeOfThrow = Time.time;
 
             // Networking logic: this function now needs to be executed by the opposite version of this player instance
             if (isLocalPlayer && isServer)
@@ -737,6 +1048,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void FindOtherPlayer()
     {
+        if (otherPlayer)
+            return;
+
         PlayerMove[] players = GameObject.FindObjectsOfType<PlayerMove>();
         foreach (PlayerMove player in players)
         {
@@ -790,6 +1104,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
         if ((rb.velocity.y < boxHangThreshold && rb.velocity.y > -boxHangThreshold && !playerMove.Grounded)
             && (heldObj != null && heldObj.CompareTag("Pickup")))
             DropPickup();
+    }
+
+    public PickupableObject.PickupableType HeldObjType
+    {
+        get { return heldObjectType; }
     }
 }
 

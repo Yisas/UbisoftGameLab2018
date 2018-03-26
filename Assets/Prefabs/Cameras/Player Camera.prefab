@@ -58,7 +58,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294965503
+    m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -104,6 +104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerID: 1
+  target: {fileID: 0}
   targetOffset: {x: 0, y: 3.5, z: 6}
   followSpeed: 25
   inputRotationSpeed: 100
@@ -118,6 +119,8 @@ MonoBehaviour:
   - Default
   - SeeTP1NonCollidable
   - SeeTP2NonCollidable
+  - Invisible Player 1
+  - Invisible Player 2
   reboundBack: 0
   zoomingOutTarget: {x: 0, y: -1, z: 0}
   zoomingInTarget: {x: 0, y: 1, z: 0}
