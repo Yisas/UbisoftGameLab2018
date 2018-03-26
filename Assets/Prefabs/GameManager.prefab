@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4035206146656444}
   - component: {fileID: 114927424902240250}
+  - component: {fileID: 114117551832063338}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameController
@@ -40,6 +41,38 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114117551832063338
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1974473820394908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 204
+    i1: 48
+    i2: 146
+    i3: 231
+    i4: 198
+    i5: 104
+    i6: 232
+    i7: 116
+    i8: 75
+    i9: 249
+    i10: 10
+    i11: 181
+    i12: 224
+    i13: 62
+    i14: 180
+    i15: 241
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
 --- !u!114 &114927424902240250
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -56,3 +89,18 @@ MonoBehaviour:
   resetPlayers: 0
   respawnPickupEffect: {fileID: 1586017220789314, guid: 23180e74501d3ea4f99bf70a362f6ecd,
     type: 2}
+  spawnableInteractableObjects:
+  - {fileID: 1956651292723708, guid: 49d5bff6e55e7ac4d9fac21e72456bd2, type: 2}
+  - {fileID: 1174809156514424, guid: 470eeb37ef1859d4e8628f53c08833b6, type: 2}
+  - {fileID: 1347668835503844, guid: f9c188b1e488ac040babe91a0178c571, type: 2}
+  - {fileID: 1664857145387040, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e, type: 2}
+  serverAuthoriteCachedObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  clientAuthoriteCachedObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
