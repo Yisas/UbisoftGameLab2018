@@ -5,7 +5,7 @@ using UnityEngine;
 public class Lava : MonoBehaviour
 {
     public GameObject lavaSinkParticles;
-    public float lavaParticleHeight;
+    public float lavaParticleHeight = 1f;
     private CameraFollow cameraFollow;
     private bool cameraDeactivated = false;
     private float cameraFollowTime = 0;

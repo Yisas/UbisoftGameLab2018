@@ -12,9 +12,9 @@ public class StartOptions : NetworkBehaviour {
 	public bool changeMusicOnStart;										//Choose whether to continue playing menu music or start a new music clip
     public CanvasGroup fadeOutImageCanvasGroup;                         //Canvas group used to fade alpha of image which fades in before changing scenes
     public Image fadeImage;                                             //Reference to image used to fade out before changing scenes
-    public float fadeOutTime;                                           // Amount of time for the screen to fade out
-    public float fullFadeTime;                                          // Amount of time for screen to stay dark
-    public float fadeInTime;                                             // Amount of time for screen to fade back in
+    public float fadeOutTime = 0.6f;                                           // Amount of time for the screen to fade out
+    public float fullFadeTime = 0.5f;                                          // Amount of time for screen to stay dark
+    public float fadeInTime = 1f;                                             // Amount of time for screen to fade back in
 
     [HideInInspector] public bool inMainMenu = true;					//If true, pause button disabled in main menu (Cancel in input manager, default escape key)
 	[HideInInspector] public AnimationClip fadeAlphaAnimationClip;		//Animation clip fading out UI elements alpha
