@@ -199,12 +199,7 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                         lastPlayerID = player.PlayerID;
-                        isBeingControlled = true;
-                        if (!player.isServer)
-                        {
-                            Debug.Log("1: COMMAND");
-                            CmdButtonPrompt(isBeingControlled);
-                        }
+                        isBeingControlled = true;                       
 
                         Debug.Log("1: player- " + player.PlayerID + " name of object: " + gameObject.name + " isBeingControlled: " + isBeingControlled
                                 + "\n...SERVER? " + player.isServer + "   CLIENT? " + player.isClient);
@@ -263,7 +258,11 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
                     //}
                     #endregion
                 }
-
+                if (!player.isServer)
+                {
+                    Debug.Log("1: COMMAND");
+                    CmdButtonPrompt(isBeingControlled);
+                }
             }
         }
     }
@@ -273,16 +272,16 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
     void CmdButtonPrompt(bool m_isBeingControlled)
     {
         Debug.Log("COMMAND: m_beingControlled--> " + m_isBeingControlled);
+        //RpcUpdatePrompt(m_isBeingControlled);
         isBeingControlled = m_isBeingControlled;
     }
 
-    //[ClientRpc]
-    //void RpcUpdatePrompt(bool m_isBeingControlled, bool server)
-    //{
-    //    if (!playerNetID.isServer) return;
-    //    isBeingControlled = m_isBeingControlled;
-    //    Debug.Log("CLIENTRPC Here??" + isBeingControlled);
-    //}
+    [ClientRpc]
+    void RpcUpdatePrompt(bool m_isBeingControlled)
+    {
+        isBeingControlled = m_isBeingControlled;
+        Debug.Log("CLIENTRPC Here??" + isBeingControlled);
+    }
 
 
     public void TurnOffPrompt()
@@ -308,20 +307,24 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
                 Canvas_Player.enabled = false;
             }
 
-            if (player.PlayerID != lastPlayerID)
+            if (player.PlayerID != lastPlayerID)    //Check the ID to see if it matches with the previous ID
             {
-                isBeingControlled = true;
+                //isBeingControlled = true;
+                return;//didnt work
             }
             else
             {
-                isBeingControlled = false;
-                if (!player.isServer)
-                {
-                    Debug.Log("EXIT: COMMAND");
-                    CmdButtonPrompt(isBeingControlled);
-                }
+                isBeingControlled = false;               
+            }
+
+            if (!player.isServer)
+            {
+                Debug.Log("EXIT: COMMAND");
+                CmdButtonPrompt(isBeingControlled);
             }
         }
+
+       
     }
 
     public PlayerMove Player
