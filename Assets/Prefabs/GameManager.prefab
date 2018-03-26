@@ -84,8 +84,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a77f093f57337848b8308b3c9d6d88f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLevelFixedTime: 120
-  timeToMakeEverythingVisible: 200
+  currentLevelInvisibleTime: 120
+  blinkTime: 5
+  blinkAlphaTresholdTop: 0.5
+  blinkAlphaTresholdBottom: 0.05
+  numberOfBlinks: 5
   resetPlayers: 0
   respawnPickupEffect: {fileID: 1586017220789314, guid: 23180e74501d3ea4f99bf70a362f6ecd,
     type: 2}
@@ -93,13 +96,13 @@ MonoBehaviour:
   - {fileID: 1956651292723708, guid: 49d5bff6e55e7ac4d9fac21e72456bd2, type: 2}
   - {fileID: 1174809156514424, guid: 470eeb37ef1859d4e8628f53c08833b6, type: 2}
   - {fileID: 1347668835503844, guid: f9c188b1e488ac040babe91a0178c571, type: 2}
-  - {fileID: 1664857145387040, guid: 48f3b06c97b725a48ac6f0a6d6fe4d9e, type: 2}
-  serverAuthoriteCachedObjects:
+  - {fileID: 1717982372370506, guid: 7b4bbbd923ce9fa4aba85471fce278a6, type: 2}
+  serverAuthorityCachedObjects:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  clientAuthoriteCachedObjects:
+  clientAuthorityCachedObjects:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
