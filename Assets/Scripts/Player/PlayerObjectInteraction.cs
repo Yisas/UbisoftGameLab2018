@@ -1103,6 +1103,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
             && (heldObj != null && heldObj.CompareTag("Pickup")))
             DropPickup();
     }
+
+    public PickupableObject.PickupableType HeldObjType
+    {
+        get { return heldObjectType; }
+    }
 }
 
 /* NOTE: to check if the player is able to lift an object, and that nothing is above their head, a sphereCheck is used. (line 100)

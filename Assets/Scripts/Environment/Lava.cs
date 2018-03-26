@@ -33,6 +33,15 @@ public class Lava : MonoBehaviour
             cameraFollow.enabled = false;
             cameraDeactivated = true;
             cameraFollowTime = other.GetComponent<PlayerMove>().cameraDelayTimerBeforeRespawn;
+
+            PlayerObjectInteraction playerObjectInteraction = other.GetComponent<PlayerObjectInteraction>();
+
+            // Reset held object if carrying
+            if (playerObjectInteraction.newHeldObj != PlayerObjectInteraction.HoldableType.None)
+            {
+                playerObjectInteraction.HideFakeObject();
+                GManager.Instance.ResetCachedObject(playerObjectInteraction.HeldObjType);
+            }
         }
     }
 

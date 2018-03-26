@@ -69,6 +69,7 @@ public class GManager : NetworkBehaviour
     /// <returns></returns>
     public GameObject CacheNewObject(PickupableObject.PickupableType type, bool isArespawn = false, bool respawnTriggerdByServer = true)
     {
+        Debug.Log("here");
         if (!isServer)
         {
             Debug.LogError("Should only be called from server");
@@ -199,6 +200,16 @@ public class GManager : NetworkBehaviour
     public void DeRegisterResettableObject(ResettableObject ro)
     {
         resettableObjects.Remove(ro);
+    }
+
+    // When the player falls into lava with a carried object, the cached one should be reset and a new one should be cached
+    public void ResetCachedObject(PickupableObject.PickupableType type)
+    {
+        if (isServer)
+        {
+            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().Reset();
+            serverAuthorityCachedObjects[(int)type] = CacheNewObject(type);
+        }
     }
 
     public Vector3 GetPositionOfResettableObject(int id)
