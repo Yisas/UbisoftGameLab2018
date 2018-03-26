@@ -105,6 +105,12 @@ public class StartOptions : NetworkBehaviour {
     {
         string path = SceneUtility.GetScenePathByBuildIndex(sceneToStart);
         string sceneName = path.Substring(0, path.Length - 6).Substring(path.LastIndexOf('/') + 1);
+        if (sceneName.Contains("Vignette"))
+            AkSoundEngine.PostEvent("VignetteMusic", gameObject);
+        else if(sceneName.Contains("Level"))
+            AkSoundEngine.PostEvent("LevelMusic", gameObject);
+        else if(sceneName.Contains("Menu"))
+            AkSoundEngine.PostEvent("MenuMusic", gameObject);
         NetworkManager.singleton.ServerChangeScene(sceneName);
     }
 
