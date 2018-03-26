@@ -901,6 +901,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 // use syncvared value to turn on physics in client after spawn
                 throwableToSpawn.GetComponent<InteractableObjectSpawnCorrections>().turnOnPhysicsAtStart = true;
 
+            Debug.DrawRay(throwableToSpawn.transform.position, throwableToSpawn.transform.forward, Color.red, 10f);
+            Debug.DrawRay(throwableToSpawn.transform.position, throwableToSpawn.transform.up, Color.blue, 10f);
             throwableToSpawn.GetComponent<Rigidbody>().velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             throwableToSpawn.GetComponent<Rigidbody>().AddForce(throwableToSpawn.transform.forward * throwForce.z, ForceMode.VelocityChange);
             throwableToSpawn.GetComponent<Rigidbody>().AddForce(throwableToSpawn.transform.up * throwForce.y, ForceMode.VelocityChange);
