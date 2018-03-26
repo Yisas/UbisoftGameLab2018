@@ -20,6 +20,12 @@ public class Lava : MonoBehaviour
     {
         if (other.tag == "Player")
         {
+            // Do nothing if not local player
+            if (!other.GetComponent<UnityEngine.Networking.NetworkIdentity>().isLocalPlayer)
+            {
+                return;
+            }
+
             // Deactivate camera follow
             int playerID = other.GetComponent<PlayerMove>().PlayerID;
 
