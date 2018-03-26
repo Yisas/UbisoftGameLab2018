@@ -61,6 +61,9 @@ public class Lava : MonoBehaviour
                 PlayerMove player = other.GetComponent<PlayerMove>();
                 menu.GetComponent<StartOptions>().FadeOutThenIn(player);
             }
+
+            // Play sound of player sinking into lava
+            AkSoundEngine.PostEvent("LavaSink", gameObject);
         }
     }
 

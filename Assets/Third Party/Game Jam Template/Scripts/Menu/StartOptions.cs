@@ -12,9 +12,10 @@ public class StartOptions : NetworkBehaviour {
 	public bool changeMusicOnStart;										//Choose whether to continue playing menu music or start a new music clip
     public CanvasGroup fadeOutImageCanvasGroup;                         //Canvas group used to fade alpha of image which fades in before changing scenes
     public Image fadeImage;                                             //Reference to image used to fade out before changing scenes
-    public float fadeOutTime = 0.6f;                                           // Amount of time for the screen to fade out
-    public float fullFadeTime = 0.5f;                                          // Amount of time for screen to stay dark
-    public float fadeInTime = 1f;                                             // Amount of time for screen to fade back in
+    public float fadeOutTime = 0.6f;                                    // Amount of time for the screen to fade out
+    public float fullFadeTime = 0.5f;                                   // Amount of time for screen to stay dark
+    public float fadeInTime = 1f;                                       // Amount of time for screen to fade back in
+    public AudioManager audioManager;                                   // Manages playing and stopping music 
 
     [HideInInspector] public bool inMainMenu = true;					//If true, pause button disabled in main menu (Cancel in input manager, default escape key)
 	[HideInInspector] public AnimationClip fadeAlphaAnimationClip;		//Animation clip fading out UI elements alpha
@@ -105,13 +106,18 @@ public class StartOptions : NetworkBehaviour {
     {
         string path = SceneUtility.GetScenePathByBuildIndex(sceneToStart);
         string sceneName = path.Substring(0, path.Length - 6).Substring(path.LastIndexOf('/') + 1);
-        if (sceneName.Contains("Vignette"))
-            AkSoundEngine.PostEvent("VignetteMusic", gameObject);
-        else if(sceneName.Contains("Level"))
-            AkSoundEngine.PostEvent("LevelMusic", gameObject);
-        else if(sceneName.Contains("Menu"))
-            AkSoundEngine.PostEvent("MenuMusic", gameObject);
+
         NetworkManager.singleton.ServerChangeScene(sceneName);
+
+        // Manage music
+        audioManager.StopMusic();
+        sceneName = sceneName.ToLower();
+        if (sceneName.Contains("vignette"))
+            audioManager.PlayVignetteMusic();
+        else if (sceneName.Contains("level"))
+            audioManager.PlayLevelMusic();
+        else if (sceneName.Contains("menu"))
+            audioManager.PlayMainMenuMusic();
     }
 
     public void NextScene()
