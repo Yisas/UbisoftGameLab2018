@@ -141,13 +141,10 @@ public class GhostObjectInteraction : NetworkBehaviour
     {
         CommonHideFakeObject();
 
-        if (isLocalPlayer)
-        {
-            if (isServer)
-                RpcHideFakeObject();
-            else
-                CmdHideFakeObject();
-        }
+        if (isServer)
+            RpcHideFakeObject();
+        else
+            CmdHideFakeObject();
     }
 
     private void CommonHideFakeObject()
