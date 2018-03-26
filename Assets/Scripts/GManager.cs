@@ -239,7 +239,7 @@ public class GManager : NetworkBehaviour
         GameObject[] gos = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[]; //will return an array of all GameObjects in the scene
         foreach (GameObject go in gos)
         {
-            if (go.layer == layer) //9: Invisible player 1 or 12: Invisible player 2
+            if (go.layer == layer && go.GetComponent<Renderer>()) //9: Invisible player 1 or 12: Invisible player 2
             {
                 go.AddComponent<InvisibleToVisible2>();
                 go.GetComponent<InvisibleToVisible2>().regressionTresholdBottom = blinkAlphaTresholdBottom;
