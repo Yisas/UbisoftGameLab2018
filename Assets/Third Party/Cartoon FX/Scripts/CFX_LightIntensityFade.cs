@@ -28,14 +28,14 @@ public class CFX_LightIntensityFade : MonoBehaviour
 	
 	void Start()
 	{
-		baseIntensity = GetComponent<Light>().intensity;
+		baseIntensity = light.intensity;
 	}
 	
 	void OnEnable()
 	{
 		p_lifetime = 0.0f;
 		p_delay = delay;
-		if(delay > 0) GetComponent<Light>().enabled = false;
+		if(delay > 0) light.enabled = false;
 	}
 	
 	void Update ()
@@ -45,14 +45,14 @@ public class CFX_LightIntensityFade : MonoBehaviour
 			p_delay -= Time.deltaTime;
 			if(p_delay <= 0)
 			{
-                GetComponent<Light>().enabled = true;
+				light.enabled = true;
 			}
 			return;
 		}
 		
 		if(p_lifetime/duration < 1.0f)
 		{
-            GetComponent<Light>().intensity = Mathf.Lerp(baseIntensity, finalIntensity, p_lifetime/duration);
+			light.intensity = Mathf.Lerp(baseIntensity, finalIntensity, p_lifetime/duration);
 			p_lifetime += Time.deltaTime;
 		}
 		else

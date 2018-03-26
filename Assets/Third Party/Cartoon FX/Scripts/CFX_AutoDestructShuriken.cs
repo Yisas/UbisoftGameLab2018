@@ -16,7 +16,7 @@ public class CFX_AutoDestructShuriken : MonoBehaviour
 		while(true)
 		{
 			yield return new WaitForSeconds(0.5f);
-			if(!GetComponent<ParticleSystem>().IsAlive(true))
+			if(!particleSystem.IsAlive(true))
 			{
 				if(OnlyDeactivate)
 				{
