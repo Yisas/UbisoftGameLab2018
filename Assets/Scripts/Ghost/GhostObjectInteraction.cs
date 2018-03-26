@@ -39,99 +39,39 @@ public class GhostObjectInteraction : NetworkBehaviour
         matchVelocities();
     }
 
-    public void LiftPickup(Collider other)
-    {
-        //get where to move item once its picked up
-        Mesh otherMesh = other.GetComponent<MeshFilter>().mesh;
-        holdPos = transform.position;
-        holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + liftHeight;
-
-        if (!Physics.CheckSphere(holdPos, radiusAboveHead, 2))
-        {
-            heldObj = other.gameObject;
-            heldObjectRb = heldObj.GetComponent<Rigidbody>();
-            objectDefInterpolation = heldObjectRb.interpolation;
-            heldObjectRb.interpolation = RigidbodyInterpolation.Interpolate;
-            heldObj.transform.position = holdPos;
-            heldObj.transform.rotation = transform.rotation;
-            AddJoint();
-            //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            heldObjectRb.mass *= weightChange;
-            //make sure we don't immediately throw object after picking it up
-            timeOfPickup = Time.time;
-        }
-
-        // If the object is a pickup set the boolean that its currently being held
-        ResettableObject resettableObject = other.GetComponent<ResettableObject>();
-        if (resettableObject != null && resettableObject.CompareTag("Pickup"))
-        {
-            resettableObject.IsBeingHeld = true;
-        }
-        heldObjectRb = heldObj.GetComponent<Rigidbody>();
-
-        //reduceHeldObjectVisibility();
-    }
-
     public void GrabObject(Collider other)
     {
         GManager.Instance.NetworkedObjectDestroy(other.gameObject);
         newHeldObj = PlayerObjectInteraction.HoldableType.Pickup;
         ShowFakeObject(other.GetComponent<PickupableObject>().Type);
-
-        //heldObj = other.gameObject;
-        //Vector3 grabBoxPosition = grabBox.transform.position;
-        //grabBoxPosition.y += liftHeight;
-        //heldObj.transform.position = grabBoxPosition;
-        //heldObjectRb = heldObj.GetComponent<Rigidbody>();
-        //heldObjectRb.velocity = Vector3.zero;
-        //objectDefInterpolation = heldObjectRb.interpolation;
-        //heldObjectRb.interpolation = RigidbodyInterpolation.Interpolate;
-        //AddJoint();
-
-        ////If the object is a pickup set the boolean that its currently being held
-        //ResettableObject resettableObject = other.GetComponent<ResettableObject>();
-        //if (resettableObject != null && resettableObject.CompareTag("Pickup"))
-        //{
-        //    resettableObject.IsBeingHeld = true;
-        //}
-
-        ////reduceHeldObjectVisibility();
     }
 
     public void DropPickup()
     {
-        // Bring back original transparency of the object
-        //heldObj.GetComponent<MeshRenderer>().material.color = originalHeldObjColor;
-        // If the object is a pickup set the boolean that its currently being held
-        ResettableObject resettableObject = heldObj.GetComponent<ResettableObject>();
-        if (resettableObject != null && resettableObject.CompareTag("Pickup"))
-        {
-            resettableObject.IsBeingHeld = false;
+        HideFakeObject();
+        newHeldObj = PlayerObjectInteraction.HoldableType.None;
 
-            if (heldObj.tag == "Pickup")
-            {
-                heldObj.transform.position = dropBox.transform.position;
-                PickupableObject pickup = heldObj.GetComponent<PickupableObject>();
-                if (pickup)
-                {
-                    heldObj.GetComponent<Rigidbody>().useGravity = (pickup.Type == PickupableObject.PickupableType.Torch) ? false : true;
-                    heldObj.GetComponent<Collider>().isTrigger = (pickup.Type == PickupableObject.PickupableType.Torch) ? true : false;
-                    heldObj.GetComponent<Rigidbody>().isKinematic = false;
-                }
-            }
+        GameObject throwableToSpawn = null;
+        throwableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
+        Transform positionToSpawnAt = fakeObjects[(int)heldObjectType].transform;
+
+        throwableToSpawn.transform.position = positionToSpawnAt.position;
+        throwableToSpawn.transform.rotation = positionToSpawnAt.rotation;
+
+        if (heldObjectType != PickupableObject.PickupableType.Torch)
+        {
+            throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
+            throwableToSpawn.GetComponent<Rigidbody>().isKinematic = false;
+            throwableToSpawn.GetComponent<Collider>().isTrigger = false;
         }
         else
         {
-            Debug.LogWarning("Object " + heldObj.name + " dropped by ghost was missing ResettableObject script. Was that intentional?");
-            heldObj.transform.position = dropBox.transform.position;
+            throwableToSpawn.GetComponent<Rigidbody>().useGravity = false;
+            throwableToSpawn.GetComponent<Collider>().isTrigger = true;
         }
 
-        Destroy(joint);
-
-        heldObj.layer = 0;
-        heldObj = null;
-        heldObjectRb.velocity = Vector3.zero;
-        heldObjectRb = null;
+        if (isServer)
+            GManager.Instance.CachedObjectWasUsed(heldObjectType, true);
     }
 
     //connect player and pickup/pushable object via a physics joint
@@ -195,5 +135,37 @@ public class GhostObjectInteraction : NetworkBehaviour
     {
         if (!isLocalPlayer)
             CommonShowFakeObject(type);
+    }
+
+    public void HideFakeObject()
+    {
+        CommonHideFakeObject();
+
+        if (isLocalPlayer)
+        {
+            if (isServer)
+                RpcHideFakeObject();
+            else
+                CmdHideFakeObject();
+        }
+    }
+
+    private void CommonHideFakeObject()
+    {
+        fakeObjects[(int)heldObjectType].SetActive(false);
+        newHeldObj = PlayerObjectInteraction.HoldableType.None;
+    }
+
+    [Command]
+    private void CmdHideFakeObject()
+    {
+        CommonHideFakeObject();
+    }
+
+    [ClientRpc]
+    private void RpcHideFakeObject()
+    {
+        if (!isLocalPlayer)
+            CommonHideFakeObject();
     }
 }
