@@ -4,15 +4,28 @@ using UnityEngine;
 
 public class Lava : MonoBehaviour
 {
-
+    public GameObject lavaSinkParticles;
+    public float lavaParticleHeight = 1f;
     private CameraFollow cameraFollow;
     private bool cameraDeactivated = false;
     private float cameraFollowTime = 0;
+    private GameObject menu;
+
+    private void Start()
+    {
+        menu = GameObject.FindGameObjectWithTag("MenuUI");
+    }
 
     private void OnTriggerStay(Collider other)
     {
         if (other.tag == "Player")
         {
+            // Do nothing if not local player
+            if (!other.GetComponent<UnityEngine.Networking.NetworkIdentity>().isLocalPlayer)
+            {
+                return;
+            }
+
             // Deactivate camera follow
             int playerID = other.GetComponent<PlayerMove>().PlayerID;
 
@@ -20,6 +33,34 @@ public class Lava : MonoBehaviour
             cameraFollow.enabled = false;
             cameraDeactivated = true;
             cameraFollowTime = other.GetComponent<PlayerMove>().cameraDelayTimerBeforeRespawn;
+
+            PlayerObjectInteraction playerObjectInteraction = other.GetComponent<PlayerObjectInteraction>();
+
+            // Reset held object if carrying
+            if (playerObjectInteraction.newHeldObj != PlayerObjectInteraction.HoldableType.None)
+            {
+                playerObjectInteraction.HideFakeObject();
+                GManager.Instance.ResetCachedObject(playerObjectInteraction.HeldObjType);
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            // Start particle effect when player sinks into lava
+            Vector3 particlePosition = other.transform.position;
+            particlePosition.y = transform.position.y + lavaParticleHeight;
+            Instantiate(lavaSinkParticles, particlePosition, transform.rotation);
+
+            // Fade out camera
+            if (menu != null)
+            {
+                // Player can't move while camera is black
+                PlayerMove player = other.GetComponent<PlayerMove>();
+                menu.GetComponent<StartOptions>().FadeOutThenIn(player);
+            }
         }
     }
 

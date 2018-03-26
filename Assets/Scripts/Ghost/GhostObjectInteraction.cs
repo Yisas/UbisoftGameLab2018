@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GhostObjectInteraction : MonoBehaviour {
+public class GhostObjectInteraction : MonoBehaviour
+{
 
     public GameObject dropBox;
     public GameObject grabBox;
@@ -22,46 +23,15 @@ public class GhostObjectInteraction : MonoBehaviour {
     private Movable movableAI;
     private Color originalHeldObjColor;
 
-    void Awake () {
+    void Awake()
+    {
         movableAI = GetComponent<Movable>();
     }
-	
-	// Update is called once per frame
-	void Update () {
-        matchVelocities();
-	}
 
-    public void LiftPickup(Collider other)
+    // Update is called once per frame
+    void Update()
     {
-        //get where to move item once its picked up
-        Mesh otherMesh = other.GetComponent<MeshFilter>().mesh;
-        holdPos = transform.position;
-        holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + liftHeight;
-
-        if (!Physics.CheckSphere(holdPos, radiusAboveHead, 2))
-        {
-            heldObj = other.gameObject;
-            heldObjectRb = heldObj.GetComponent<Rigidbody>();
-            objectDefInterpolation = heldObjectRb.interpolation;
-            heldObjectRb.interpolation = RigidbodyInterpolation.Interpolate;
-            heldObj.transform.position = holdPos;
-            heldObj.transform.rotation = transform.rotation;
-            AddJoint();
-            //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            heldObjectRb.mass *= weightChange;
-            //make sure we don't immediately throw object after picking it up
-            timeOfPickup = Time.time;
-        }
-
-        // If the object is a pickup set the boolean that its currently being held
-        ResettableObject resettableObject = other.GetComponent<ResettableObject>();
-        if (resettableObject != null && resettableObject.CompareTag("Pickup"))
-        {
-            resettableObject.IsBeingHeld = true;
-        }
-        heldObjectRb = heldObj.GetComponent<Rigidbody>();
-
-        //reduceHeldObjectVisibility();
+        matchVelocities();
     }
 
     public void GrabObject(Collider other)
@@ -69,13 +39,13 @@ public class GhostObjectInteraction : MonoBehaviour {
         heldObj = other.gameObject;
         Vector3 grabBoxPosition = grabBox.transform.position;
         grabBoxPosition.y += liftHeight;
-        heldObj.transform.position = grabBoxPosition;        
+        heldObj.transform.position = grabBoxPosition;
         heldObjectRb = heldObj.GetComponent<Rigidbody>();
         heldObjectRb.velocity = Vector3.zero;
         objectDefInterpolation = heldObjectRb.interpolation;
         heldObjectRb.interpolation = RigidbodyInterpolation.Interpolate;
         AddJoint();
-        
+
         //If the object is a pickup set the boolean that its currently being held
         ResettableObject resettableObject = other.GetComponent<ResettableObject>();
         if (resettableObject != null && resettableObject.CompareTag("Pickup"))
@@ -96,10 +66,16 @@ public class GhostObjectInteraction : MonoBehaviour {
         {
             resettableObject.IsBeingHeld = false;
 
-            if(heldObj.tag == "Pickup")
+            if (heldObj.tag == "Pickup")
             {
-                //heldObj.transform.position = dropBox.transform.position;
-                resettableObject.Reset(true);
+                heldObj.transform.position = dropBox.transform.position;
+                PickupableObject pickup = heldObj.GetComponent<PickupableObject>();
+                if (pickup)
+                {
+                    heldObj.GetComponent<Rigidbody>().useGravity = (pickup.Type == PickupableObject.PickupableType.Torch) ? false : true;
+                    heldObj.GetComponent<Collider>().isTrigger = (pickup.Type == PickupableObject.PickupableType.Torch) ? true : false;
+                    heldObj.GetComponent<Rigidbody>().isKinematic = false;
+                }
             }
         }
         else
@@ -108,9 +84,7 @@ public class GhostObjectInteraction : MonoBehaviour {
             heldObj.transform.position = dropBox.transform.position;
         }
 
-        heldObjectRb.interpolation = objectDefInterpolation;
         Destroy(joint);
-
 
         heldObj.layer = 0;
         heldObj = null;
@@ -132,7 +106,7 @@ public class GhostObjectInteraction : MonoBehaviour {
 
     private void matchVelocities()
     {
-        if(heldObjectRb != null)
+        if (heldObjectRb != null)
         {
             heldObjectRb.velocity = movableAI.velocity;
         }

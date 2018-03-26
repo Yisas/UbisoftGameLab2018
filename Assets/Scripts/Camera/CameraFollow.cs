@@ -6,7 +6,7 @@ public class CameraFollow : MonoBehaviour
     public int playerID;
     private PlayerMove playerMove;
 
-    private Transform target;                                   //object camera will focus on and follow
+    public Transform target;                                   //object camera will focus on and follow
     public Vector3 targetOffset = new Vector3(0f, 3.5f, 7);     //how far back should camera be from the lookTarget
     public float followSpeed = 6;                               //how fast the camera moves to its intended position
     public float inputRotationSpeed = 100;                      //how fast the camera rotates around lookTarget when you press the camera adjust buttons
@@ -117,14 +117,12 @@ public class CameraFollow : MonoBehaviour
 
     void setAutoTransparentOnObject(GameObject alphaObject)
     {
+        if (alphaObject.GetComponent<InvisibleToVisible>()) return;
+        if (alphaObject.GetComponent<InvisibleToVisible2>()) return;
+        if (alphaObject.GetComponent<VisibleToInvisible>()) return;
+        
         AutoTransparent AT = alphaObject.GetComponent<AutoTransparent>();
-        InvisibleToVisible ITV = alphaObject.GetComponent<InvisibleToVisible>();
-        VisibleToInvisible VTI = alphaObject.GetComponent<VisibleToInvisible>();
-
-        if (ITV != null || VTI != null)
-        {
-            return;
-        }
+ 
 
         if (AT == null) // if no script is attached, attach one
         {
