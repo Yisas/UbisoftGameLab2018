@@ -406,7 +406,15 @@ public class PlayerObjectInteraction : NetworkBehaviour
         playerMove.IsGrabingPushable = true;
         playerMove.rotateSpeed = 0;
 
-        GManager.Instance.NetworkedObjectDestroy(other.gameObject);
+        // Only destroy objects on the server
+        if (isServer)
+        {
+            NetworkServer.Destroy(other.gameObject);
+        }
+        else
+        {
+            CmdServerDestroy(other.gameObject);
+        }
 
         timeOfPickup = Time.time;
         newHeldObj = HoldableType.Pushable;
@@ -514,7 +522,15 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (!Physics.CheckSphere(other.position, checkRadius, LayerMask.NameToLayer("Ignore Raycast")))
         {
-            GManager.Instance.NetworkedObjectDestroy(other.gameObject);
+            // Only destroy objects on the server
+            if (isServer)
+            {
+                NetworkServer.Destroy(other.gameObject);
+            }
+            else
+            {
+                CmdServerDestroy(other.gameObject);
+            }
 
             CommonLiftPickup(type);
 
@@ -557,6 +573,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         newHeldObj = HoldableType.Pickup;
         ShowFakeObject(type);
+    }
+
+    [Command]
+    private void CmdServerDestroy(GameObject gameObjectToDestroy)
+    {
+        NetworkServer.Destroy(gameObjectToDestroy);
     }
 
     /// <summary>
