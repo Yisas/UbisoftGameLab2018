@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "MenuSettings")]
-public class MenuSettings : ScriptableObject
+public class MenuSettings : ScriptableObject 
 {
 
     public float menuFadeTime = .5f;
