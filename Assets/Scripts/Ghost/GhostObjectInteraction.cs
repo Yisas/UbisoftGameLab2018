@@ -34,39 +34,6 @@ public class GhostObjectInteraction : MonoBehaviour
         matchVelocities();
     }
 
-    public void LiftPickup(Collider other)
-    {
-        //get where to move item once its picked up
-        Mesh otherMesh = other.GetComponent<MeshFilter>().mesh;
-        holdPos = transform.position;
-        holdPos.y += (GetComponent<Collider>().bounds.extents.y) + (otherMesh.bounds.extents.y) + liftHeight;
-
-        if (!Physics.CheckSphere(holdPos, radiusAboveHead, 2))
-        {
-            heldObj = other.gameObject;
-            heldObjectRb = heldObj.GetComponent<Rigidbody>();
-            objectDefInterpolation = heldObjectRb.interpolation;
-            heldObjectRb.interpolation = RigidbodyInterpolation.Interpolate;
-            heldObj.transform.position = holdPos;
-            heldObj.transform.rotation = transform.rotation;
-            AddJoint();
-            //here we adjust the mass of the object, so it can seem heavy, but not effect player movement whilst were holding it
-            heldObjectRb.mass *= weightChange;
-            //make sure we don't immediately throw object after picking it up
-            timeOfPickup = Time.time;
-        }
-
-        // If the object is a pickup set the boolean that its currently being held
-        ResettableObject resettableObject = other.GetComponent<ResettableObject>();
-        if (resettableObject != null && resettableObject.CompareTag("Pickup"))
-        {
-            resettableObject.IsBeingHeld = true;
-        }
-        heldObjectRb = heldObj.GetComponent<Rigidbody>();
-
-        //reduceHeldObjectVisibility();
-    }
-
     public void GrabObject(Collider other)
     {
         heldObj = other.gameObject;
