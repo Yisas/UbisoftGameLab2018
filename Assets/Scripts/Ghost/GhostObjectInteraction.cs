@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class GhostObjectInteraction : MonoBehaviour
+public class GhostObjectInteraction : NetworkBehaviour
 {
+    public PlayerObjectInteraction.HoldableType newHeldObj = PlayerObjectInteraction.HoldableType.None;
+    private PickupableObject.PickupableType heldObjectType;
 
     public GameObject dropBox;
     public GameObject grabBox;
@@ -14,6 +17,8 @@ public class GhostObjectInteraction : MonoBehaviour
     public float liftHeight;
     public float radiusAboveHead;
     public float weightChange;
+
+    public GameObject[] fakeObjects = new GameObject[3];
 
     private Vector3 holdPos;
     private RigidbodyInterpolation objectDefInterpolation;
@@ -69,24 +74,28 @@ public class GhostObjectInteraction : MonoBehaviour
 
     public void GrabObject(Collider other)
     {
-        heldObj = other.gameObject;
-        Vector3 grabBoxPosition = grabBox.transform.position;
-        grabBoxPosition.y += liftHeight;
-        heldObj.transform.position = grabBoxPosition;
-        heldObjectRb = heldObj.GetComponent<Rigidbody>();
-        heldObjectRb.velocity = Vector3.zero;
-        objectDefInterpolation = heldObjectRb.interpolation;
-        heldObjectRb.interpolation = RigidbodyInterpolation.Interpolate;
-        AddJoint();
+        GManager.Instance.NetworkedObjectDestroy(other.gameObject);
+        newHeldObj = PlayerObjectInteraction.HoldableType.Pickup;
+        ShowFakeObject(other.GetComponent<PickupableObject>().Type);
 
-        //If the object is a pickup set the boolean that its currently being held
-        ResettableObject resettableObject = other.GetComponent<ResettableObject>();
-        if (resettableObject != null && resettableObject.CompareTag("Pickup"))
-        {
-            resettableObject.IsBeingHeld = true;
-        }
+        //heldObj = other.gameObject;
+        //Vector3 grabBoxPosition = grabBox.transform.position;
+        //grabBoxPosition.y += liftHeight;
+        //heldObj.transform.position = grabBoxPosition;
+        //heldObjectRb = heldObj.GetComponent<Rigidbody>();
+        //heldObjectRb.velocity = Vector3.zero;
+        //objectDefInterpolation = heldObjectRb.interpolation;
+        //heldObjectRb.interpolation = RigidbodyInterpolation.Interpolate;
+        //AddJoint();
 
-        //reduceHeldObjectVisibility();
+        ////If the object is a pickup set the boolean that its currently being held
+        //ResettableObject resettableObject = other.GetComponent<ResettableObject>();
+        //if (resettableObject != null && resettableObject.CompareTag("Pickup"))
+        //{
+        //    resettableObject.IsBeingHeld = true;
+        //}
+
+        ////reduceHeldObjectVisibility();
     }
 
     public void DropPickup()
@@ -154,4 +163,37 @@ public class GhostObjectInteraction : MonoBehaviour
         heldObjRenderer.material.color = fadedColor;
     }
 
+
+    /// <summary>
+    /// Side effect: will set heldObjectType to type
+    /// </summary>
+    /// <param name="type"></param>
+    private void ShowFakeObject(PickupableObject.PickupableType type)
+    {
+        CommonShowFakeObject(type);
+
+        if (isServer)
+            RpcShowFakeObject(type);
+        else
+            CmdShowFakeObject(type);
+    }
+
+    private void CommonShowFakeObject(PickupableObject.PickupableType type)
+    {
+        fakeObjects[(int)type].SetActive(true);
+        heldObjectType = type;
+    }
+
+    [Command]
+    private void CmdShowFakeObject(PickupableObject.PickupableType type)
+    {
+        CommonShowFakeObject(type);
+    }
+
+    [ClientRpc]
+    private void RpcShowFakeObject(PickupableObject.PickupableType type)
+    {
+        if (!isLocalPlayer)
+            CommonShowFakeObject(type);
+    }
 }

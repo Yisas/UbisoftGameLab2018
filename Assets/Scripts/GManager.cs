@@ -283,6 +283,25 @@ public class GManager : NetworkBehaviour
         }
     }
 
+    public void NetworkedObjectDestroy(GameObject gameObjectToDestroy)
+    {
+        // Only destroy objects on the server
+        if (isServer)
+        {
+            NetworkServer.Destroy(gameObjectToDestroy);
+        }
+        else
+        {
+            CmdServerDestroy(gameObjectToDestroy);
+        }
+    }
+
+    [Command]
+    private void CmdServerDestroy(GameObject gameObjectToDestroy)
+    {
+        NetworkServer.Destroy(gameObjectToDestroy);
+    }
+
     //--------------------------- NETWORKING HACKS ------------------------------------
     public void OverridePlayer(int playerID)
     {
