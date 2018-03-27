@@ -112,6 +112,8 @@ public class StartOptions : NetworkBehaviour {
         if (!isServer)
             return;
 
+        RpcActivateCanvas();
+
         //If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic
         //To change fade time, change length of animation "FadeToColor"
         if (menuSettingsData.musicLoopToChangeTo != null)
@@ -299,4 +301,10 @@ public class StartOptions : NetworkBehaviour {
 		//Play second music clip from MenuSettings
 		playMusic.PlaySelectedMusic (menuSettingsData.musicLoopToChangeTo);
 	}
+
+    [ClientRpc]
+    private void RpcActivateCanvas()
+    {
+        GetComponent<Canvas>().enabled = true;
+    }
 }
