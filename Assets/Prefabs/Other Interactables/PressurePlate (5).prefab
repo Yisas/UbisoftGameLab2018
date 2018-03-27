@@ -207,7 +207,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: f8ce13a7180b949bbb102c408172e325, type: 2}
+  - {fileID: 2100000, guid: b87d50438a9600d44a06c4cf20395270, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -542,7 +542,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9d630ed547e10948a4d32f531aa0442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 0}
 --- !u!114 &114395375380919904
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -554,6 +553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7649da01531f883439f5efd284b2ba3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Canvas_Junk: {fileID: 0}
   Canvas_PresurePlate: {fileID: 223782297390939496}
   Canvas_Player_1: {fileID: 0}
   Canvas_Player_2: {fileID: 0}
