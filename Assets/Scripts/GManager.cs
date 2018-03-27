@@ -142,16 +142,13 @@ public class GManager : NetworkBehaviour
             currentLevelTime += Time.deltaTime;
         }
 
-        if (isServer && !clientsConnected && GetComponent<NetworkIdentity>().observers.Count == 2)
+        if ((isServer && !clientsConnected && GetComponent<NetworkIdentity>().observers.Count == 2) ||
+            /*Duck tape condition for racing condition on players not appearing in the scene during this call. Very bad code. I'm sorry.*/
+            (clientsConnected && resettableObjects.Count <= 3))
         {
             clientsConnected = true;
-            FindPlayers();
 
-            // Register resettable objects positions
-            foreach (ResettableObject ro in GameObject.FindObjectsOfType<ResettableObject>())
-            {
-                RegisterResettableObject(ro);
-            }
+            CommonRegisterAllResettableObjects();
 
             RpcRegisterAllResettableObjects();
 
@@ -166,10 +163,25 @@ public class GManager : NetworkBehaviour
     {
         if (!isServer)
         {
+            CommonRegisterAllResettableObjects();
+        }
+    }
+
+    private void CommonRegisterAllResettableObjects()
+    {
+        FindPlayers();
+
+        if (player1 && player2)
+        {
+            // Make sure to register players first
+            RegisterResettableObject(player1.GetComponent<ResettableObject>());
+            RegisterResettableObject(player2.GetComponent<ResettableObject>());
+
             // Register resettable objects positions
             foreach (ResettableObject ro in GameObject.FindObjectsOfType<ResettableObject>())
             {
-                RegisterResettableObject(ro);
+                if (ro.tag != "Player")
+                    RegisterResettableObject(ro);
             }
         }
     }
