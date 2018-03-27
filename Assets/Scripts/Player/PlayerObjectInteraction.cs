@@ -1110,6 +1110,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         get { return heldObjectType; }
     }
+
+    public float defaultRotateSpeed
+    {
+        get { return defRotateSpeed; }
+    }
 }
 
 /* NOTE: to check if the player is able to lift an object, and that nothing is above their head, a sphereCheck is used. (line 100)
