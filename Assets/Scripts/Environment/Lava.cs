@@ -39,7 +39,14 @@ public class Lava : MonoBehaviour
             // Reset held object if carrying
             if (playerObjectInteraction.newHeldObj != PlayerObjectInteraction.HoldableType.None)
             {
+                if (playerObjectInteraction.newHeldObj == PlayerObjectInteraction.HoldableType.Pushable)
+                {
+                    other.GetComponent<PlayerMove>().IsGrabingPushable = false;
+                    other.GetComponent<PlayerMove>().rotateSpeed = playerObjectInteraction.defaultRotateSpeed;
+                }
+
                 playerObjectInteraction.HideFakeObject();
+
                 GManager.Instance.ResetCachedObject(playerObjectInteraction.HeldObjType);
             }
         }
