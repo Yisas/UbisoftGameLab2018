@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 11400000}
   - component: {fileID: 4500000}
   - component: {fileID: 114878356331518064}
+  - component: {fileID: 114124582072186660}
   m_Layer: 17
   m_Name: Player Camera
   m_TagString: MainCamera
@@ -146,6 +147,34 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100000}
   m_IsPrefabParent: 1
+--- !u!114 &114124582072186660
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54415757aaddf4b8a9cd7122fd120cc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _preset: 20
+  _quality: 0
+  _compareMode: 0
+  _sharpenMinDepth: 0
+  _sharpenMaxDepth: 1.1
+  _sharpen: 3
+  _sharpenDepthThreshold: 0.035
+  _sharpenRelaxation: 0.07
+  _sharpenClamp: 0.45
+  _sharpenMotionSensibility: 0.5
+  _saturate: 1
+  _contrast: 1.02
+  _brightness: 1.05
+  _dither: 0.02
+  _ditherDepth: 0
+  _daltonize: 0
+  isDirty: 0
 --- !u!114 &114878356331518064
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -198,7 +227,7 @@ MonoBehaviour:
       colorBlindnessStrength: 1
   m_Resources: {fileID: 11400000, guid: d82512f9c8e5d4a4d938b575d47f88d4, type: 2}
   m_ShowToolkit: 0
-  m_ShowCustomSorter: 0
+  m_ShowCustomSorter: 1
   breakBeforeColorGrading: 0
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
