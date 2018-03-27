@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using UnityEngine;
 
-public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
+public class ButtonPromptsNetworked : MonoBehaviour
 {
 
     /**NOTE FOR NETWORKING VERSION:
@@ -29,10 +29,10 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
 
     PlayerMove player;
     int lastPlayerID;
-    //int playerID;
+    int playerID;
     NetworkIdentity playerNetID;    //NOTE: Instead we should use the PlayerMove player and get the player.isLocalPlayer??
                                     //ATM: The code uses playerNetID--might be redunant though
-    [SyncVar]
+
     public bool isBeingControlled/* = false*/;
 
 
@@ -40,7 +40,7 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
 
     private void Awake()
     {
-        if (gameObject.name == "Pushable Box" || gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger") //Includes the junk
+        if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger") //Includes the junk
         {
             Canvas_PresurePlate = null;
         }
@@ -97,37 +97,37 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
     }
 
     //TRIGGERS ARE HERE
-    //void OnTriggerStay(Collider other)
-    //{
-    //    if (other.tag == "Player")
-    //    {
-    //        player = other.gameObject.GetComponent<PlayerMove>();
+    void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            player = other.gameObject.GetComponent<PlayerMove>();
 
-    //        if (!player.isLocalPlayer)
-    //        {
-    //            return;
-    //        }
+            if (!player.isLocalPlayer)
+            {
+                return;
+            }
 
-    //        playerID = other.gameObject.GetComponent<PlayerMove>().PlayerID;
-    //        playerNetID = other.GetComponentInParent<NetworkIdentity>();    //Getting the players network identity...
-    //        TurnOnPrompt();
-    //    }
-    //}
+            playerID = other.gameObject.GetComponent<PlayerMove>().PlayerID;
+            playerNetID = other.GetComponentInParent<NetworkIdentity>();    //Getting the players network identity...
+            TurnOnPrompt();
+        }
+    }
 
-    //void OnTriggerExit(Collider other)
-    //{
-    //    if (other.tag == "Player")
-    //    {
-    //        player = other.gameObject.GetComponent<PlayerMove>();
-    //        if (!player.isLocalPlayer)
-    //        {
-    //            return;
-    //        }
+    void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            player = other.gameObject.GetComponent<PlayerMove>();
+            if (!player.isLocalPlayer)
+            {
+                return;
+            }
 
-    //        playerID = other.gameObject.GetComponent<PlayerMove>().PlayerID;
-    //        TurnOffPrompt();
-    //    }
-    //}
+            playerID = other.gameObject.GetComponent<PlayerMove>().PlayerID;
+            TurnOffPrompt();
+        }
+    }
 
     public void TurnOnPrompt()
     {
@@ -150,8 +150,9 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
 
         if (buttonprompt == ButtonPromptOn.pressureplate)  // If the prompt is suppose to appear above the preasure plate
         {
+            Debug.Log("HELLLO IM HERE !" + player.IsHoldingPickup);
             //Here we are going to make the prompt on the Pressureplate only visible to the local player. 
-            if (player.IsHoldingPickup == true) //Checking to see if a player is holding a Pickupable block
+            if (player.GetComponent<PlayerObjectInteraction>().newHeldObj == PlayerObjectInteraction.HoldableType.Pickup) //Checking to see if a player is holding a Pickupable block
             {
                 Canvas_PresurePlate.gameObject.GetComponent<Canvas>().enabled = true;
             }
@@ -192,10 +193,10 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
             isBeingHeld = gameObject.GetComponentInParent<ResettableObject>();
             if (buttonprompt == ButtonPromptOn.player)
             {
-                if (gameObject.name == "Pushable Box(Clone)" || gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerButtonPrompt")
+                if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerButtonPrompt")
                 {
                     NetworkIdentity gameObjectNetID = gameObject.GetComponentInParent<NetworkIdentity>();
-                    if (isBeingControlled == false && (player.IsGrabingPushable == true || player.IsHoldingPickup == true))
+                    if (isBeingControlled == false && (player.GetComponent<PlayerObjectInteraction>().newHeldObj == PlayerObjectInteraction.HoldableType.Pushable || player.GetComponent<PlayerObjectInteraction>().newHeldObj == PlayerObjectInteraction.HoldableType.Pickup))
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                         lastPlayerID = player.PlayerID;
@@ -218,7 +219,7 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
                         //CmdPrompt(isBeingControlled);
                         #endregion
                     }
-                    else if (isBeingControlled == false && (player.IsGrabingPushable == false || player.IsHoldingPickup == false)) //!player.IsHoldingPickup == false
+                    else if (isBeingControlled == false && (player.GetComponent<PlayerObjectInteraction>().newHeldObj == PlayerObjectInteraction.HoldableType.Pushable || player.GetComponent<PlayerObjectInteraction>().newHeldObj == PlayerObjectInteraction.HoldableType.Pickup)) //!player.IsHoldingPickup == false
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
 
@@ -258,30 +259,30 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
                     //}
                     #endregion
                 }
-                if (!player.isServer)
-                {
-                    Debug.Log("1: COMMAND");
-                    CmdButtonPrompt(isBeingControlled);
-                }
+                //if (!player.isServer)
+                //{
+                //    Debug.Log("1: COMMAND");
+                //    CmdButtonPrompt(isBeingControlled);
+                //}
             }
         }
     }
 
 
-    [Command] // client to the server. 
-    void CmdButtonPrompt(bool m_isBeingControlled)
-    {
-        Debug.Log("COMMAND: m_beingControlled--> " + m_isBeingControlled);
-        //RpcUpdatePrompt(m_isBeingControlled);
-        isBeingControlled = m_isBeingControlled;
-    }
+    //[Command] // client to the server. 
+    //void CmdButtonPrompt(bool m_isBeingControlled)
+    //{
+    //    Debug.Log("COMMAND: m_beingControlled--> " + m_isBeingControlled);
+    //    //RpcUpdatePrompt(m_isBeingControlled);
+    //    isBeingControlled = m_isBeingControlled;
+    //}
 
-    [ClientRpc]
-    void RpcUpdatePrompt(bool m_isBeingControlled)
-    {
-        isBeingControlled = m_isBeingControlled;
-        Debug.Log("CLIENTRPC Here??" + isBeingControlled);
-    }
+    //[ClientRpc]
+    //void RpcUpdatePrompt(bool m_isBeingControlled)
+    //{
+    //    isBeingControlled = m_isBeingControlled;
+    //    Debug.Log("CLIENTRPC Here??" + isBeingControlled);
+    //}
 
 
     public void TurnOffPrompt()
@@ -307,21 +308,21 @@ public class ButtonPromptsNetworked : NetworkBehaviour /*MonoBehaviour*/
                 Canvas_Player.enabled = false;
             }
 
-            if (player.PlayerID != lastPlayerID)    //Check the ID to see if it matches with the previous ID
-            {
-                //isBeingControlled = true;
-                return;//didnt work
-            }
-            else
-            {
-                isBeingControlled = false;               
-            }
+            //if (player.PlayerID != lastPlayerID)    //Check the ID to see if it matches with the previous ID
+            //{
+            //    //isBeingControlled = true;
+            //    return;//didnt work
+            //}
+            //else
+            //{
+            //    isBeingControlled = false;               
+            //}
 
-            if (!player.isServer)
-            {
-                Debug.Log("EXIT: COMMAND");
-                CmdButtonPrompt(isBeingControlled);
-            }
+            //if (!player.isServer)
+            //{
+            //    Debug.Log("EXIT: COMMAND");
+            //    CmdButtonPrompt(isBeingControlled);
+            //}
         }
 
        

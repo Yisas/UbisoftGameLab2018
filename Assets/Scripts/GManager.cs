@@ -260,6 +260,13 @@ public class GManager : NetworkBehaviour
     /// </summary>
     public void NetworkingLevelReferencesSetup(PlayerMove playerSpawned)
     {
+        /*if (playerSpawned.isLocalPlayer)
+        {
+            Debug.Log("HELLO?");
+            Destroy(playerSpawned.GetComponentInChildren<PromptCanvasRotate>().gameObject);
+            Destroy(playerSpawned.GetComponentInChildren<ButtonPromptsNetworked>());
+            return;
+        }*/
         ButtonPromptsNetworked[] buttonPrompts = GameObject.FindObjectsOfType<ButtonPromptsNetworked>();
         foreach (ButtonPromptsNetworked bp in buttonPrompts)
         {

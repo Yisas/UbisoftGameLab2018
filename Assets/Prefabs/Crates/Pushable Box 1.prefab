@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4441396971197642}
   - component: {fileID: 65362782113206880}
-  - component: {fileID: 114197392884692214}
+  - component: {fileID: 114998949720376642}
   m_Layer: 2
   m_Name: PushablePromptTrigger
   m_TagString: Untagged
@@ -103,7 +103,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1717982372370506}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 40.47119, y: 6.414686, z: 10.041401}
+  m_LocalPosition: {x: -16.48352, y: 1.75, z: 18.548782}
   m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
   m_Children:
   - {fileID: 4441396971197642}
@@ -232,25 +232,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114197392884692214
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1466984202854870}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7649da01531f883439f5efd284b2ba3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Canvas_PresurePlate: {fileID: 0}
-  Canvas_Player_1: {fileID: 0}
-  Canvas_Player_2: {fileID: 0}
-  buttonprompt: 1
-  JumpImgP1: {fileID: 0}
-  InteractImgP1: {fileID: 0}
-  JumpImgP2: {fileID: 0}
-  InteractImgP2: {fileID: 0}
 --- !u!114 &114199703180004666
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -355,3 +336,21 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 1
+--- !u!114 &114998949720376642
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1466984202854870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43c88029ea0575c469db7340429c9d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Canvas_Junk: {fileID: 0}
+  Canvas_PresurePlate: {fileID: 0}
+  Canvas_Player: {fileID: 0}
+  buttonprompt: 2
+  JumpImg: {fileID: 0}
+  InteractImg: {fileID: 0}
+  isBeingControlled: 0

@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4979847781418590}
   - component: {fileID: 135125156165610262}
-  - component: {fileID: 114994325704070614}
+  - component: {fileID: 114375057667485780}
   m_Layer: 2
   m_Name: PickupPromptTrigger
   m_TagString: Untagged
@@ -59,7 +59,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1956651292723708}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 29.089025, y: 1.4532976, z: 1.6600227}
+  m_LocalPosition: {x: -14.959579, y: 1, z: 12.940608}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4979847781418590}
@@ -182,6 +182,24 @@ MonoBehaviour:
   bamParticleEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 2}
   powCooldown: 0.75
   id: 0
+--- !u!114 &114375057667485780
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1082093099639778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43c88029ea0575c469db7340429c9d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Canvas_Junk: {fileID: 0}
+  Canvas_PresurePlate: {fileID: 0}
+  Canvas_Player: {fileID: 0}
+  buttonprompt: 2
+  JumpImg: {fileID: 0}
+  InteractImg: {fileID: 0}
+  isBeingControlled: 0
 --- !u!114 &114537176676008738
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -239,25 +257,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeToRenableInteractionWithSpawningPlayer: 0.2
   turnOnPhysicsAtStart: 0
---- !u!114 &114994325704070614
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1082093099639778}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7649da01531f883439f5efd284b2ba3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Canvas_PresurePlate: {fileID: 0}
-  Canvas_Player_1: {fileID: 0}
-  Canvas_Player_2: {fileID: 0}
-  buttonprompt: 1
-  JumpImgP1: {fileID: 0}
-  InteractImgP1: {fileID: 0}
-  JumpImgP2: {fileID: 0}
-  InteractImgP2: {fileID: 0}
 --- !u!135 &135125156165610262
 SphereCollider:
   m_ObjectHideFlags: 1
