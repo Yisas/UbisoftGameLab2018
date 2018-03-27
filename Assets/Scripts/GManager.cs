@@ -36,6 +36,7 @@ public class GManager : NetworkBehaviour
     public GameObject[] clientAuthorityCachedObjects = new GameObject[4];
 
     private int localPlayerID;
+    [SyncVar]
     private bool clientsConnected = false;
 
     private List<ResettableObject> resettableObjects = new List<ResettableObject>();
