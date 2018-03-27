@@ -57,6 +57,12 @@ public class Lava : MonoBehaviour
             // Fade out camera
             if (menu != null)
             {
+                // Do nothing if not local player
+                if (!other.GetComponent<UnityEngine.Networking.NetworkIdentity>().isLocalPlayer)
+                {
+                    return;
+                }
+
                 // Player can't move while camera is black
                 PlayerMove player = other.GetComponent<PlayerMove>();
                 menu.GetComponent<StartOptions>().FadeOutThenIn(player);

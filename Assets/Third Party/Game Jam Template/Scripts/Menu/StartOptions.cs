@@ -76,6 +76,12 @@ public class StartOptions : NetworkBehaviour {
                 RpcStartCameraFade();
                 NetworkedSceneChange();
             }
+            else
+            {
+                GameObject.FindGameObjectWithTag("MenuUI").GetComponent<NetworkIdentity>().AssignClientAuthority(this.GetComponent<NetworkIdentity>().connectionToClient);
+                Debug.Log("$$$$$$$$$$$$$$$$$$$$cmd start game from start button");
+                CmdStartGame();
+            }
         } 
 
 		//If changeScenes is false, call StartGameInScene
@@ -86,6 +92,23 @@ public class StartOptions : NetworkBehaviour {
 		}
 
 	}
+
+    [ClientRpc]
+    public void RpcStartGame()
+    {
+        Debug.Log("$$$$$$$$$$$$$$$$$$$$$$Began start");
+        RpcStartCameraFade();
+        NetworkedSceneChange();
+        Debug.Log("$$$$$$$$$$$$$$$$$$$$$End start");
+    }
+
+    [Command]
+    void CmdStartGame()
+    {
+        Debug.Log("$$$$$$$$$$$$$$$$$$$$$$Began start");
+        RpcStartGame();
+        Debug.Log("$$$$$$$$$$$$$$$$$$$$$End start");
+    }
 
     [ClientRpc]
     public void RpcStartCameraFade()
