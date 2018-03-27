@@ -25,18 +25,18 @@ public class Pause : MonoBehaviour {
 		{
             Debug.Log("pausing");
 			//Call the DoPause function to pause the game
-			DoPause();
+			//DoPause();
 		} 
 		//If the button is pressed and the game is paused and not in main menu
 		else if (Input.GetButtonDown ("Cancel") && isPaused && !startScript.inMainMenu) 
 		{
 			//Call the UnPause function to unpause the game
-			UnPause ();
+			//UnPause ();
 		}
 	
 	}
 
-
+    /*
 	public void DoPause()
 	{
 		//Set isPaused to true
@@ -57,6 +57,6 @@ public class Pause : MonoBehaviour {
 		//call the HidePausePanel function of the ShowPanels script
 		showPanels.HidePausePanel ();
 	}
-
+    */
 
 }
