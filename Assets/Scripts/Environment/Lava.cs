@@ -27,7 +27,6 @@ public class Lava : MonoBehaviour
             }
 
             // Deactivate camera follow
-            int playerID = other.GetComponent<PlayerMove>().PlayerID;
 
             cameraFollow = Camera.main.GetComponent<CameraFollow>();
             cameraFollow.enabled = false;
