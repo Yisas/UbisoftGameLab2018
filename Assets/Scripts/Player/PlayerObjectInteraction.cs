@@ -153,7 +153,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
             else if (newHeldObj == HoldableType.Player && Time.time > timeOfPickup + throwPlayerCooldownTime)
             {
-                ThrowPlayer();
+                //ThrowPlayer();
             }
             else if (newHeldObj == HoldableType.Pushable && Time.time > timeOfPickup + throwPlayerCooldownTime)
                 LetGoOfPushable();
@@ -230,7 +230,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
         {
             if (newHeldObj == HoldableType.Player)
             {
-                DropPlayer();
+                //DropPlayer();
             }
             else if (newHeldObj == HoldableType.Pushable)
             {
@@ -351,7 +351,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
             if (other.tag == "Player" && newHeldObj == HoldableType.None && timeOfThrow + 0.2f < Time.time)
             {
-                PickupPlayer(other);
+                //PickupPlayer(other);
                 return;
             }
         }
