@@ -175,7 +175,7 @@ public class GManager : NetworkBehaviour
 
     public void RegisterResettableObject(ResettableObject ro)
     {
-        ro.id = resettableObjects.Count;
+        ro.ID = resettableObjects.Count;
         resettableObjects.Add(ro);
         positionsOfResettableObjects.Add(ro.transform.position);
         rotationsOfResettableObjects.Add(ro.transform.rotation);
@@ -186,12 +186,12 @@ public class GManager : NetworkBehaviour
         // Cached object should become the resettable object reference
         if (isServer)
         {
-            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().id = id;
+            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
             resettableObjects[id] = serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
         }
         else
         {
-            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().id = id;
+            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
             resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
         }
     }
