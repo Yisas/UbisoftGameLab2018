@@ -15,11 +15,7 @@ public class CustomNetworkManager : NetworkManager
 #endif
 
         GetComponent<NetworkManagerHUD>().showGUI = false;
-        CmdActivateCanvas();
-        //GameObject.FindGameObjectWithTag("MenuUI").GetComponent<Canvas>().enabled = true;
-        GameObject[] menuList = GameObject.FindGameObjectsWithTag("MenuUI");
-        foreach (GameObject canvas in menuList)
-            canvas.GetComponent<Canvas>().enabled = true;
+        GameObject.FindGameObjectWithTag("MenuUI").GetComponent<Canvas>().enabled = true;
     }
 
     public override void OnClientConnect(NetworkConnection conn)
@@ -33,16 +29,5 @@ public class CustomNetworkManager : NetworkManager
 #endif
 
         GetComponent<NetworkManagerHUD>().showGUI = false;
-        //GameObject.FindGameObjectWithTag("MenuUI").SetActive(true);
-        //GameObject[] menuList = GameObject.FindGameObjectsWithTag("MenuUI");
-        //foreach (GameObject canvas in menuList)
-        //    canvas.GetComponent<Canvas>().enabled = true;
-
-    }
-
-    [Command]
-    private void CmdActivateCanvas()
-    {
-        GameObject.FindGameObjectWithTag("MenuUI").GetComponent<Canvas>().enabled = true;
     }
 }
