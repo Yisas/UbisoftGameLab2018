@@ -14,6 +14,7 @@ public class GManager : NetworkBehaviour
     public float blinkAlphaTresholdTop = 0.5f;
     public float blinkAlphaTresholdBottom = 0.05f;
     public int numberOfBlinks = 5; //flickering
+    public float maxTransparencyITV = 0.75f;
     public static float lastLevelFixedTime;
     public static GManager Instance;
     public bool resetPlayers = false;
@@ -175,7 +176,7 @@ public class GManager : NetworkBehaviour
 
     public void RegisterResettableObject(ResettableObject ro)
     {
-        ro.id = resettableObjects.Count;
+        ro.ID = resettableObjects.Count;
         resettableObjects.Add(ro);
         positionsOfResettableObjects.Add(ro.transform.position);
         rotationsOfResettableObjects.Add(ro.transform.rotation);
@@ -186,12 +187,12 @@ public class GManager : NetworkBehaviour
         // Cached object should become the resettable object reference
         if (isServer)
         {
-            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().id = id;
+            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
             resettableObjects[id] = serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
         }
         else
         {
-            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().id = id;
+            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
             resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
         }
     }
@@ -247,6 +248,7 @@ public class GManager : NetworkBehaviour
                 go.GetComponent<InvisibleToVisible2>().numberOfRegressions = numberOfBlinks;
                 go.GetComponent<InvisibleToVisible2>().delayToFadeInTime = currentLevelInvisibleTime;
                 go.GetComponent<InvisibleToVisible2>().FadeInTimeout = blinkTime;
+                go.GetComponent<InvisibleToVisible2>().maxTransparency = maxTransparencyITV;
             }
             else if (go.layer == layerNoSecretToPlayer)
             {
@@ -300,6 +302,25 @@ public class GManager : NetworkBehaviour
                     localPlayerID = 2;
             }
         }
+    }
+
+    public void NetworkedObjectDestroy(GameObject gameObjectToDestroy)
+    {
+        // Only destroy objects on the server
+        if (isServer)
+        {
+            NetworkServer.Destroy(gameObjectToDestroy);
+        }
+        else
+        {
+            CmdServerDestroy(gameObjectToDestroy);
+        }
+    }
+
+    [Command]
+    private void CmdServerDestroy(GameObject gameObjectToDestroy)
+    {
+        NetworkServer.Destroy(gameObjectToDestroy);
     }
 
     //--------------------------- NETWORKING HACKS ------------------------------------

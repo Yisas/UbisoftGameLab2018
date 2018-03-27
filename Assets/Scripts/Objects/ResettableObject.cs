@@ -8,7 +8,10 @@ public class ResettableObject : NetworkBehaviour
     // Particle effect that happens hen bumping into objects
     public GameObject bamParticleEffect;
     public float powCooldown;
-    public int id;
+
+    [SyncVar]
+    [SerializeField]
+    private int idInGameManager;
 
     //Properties
     private bool isMoved;
@@ -64,8 +67,8 @@ public class ResettableObject : NetworkBehaviour
 
     public void Reset(bool preventRespawnEffect = false)
     {
-        Vector3 ogPosition = GManager.Instance.GetPositionOfResettableObject(id);
-        Quaternion ogRotation = GManager.Instance.GetRotationOfResettableObject(id);
+        Vector3 ogPosition = GManager.Instance.GetPositionOfResettableObject(idInGameManager);
+        Quaternion ogRotation = GManager.Instance.GetRotationOfResettableObject(idInGameManager);
 
         if (transform.tag == "Pickup" && !preventRespawnEffect)
         {
@@ -97,14 +100,14 @@ public class ResettableObject : NetworkBehaviour
 
     private void OnDestroy()
     {
-        GManager.Instance.RegisterResettableObjectDestroyed(id, GetComponent<PickupableObject>().Type);
+        GManager.Instance.RegisterResettableObjectDestroyed(idInGameManager, GetComponent<PickupableObject>().Type);
     }
 
     public bool IsMoved
     {
         get
         {
-            if (Vector3.Distance(GManager.Instance.GetPositionOfResettableObject(id), transform.position) > distanceMovedThreshold)
+            if (Vector3.Distance(GManager.Instance.GetPositionOfResettableObject(idInGameManager), transform.position) > distanceMovedThreshold)
                 isMoved = true;
             else
                 isMoved = false;
@@ -126,8 +129,25 @@ public class ResettableObject : NetworkBehaviour
 
     public Vector3 OriginalPosition
     {
-        get { return GManager.Instance.GetPositionOfResettableObject(id); }
+        get { return GManager.Instance.GetPositionOfResettableObject(idInGameManager); }
     }
 
+    public int ID
+    {
+        get { return idInGameManager; }
 
+        set
+        {
+            idInGameManager = value;
+
+            if (!isServer)
+                CmdSetIdInGameManager(value);
+        }
+    }
+
+    [Command]
+    private void CmdSetIdInGameManager(int value)
+    {
+        idInGameManager = value;
+    }
 }

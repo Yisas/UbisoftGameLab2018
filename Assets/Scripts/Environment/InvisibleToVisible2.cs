@@ -21,6 +21,7 @@ public class InvisibleToVisible2 : MonoBehaviour
     public float regressionTresholdTop = 0.5f;
     public float regressionTresholdBottom = 0.05f;
     private bool isRegressingAlpha;
+    public float maxTransparency = 0.75f;
 
     public void Start()
     {
@@ -61,7 +62,7 @@ public class InvisibleToVisible2 : MonoBehaviour
 
     void FadeIn()
     {
-        if (m_Transparency < 1.0f)
+        if (m_Transparency < maxTransparency)
         {
             if (isStandard)
             {
@@ -73,16 +74,7 @@ public class InvisibleToVisible2 : MonoBehaviour
         }
         else
         {
-            if (isStandard)
-            {
-                StandardShaderUtils.ChangeRenderMode(GetComponent<Renderer>().material, StandardShaderUtils.BlendMode.Opaque);
-            }
-            // Reset the shader
-            GetComponent<Renderer>().material.shader = m_OldShader;
-            GetComponent<Renderer>().material.color = m_OldColor;
-            // And remove this script
-
-            Destroy(this);
+            return;
         }
 
         if (currentRegressions < numberOfRegressions)

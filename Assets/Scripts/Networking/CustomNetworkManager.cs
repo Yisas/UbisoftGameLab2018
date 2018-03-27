@@ -20,6 +20,7 @@ public class CustomNetworkManager : NetworkManager
 
     public override void OnClientConnect(NetworkConnection conn)
     {
+
         base.OnClientConnect(conn);
 
 #if UNITY_EDITOR

@@ -39,8 +39,7 @@ public class Ghost : Movable
     public MovementState movementState;
 
     // Internal values hidden from inspector   
-    [SyncVar]
-    public bool isCarryingObject;
+    internal bool isCarryingObject;
 
     //Scripts
     GhostObjectInteraction ghostObjectInteraction;
@@ -65,13 +64,12 @@ public class Ghost : Movable
     // Used for initialization
     void Start()
     {
-        cloth = GetComponentInChildren<Cloth>();
-        ghostObjectInteraction = gameObject.GetComponent<GhostObjectInteraction>();
-        pickupableList = new List<ResettableObject>();
-
         if (isServer)
         {
+            pickupableList = new List<ResettableObject>();
+            ghostObjectInteraction = gameObject.GetComponent<GhostObjectInteraction>();
             targetRotation = Vector3.zero;
+            cloth = GetComponentInChildren<Cloth>();
 
             floorCheckers = new Transform[floorChecks.childCount];
             for (int i = 0; i < floorCheckers.Length; i++)
@@ -82,17 +80,15 @@ public class Ghost : Movable
     // Update is called once per frame
     void Update()
     {
-        gatherInfo();
-
         if (isServer)
         {
+            gatherInfo();
             avoidWalls();
             updateState();
             move();
+            AddVelocityToCloth();
             isGrounded = checkIfGrounded();
         }
-
-        AddVelocityToCloth();
     }
 
     /*
@@ -101,16 +97,19 @@ public class Ghost : Movable
      */
     void OnTriggerStay(Collider collider)
     {
-        if (collider.tag == "Pickup")
+        if (isServer)
         {
-            ResettableObject pickupableObject = collider.GetComponent<ResettableObject>();
-            if (!isCarryingObject && pickupableObject == closestResettableObject)
+            if (collider.tag == "Pickup")
             {
-                ghostObjectInteraction.GrabObject(collider);
-                pickupableObject.GetComponent<Rigidbody>().useGravity = false;
-                collider.isTrigger = true;
-                carriedObject = pickupableObject;
-                isCarryingObject = true;
+                ResettableObject pickupableObject = collider.GetComponent<ResettableObject>();
+                if (!isCarryingObject && pickupableObject == closestResettableObject)
+                {
+                    ghostObjectInteraction.GrabObject(collider);
+                    pickupableObject.GetComponent<Rigidbody>().useGravity = false;
+                    collider.isTrigger = true;
+                    carriedObject = pickupableObject;
+                    isCarryingObject = true;
+                }
             }
         }
     }
