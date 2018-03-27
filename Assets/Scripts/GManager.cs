@@ -14,6 +14,7 @@ public class GManager : NetworkBehaviour
     public float blinkAlphaTresholdTop = 0.5f;
     public float blinkAlphaTresholdBottom = 0.05f;
     public int numberOfBlinks = 5; //flickering
+    public float maxTransparencyITV = 0.75f;
     public static float lastLevelFixedTime;
     public static GManager Instance;
     public bool resetPlayers = false;
@@ -247,6 +248,7 @@ public class GManager : NetworkBehaviour
                 go.GetComponent<InvisibleToVisible2>().numberOfRegressions = numberOfBlinks;
                 go.GetComponent<InvisibleToVisible2>().delayToFadeInTime = currentLevelInvisibleTime;
                 go.GetComponent<InvisibleToVisible2>().FadeInTimeout = blinkTime;
+                go.GetComponent<InvisibleToVisible2>().maxTransparency = maxTransparencyITV;
             }
             else if (go.layer == layerNoSecretToPlayer)
             {
