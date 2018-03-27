@@ -41,6 +41,7 @@ public class PlayerMove : NetworkBehaviour
     public float slopeLimit = 40, slideAmount = 35;         //maximum angle of slopes you can walk on, how fast to slide down slopes you can't
     public float movingPlatformFriction = 7.7f;             //you'll need to tweak this to get the player to stay on moving platforms properly
     private float maxVerticalVel = 15;
+    public bool canMove;
 
     //jumping
     public Vector3 jumpForce = new Vector3(0, 13, 0);       //normal jump force
@@ -95,6 +96,7 @@ public class PlayerMove : NetworkBehaviour
         }
 
         //usual setup
+        canMove = true;
         characterMotor = GetComponent<CharacterMotor>();
         rb = GetComponent<Rigidbody>();
         //gets child objects of floorcheckers, and puts them in an array
@@ -122,6 +124,8 @@ public class PlayerMove : NetworkBehaviour
                 mainCam.GetComponent<CameraFollow>().playerID = 2;
                 GManager.Instance.setInvisibleToVisibleWorld(GManager.invisiblePlayer2Layer, GManager.SeeTP1NonCollidable);
             }
+
+            GManager.Instance.NetworkingLevelReferencesSetup(this);
         }
     }
 
@@ -162,7 +166,7 @@ public class PlayerMove : NetworkBehaviour
         //get movement input, set direction to move in. Movement inputs stay at zero if you're being held, otherwise they get processed
         float horizontalInput = 0;
         float verticalInput = 0;
-        if (!isBeingHeld)
+        if (!isBeingHeld && canMove)
         {
             horizontalInput = Input.GetAxisRaw("Horizontal");
             verticalInput = Input.GetAxisRaw("Vertical");

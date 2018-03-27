@@ -29,7 +29,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1446609376261128
 GameObject:
   m_ObjectHideFlags: 0
@@ -39,14 +39,14 @@ GameObject:
   m_Component:
   - component: {fileID: 4650069532685406}
   - component: {fileID: 135853866578583592}
-  - component: {fileID: 114532361433401242}
+  - component: {fileID: 114442141725332664}
   m_Layer: 2
   m_Name: ButtonPromptTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1453090187069978
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,7 +140,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1994612877221726}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.6, y: 0.97, z: -108.21}
+  m_LocalPosition: {x: 2.5, y: 0.12, z: -10.3}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children:
   - {fileID: 4228784975557072}
@@ -202,7 +202,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1453090187069978}
-  m_Mesh: {fileID: 4300000, guid: 7382de3658f4d2740b8dc4d16e0524b6, type: 3}
+  m_Mesh: {fileID: 4300000, guid: a329489bf8e0adc40afff66dc350ee39, type: 3}
 --- !u!64 &64565088029478250
 MeshCollider:
   m_ObjectHideFlags: 1
@@ -458,9 +458,10 @@ MonoBehaviour:
   isOpen: 0
   target: {fileID: 0}
   isActive: 0
-  wires: []
-  onSound: {fileID: 82399312216394194}
-  offSound: {fileID: 82434772853667988}
+  wires:
+  - {fileID: 0}
+  lockAnim: {fileID: 0}
+  LockID: 1
 --- !u!114 &114079873438331028
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -501,7 +502,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 7ae8ce176098dfa44b263e498778228a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f891ed33762bb614f8c102ad2fa18d5d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -509,7 +510,7 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114532361433401242
+--- !u!114 &114442141725332664
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -517,17 +518,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1446609376261128}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7649da01531f883439f5efd284b2ba3c, type: 3}
+  m_Script: {fileID: 11500000, guid: 43c88029ea0575c469db7340429c9d92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Canvas_Junk: {fileID: 0}
   Canvas_PresurePlate: {fileID: 223137479529635214}
-  Canvas_Player_1: {fileID: 0}
-  Canvas_Player_2: {fileID: 0}
+  Canvas_Player: {fileID: 0}
   buttonprompt: 0
-  JumpImgP1: {fileID: 0}
-  InteractImgP1: {fileID: 0}
-  JumpImgP2: {fileID: 0}
-  InteractImgP2: {fileID: 0}
+  JumpImg: {fileID: 0}
+  InteractImg: {fileID: 0}
+  isBeingControlled: 0
 --- !u!114 &114549213508893214
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -582,7 +582,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9d630ed547e10948a4d32f531aa0442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 0}
 --- !u!135 &135853866578583592
 SphereCollider:
   m_ObjectHideFlags: 1

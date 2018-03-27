@@ -6,9 +6,6 @@ public class PressurePlateNew : DoorAnimatorBehaviour
 {
     public GameObject target;
     private Light myLight;
-    private float targetPositionStart;
-    private float targetPositionDown;
-    private float targetPosition;
     public bool isActive;
     public GameObject[] wires;
 
@@ -22,42 +19,20 @@ public class PressurePlateNew : DoorAnimatorBehaviour
     {
         myLight = GetComponent<Light>();
         myLight.enabled = false;
-        targetPositionStart = transform.position.y;
-        targetPositionDown = transform.position.y - 0.07f;
-        targetPosition = targetPositionStart;
         isActive = false;
-    }
-
-    void Update()
-    {
-        if (isActive && transform.position.y > targetPosition)
-        {
-            Vector3 position = transform.position;
-            position.y -= 0.005f;
-            transform.position = position;
-        }
-
-        if (!isActive && transform.position.y < targetPosition)
-        {
-            Vector3 position = transform.position;
-            position.y += 0.005f;
-            transform.position = position;
-        }
-
     }
 
     void LateUpdate()
     {
         //Disableing the lock animations once the main gate is open
         //I dont know if it need to be in late update, but it seems to work here..
-        if (target.GetComponent<Door>().lockStay && !isActive)
+        /*if (target.GetComponent<Door>().lockStay && !isActive)
         {
             lockAnim.enabled = false;
-        }
+        }*/
 
     }
 
-    // Pierre - Required to fix a bug with clones
     public void forceExit()
     {
         if (isActive)
@@ -65,7 +40,14 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             //Door[] doors = target.GetComponentsInChildren<Door>();
             //foreach (Door d in doors)
             //    d.DecCount();
-            targetPosition = targetPositionStart;
+            string animName = string.Concat("lock", LockID, "Open");
+            if (!lockAnim.IsPlaying(animName))
+            {
+                lockAnim[animName].time = lockAnim[animName].length;
+            }
+            lockAnim[animName].speed = (lockAnim.enabled) ? -1 : 1;
+            lockAnim.Play(animName);
+
             myLight.enabled = false;
             isActive = false;
 
@@ -78,6 +60,8 @@ public class PressurePlateNew : DoorAnimatorBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (target.GetComponent<Door>().isOpen) return;
+
         if (other.tag == "Player" || other.tag == "Pushable" || other.tag == "Pickup")
         {
             if (objectOnMe != null)
@@ -91,7 +75,10 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             }
 
             //Lock Opens
-            lockAnim.Play(string.Concat("lock", LockID, "Open"));
+            string animName = string.Concat("lock", LockID, "Open");
+            lockAnim[animName].speed = 1;
+            lockAnim.Play(animName);
+
             Open();
         }
 
@@ -108,12 +95,13 @@ public class PressurePlateNew : DoorAnimatorBehaviour
     {
         if (!isOpen)
         {
-            targetPosition = targetPositionDown;
             myLight.enabled = true;
             isActive = true;
 
             //Lock Opens
-            lockAnim.Play(string.Concat("lock", LockID, "Open"));
+            string animName = string.Concat("lock", LockID, "Open");
+            lockAnim[animName].speed = 1;
+            lockAnim.Play(animName);
 
             AkSoundEngine.PostEvent("PlateOn", gameObject);
 
@@ -121,7 +109,10 @@ public class PressurePlateNew : DoorAnimatorBehaviour
 
             Door[] doors = target.GetComponentsInChildren<Door>();
             foreach (Door d in doors)
+            {
                 d.DecCount();
+                if (d.isOpen) Destroy(this);
+            }
         }
     }
 
@@ -148,12 +139,18 @@ public class PressurePlateNew : DoorAnimatorBehaviour
                 objectOnMe = null;
             }
 
-            targetPosition = targetPositionStart;
             myLight.enabled = false;
             isActive = false;
 
-            //Player leave the plate the lock closes          
-            lockAnim.Play(string.Concat("lock", LockID, "Close"));
+            //Player leave the plate the lock closes      
+            string animName = string.Concat("lock", LockID, "Open");
+            if (!lockAnim.IsPlaying(animName))
+            {
+                lockAnim[animName].time = lockAnim[animName].length;
+            }
+            lockAnim[animName].speed = (lockAnim.enabled && !target.GetComponent<Door>().isOpen) ? -1 : 1;
+            lockAnim.Play(animName);
+            //lockAnim.Play(string.Concat("lock", LockID, "Close"));
 
             SetClosed();
             AkSoundEngine.PostEvent("PlateOff", gameObject);

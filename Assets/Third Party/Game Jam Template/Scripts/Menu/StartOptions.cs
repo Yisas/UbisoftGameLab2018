@@ -12,8 +12,11 @@ public class StartOptions : NetworkBehaviour {
 	public bool changeMusicOnStart;										//Choose whether to continue playing menu music or start a new music clip
     public CanvasGroup fadeOutImageCanvasGroup;                         //Canvas group used to fade alpha of image which fades in before changing scenes
     public Image fadeImage;                                             //Reference to image used to fade out before changing scenes
+    public float fadeOutTime = 0.6f;                                           // Amount of time for the screen to fade out
+    public float fullFadeTime = 0.5f;                                          // Amount of time for screen to stay dark
+    public float fadeInTime = 1f;                                             // Amount of time for screen to fade back in
 
-	[HideInInspector] public bool inMainMenu = true;					//If true, pause button disabled in main menu (Cancel in input manager, default escape key)
+    [HideInInspector] public bool inMainMenu = true;					//If true, pause button disabled in main menu (Cancel in input manager, default escape key)
 	[HideInInspector] public AnimationClip fadeAlphaAnimationClip;		//Animation clip fading out UI elements alpha
 
 
@@ -94,7 +97,6 @@ public class StartOptions : NetworkBehaviour {
     {
         //Use invoke to delay calling of LoadDelayed by half the length of fadeColorAnimationClip
         //Invoke("LoadDelayed", menuSettingsData.menuFadeTime);
-
         StartCoroutine(FadeCanvasGroupAlpha(0f, 1f, fadeOutImageCanvasGroup));
     }
 
@@ -109,6 +111,8 @@ public class StartOptions : NetworkBehaviour {
     {
         if (!isServer)
             return;
+
+        RpcActivateCanvas();
 
         //If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic
         //To change fade time, change length of animation "FadeToColor"
@@ -239,6 +243,56 @@ public class StartOptions : NetworkBehaviour {
         Debug.Log("Coroutine done. Game started in same scene! Put your game starting stuff here.");
     }
 
+    // Fades the camera out, stays dark for a small time, then fades it back in. The player cannot move during this time
+    public void FadeOutThenIn(PlayerMove player)
+    {
+        StartCoroutine(FadeOutThenInRoutine(0f, 1f, fadeOutImageCanvasGroup, player));
+    }
+
+    public IEnumerator FadeOutThenInRoutine(float startAlpha, float endAlpha, CanvasGroup canvasGroupToFadeAlpha, PlayerMove player, bool destroy = false )
+    {
+        // Stop player movement
+        player.canMove = false;
+        float elapsedTime = 0f;
+        float totalDuration = menuSettingsData.menuFadeTime;
+
+        // Fade the screen out
+        while (elapsedTime < fadeOutTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float currentAlpha = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / fadeOutTime);
+            canvasGroupToFadeAlpha.alpha = currentAlpha;
+            yield return null;
+        }
+
+        elapsedTime = 0f;
+
+        // Maintain darkness for a small amount of time
+        while (elapsedTime < fullFadeTime)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Allow the player to move again as soon as screen begins turning visible 
+        elapsedTime = 0f;
+        player.canMove = true;
+
+        // Fade the screen back in
+        while (elapsedTime < fadeInTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float currentAlpha = Mathf.Lerp(endAlpha, startAlpha, elapsedTime / fadeInTime);
+            canvasGroupToFadeAlpha.alpha = currentAlpha;
+            yield return null;
+        }
+
+        HideDelayed();
+        if (destroy)
+            Destroy(gameObject);
+        Debug.Log("Coroutine done. Game started in same scene! Put your game starting stuff here.");
+    }
+
 
     public void PlayNewMusic()
 	{
@@ -247,4 +301,10 @@ public class StartOptions : NetworkBehaviour {
 		//Play second music clip from MenuSettings
 		playMusic.PlaySelectedMusic (menuSettingsData.musicLoopToChangeTo);
 	}
+
+    [ClientRpc]
+    private void RpcActivateCanvas()
+    {
+        GetComponent<Canvas>().enabled = true;
+    }
 }

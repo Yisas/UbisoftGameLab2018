@@ -9,14 +9,15 @@ public class ResettableObject : NetworkBehaviour
     public GameObject bamParticleEffect;
     public float powCooldown;
 
+    [SyncVar]
+    [SerializeField]
+    private int idInGameManager;
+
     //Properties
-    private Vector3 ogPosition;
-    private Quaternion ogRotation;
     private bool isMoved;
     private bool isOnPressurePlate;
     [SyncVar]
     private bool isBeingHeld;
-    private bool usesGravity = true;
     private bool isTrigger;
 
     private float currentPowCooldown;
@@ -27,10 +28,6 @@ public class ResettableObject : NetworkBehaviour
     // Use this for initialization
     void Start()
     {
-        ogPosition = transform.position;
-        ogRotation = transform.rotation;
-        usesGravity = GetComponent<Rigidbody>().useGravity;
-
         Collider col = GetComponent<Collider>();
         if (col)
             isTrigger = GetComponent<Collider>().isTrigger;
@@ -61,24 +58,37 @@ public class ResettableObject : NetworkBehaviour
     {
         // If a resettable object bumps into something then make a 'pow' particle effect
         if (currentPowCooldown > powCooldown && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
-            && other.gameObject.layer != 2 /*ignore raycast*/ && !isBeingHeld)
+            && other.gameObject.layer != 2 /*ignore raycast*/ && !isBeingHeld && other.collider.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
         {
-            Instantiate(bamParticleEffect, transform.position + transform.forward * 0.5f + transform.up, transform.rotation);
+            Instantiate(bamParticleEffect, transform.position + transform.forward * 0.3f + transform.up, transform.rotation);
             currentPowCooldown = 0;
         }
     }
 
     public void Reset(bool preventRespawnEffect = false)
     {
-        if(transform.tag == "Pickup" && !preventRespawnEffect)
+        Vector3 ogPosition = GManager.Instance.GetPositionOfResettableObject(idInGameManager);
+        Quaternion ogRotation = GManager.Instance.GetRotationOfResettableObject(idInGameManager);
+
+        if (transform.tag == "Pickup" && !preventRespawnEffect)
         {
-            Vector3 positionToSpawnAt = new Vector3(ogPosition.x, ogPosition.y - GetComponent<MeshRenderer>().bounds.extents.y, ogPosition.z);
+            MeshRenderer meshRenderer;
+            if (GetComponent<MeshRenderer>() != null)
+                meshRenderer = GetComponent<MeshRenderer>();
+            else
+                meshRenderer = GetComponentInChildren<MeshRenderer>();
+
+            Vector3 positionToSpawnAt = new Vector3(ogPosition.x, ogPosition.y - meshRenderer.bounds.extents.y, ogPosition.z);
 
             GManager.Instance.TriggerRespawnThrowableEffect(positionToSpawnAt);
         }
 
         GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-        GetComponent<Rigidbody>().useGravity = usesGravity;
+
+        // If a torch, turn off gravity
+        PickupableObject pickup = GetComponent<PickupableObject>();
+        if (pickup)
+            GetComponent<Rigidbody>().useGravity = (pickup.Type == PickupableObject.PickupableType.Torch) ? false : true;
 
         Collider col = GetComponent<Collider>();
         if (col)
@@ -88,11 +98,16 @@ public class ResettableObject : NetworkBehaviour
         transform.rotation = ogRotation;
     }
 
+    private void OnDestroy()
+    {
+        GManager.Instance.RegisterResettableObjectDestroyed(idInGameManager, GetComponent<PickupableObject>().Type);
+    }
+
     public bool IsMoved
     {
         get
         {
-            if (Vector3.Distance(ogPosition, transform.position) > distanceMovedThreshold)
+            if (Vector3.Distance(GManager.Instance.GetPositionOfResettableObject(idInGameManager), transform.position) > distanceMovedThreshold)
                 isMoved = true;
             else
                 isMoved = false;
@@ -114,8 +129,25 @@ public class ResettableObject : NetworkBehaviour
 
     public Vector3 OriginalPosition
     {
-        get { return ogPosition; }
+        get { return GManager.Instance.GetPositionOfResettableObject(idInGameManager); }
     }
 
+    public int ID
+    {
+        get { return idInGameManager; }
 
+        set
+        {
+            idInGameManager = value;
+
+            if (!isServer)
+                CmdSetIdInGameManager(value);
+        }
+    }
+
+    [Command]
+    private void CmdSetIdInGameManager(int value)
+    {
+        idInGameManager = value;
+    }
 }
