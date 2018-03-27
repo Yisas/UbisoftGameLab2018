@@ -32,6 +32,7 @@ public class Door : DoorAnimatorBehaviour
         {
             SetOpen();
             lockStay = true;
+            Portal.Instance.enableRays();
             //if(doorStaysOpen)
             //{
             //    displayTest.enabled = false;
@@ -54,7 +55,6 @@ public class Door : DoorAnimatorBehaviour
 
         if (pressedCount >=  pressurePlateCount)
         {
-            Portal.Instance.enableRays();
             pressedCount = pressurePlateCount;
         }
     }
