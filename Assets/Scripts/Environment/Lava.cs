@@ -47,7 +47,7 @@ public class Lava : MonoBehaviour
 
                 playerObjectInteraction.HideFakeObject();
 
-                GManager.Instance.ResetCachedObject(playerObjectInteraction.HeldObjType);
+                other.GetComponent<PlayerGameManagerCommunicators>().CmdResetCachedObject(playerObjectInteraction.HeldObjType);
             }
         }
     }
