@@ -26,10 +26,10 @@ public class PressurePlateNew : DoorAnimatorBehaviour
     {
         //Disableing the lock animations once the main gate is open
         //I dont know if it need to be in late update, but it seems to work here..
-        if (target.GetComponent<Door>().lockStay && !isActive)
+        /*if (target.GetComponent<Door>().lockStay && !isActive)
         {
             lockAnim.enabled = false;
-        }
+        }*/
 
     }
 
@@ -60,6 +60,8 @@ public class PressurePlateNew : DoorAnimatorBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (target.GetComponent<Door>().isOpen) return;
+
         if (other.tag == "Player" || other.tag == "Pushable" || other.tag == "Pickup")
         {
             if (objectOnMe != null)
@@ -107,7 +109,10 @@ public class PressurePlateNew : DoorAnimatorBehaviour
 
             Door[] doors = target.GetComponentsInChildren<Door>();
             foreach (Door d in doors)
+            {
                 d.DecCount();
+                if (d.isOpen) Destroy(this);
+            }
         }
     }
 
@@ -143,7 +148,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             {
                 lockAnim[animName].time = lockAnim[animName].length;
             }
-            lockAnim[animName].speed = (lockAnim.enabled) ? -1 : 1;
+            lockAnim[animName].speed = (lockAnim.enabled && !target.GetComponent<Door>().isOpen) ? -1 : 1;
             lockAnim.Play(animName);
             //lockAnim.Play(string.Concat("lock", LockID, "Close"));
 
