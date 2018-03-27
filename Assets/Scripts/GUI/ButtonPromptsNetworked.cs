@@ -204,7 +204,6 @@ public class ButtonPromptsNetworked : MonoBehaviour
                
                 if (gameObject.name == "PushablePromptTrigger" || gameObject.name == "PickupPromptTrigger" || gameObject.name == "PlayerButtonPrompt")
                 {
-                    Debug.Log("Here...1");
                     Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
                     
                     //NetworkIdentity gameObjectNetID = gameObject.GetComponentInParent<NetworkIdentity>();
