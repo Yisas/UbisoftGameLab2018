@@ -124,6 +124,8 @@ public class PlayerMove : NetworkBehaviour
                 mainCam.GetComponent<CameraFollow>().playerID = 2;
                 GManager.Instance.setInvisibleToVisibleWorld(GManager.invisiblePlayer2Layer, GManager.SeeTP1NonCollidable);
             }
+
+            GManager.Instance.NetworkingLevelReferencesSetup(this);
         }
     }
 

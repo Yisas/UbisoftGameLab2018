@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using
-UnityEngine.UI;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class buttonPrompt : MonoBehaviour
 {
-
+    [SerializeField]
+    Canvas Canvas_Junk;
     [SerializeField]
     Canvas Canvas_PresurePlate;
     [SerializeField]
@@ -14,7 +14,7 @@ public class buttonPrompt : MonoBehaviour
     [SerializeField]
     Canvas Canvas_Player_2;
 
-    public enum ButtonPromptOn { pressureplate, player }
+    public enum ButtonPromptOn { pressureplate, junk, player }
     public ButtonPromptOn buttonprompt;
 
     public Image JumpImgP1;
@@ -36,6 +36,7 @@ public class buttonPrompt : MonoBehaviour
         JumpImgP2.enabled = false;
         InteractImgP2.enabled = false;
 
+        Canvas_Junk.enabled = false;
         Canvas_PresurePlate.enabled = false;
         Canvas_Player_1.enabled = false;
         Canvas_Player_2.enabled = false;
@@ -65,20 +66,6 @@ public class buttonPrompt : MonoBehaviour
     {
         if (buttonprompt == ButtonPromptOn.pressureplate)  // If the prompt is appearing above the preasure plate
         {
-            /**
-            if (Player1.GetComponent<PlayerMove>().IsHoldingPickup)
-            {
-                Canvas_PresurePlate.gameObject.layer = 12;  //"Invisible Player 2 Layer
-            }
-
-            if (Player2.GetComponent<PlayerMove>().IsHoldingPickup)
-            {
-                Canvas_PresurePlate.gameObject.layer = 9;   //"Invisible Player 1 Layer"
-            }
-
-            Canvas_PresurePlate.enabled = true;
-        }*/
-
             if (player.IsHoldingPickup == true) //Checking to see if a player is holding a Pickupable block
             {
                 if (playerID == 1)
@@ -92,6 +79,18 @@ public class buttonPrompt : MonoBehaviour
                 Canvas_PresurePlate.enabled = true;
             }
 
+        }
+        else if(buttonprompt == ButtonPromptOn.junk)
+        {
+            if (playerID == 1)
+            {
+                Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 2");  //"Invisible Player 2 Layer"                    
+            }
+            if (playerID == 2)
+            {
+                Canvas_Junk.gameObject.layer = LayerMask.NameToLayer("Invisible Player 1");   //"Invisible Player 1 Layer"
+            }
+            Canvas_Junk.enabled = true;
         }
         else if (buttonprompt == ButtonPromptOn.player)
         {
@@ -163,12 +162,6 @@ public class buttonPrompt : MonoBehaviour
                         Canvas_Player_1.enabled = false;
                         isBeingControlled = false;
                     }
-                    //dont think we need this else
-                    /*else 
-                    {
-                        Debug.Log("P1: 5");
-                        Canvas_Player_1.enabled = true;
-                    }*/
                 }
 
                 if (playerID == 2)
@@ -191,18 +184,16 @@ public class buttonPrompt : MonoBehaviour
                         Canvas_Player_2.enabled = false;
                         isBeingControlled = false;
                     }
-                    //dont think we need this else
-                    /*else
-                    {
-                        Debug.Log("P2: 5");
-                        Canvas_Player_2.enabled = true;
-                    }*/
                 }
             }
         }
     }
     private void TurnOffPrompt()
     {
+        if (buttonprompt == ButtonPromptOn.junk)
+        {
+            Canvas_Junk.enabled = false;
+        }
         if (buttonprompt == ButtonPromptOn.pressureplate)
         {
             Canvas_PresurePlate.enabled = false;

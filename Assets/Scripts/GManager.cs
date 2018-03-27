@@ -257,6 +257,25 @@ public class GManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// After player has been spawned, setup references on environmental objects
+    /// </summary>
+    public void NetworkingLevelReferencesSetup(PlayerMove playerSpawned)
+    {
+        /*if (playerSpawned.isLocalPlayer)
+        {
+            Debug.Log("HELLO?");
+            Destroy(playerSpawned.GetComponentInChildren<PromptCanvasRotate>().gameObject);
+            Destroy(playerSpawned.GetComponentInChildren<ButtonPromptsNetworked>());
+            return;
+        }*/
+        ButtonPromptsNetworked[] buttonPrompts = GameObject.FindObjectsOfType<ButtonPromptsNetworked>();
+        foreach (ButtonPromptsNetworked bp in buttonPrompts)
+        {
+            bp.NetworkPlayerPromptReferenceStart(playerSpawned.transform.GetComponentInChildren<Canvas>());
+        }
+    }
+
     public void TriggerRespawnThrowableEffect(Vector3 position)
     {
         GameObject.Instantiate(respawnPickupEffect, position, Quaternion.Euler(90, 0, 0));
