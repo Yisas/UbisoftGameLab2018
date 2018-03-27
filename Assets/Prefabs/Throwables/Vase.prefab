@@ -108,7 +108,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1174809156514424}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -18.795885, y: 1.4224741, z: 12.081325}
+  m_LocalPosition: {x: 3.537672, y: 4.65, z: -121.56181}
   m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children:
   - {fileID: 224467926399460890}
@@ -130,7 +130,7 @@ MeshRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 4a31a72b425b0ab4789c3bea158e72eb, type: 3}
+  - {fileID: 2100000, guid: 7bfb5b19ebefa3444bf71d67eb99770b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -156,7 +156,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1174809156514424}
-  m_Mesh: {fileID: 4300000, guid: 4a31a72b425b0ab4789c3bea158e72eb, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 1c53193c9ccbecb4bbea10876be2a60d, type: 3}
 --- !u!54 &54744276988268022
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -324,7 +324,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bamParticleEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 2}
   powCooldown: 0.75
-  id: 0
+  idInGameManager: 0
 --- !u!114 &114576894269887592
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -54,6 +54,7 @@ public class Door : DoorAnimatorBehaviour
 
         if (pressedCount >=  pressurePlateCount)
         {
+            Portal.Instance.enableRays();
             pressedCount = pressurePlateCount;
         }
     }
