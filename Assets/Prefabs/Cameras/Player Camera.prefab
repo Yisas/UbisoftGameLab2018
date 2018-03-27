@@ -11,11 +11,12 @@ GameObject:
   - component: {fileID: 2000000}
   - component: {fileID: 9200000}
   - component: {fileID: 12400000}
-  - component: {fileID: 8100000}
   - component: {fileID: 11400000}
   - component: {fileID: 4500000}
   - component: {fileID: 114878356331518064}
   - component: {fileID: 114124582072186660}
+  - component: {fileID: 114910721479103654}
+  - component: {fileID: 114254281682996210}
   m_Layer: 17
   m_Name: Player Camera
   m_TagString: MainCamera
@@ -68,7 +69,7 @@ Camera:
   m_HDR: 0
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
+  m_ForceIntoRT: 1
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
@@ -80,13 +81,6 @@ Skybox:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_CustomSkybox: {fileID: 0}
---- !u!81 &8100000
-AudioListener:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
 --- !u!92 &9200000
 Behaviour:
   m_ObjectHideFlags: 1
@@ -117,12 +111,8 @@ MonoBehaviour:
   closeUpMultiplier: 0.4
   verticalOffsetMultiplier: 10
   layersToSeeThrough:
-  - SeeThrough
-  - Default
-  - SeeTP1NonCollidable
-  - SeeTP2NonCollidable
-  - Invisible Player 1
-  - Invisible Player 2
+    serializedVersion: 2
+    m_Bits: 3412481
   reboundBack: 0
   zoomingOutTarget: {x: 0, y: -1, z: 0}
   zoomingInTarget: {x: 0, y: 1, z: 0}
@@ -175,6 +165,27 @@ MonoBehaviour:
   _ditherDepth: 0
   _daltonize: 0
   isDirty: 0
+--- !u!114 &114254281682996210
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 096fe6ca3e5df1945a3810e4f24764c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_listeners:
+    initialListenerList: []
+    useDefaultListeners: 1
+  isEnvironmentAware: 0
+  isStaticObject: 0
+  m_positionOffsetData:
+    KeepMe: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+  m_posOffsetData: {fileID: 0}
+  listenerMask: 1
 --- !u!114 &114878356331518064
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -232,3 +243,16 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &114910721479103654
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cee5de4c01387847a498e40ce5b88eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDefaultListener: 1
+  listenerId: 0

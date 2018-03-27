@@ -22,8 +22,7 @@ public class CameraFollow : MonoBehaviour
 
     private float startingTargetY;
     private Transform backCameraPosition;                       // Over the shoulder position of the camera for when the player is push/pulling blocks
-    public string[] layersToSeeThrough;
-    private int layerMaskSeeThrough;
+    public LayerMask layersToSeeThrough;
 
     private bool isZoomingIn;
     private bool isZoomingOut;
@@ -52,9 +51,6 @@ public class CameraFollow : MonoBehaviour
         defTargetOffset = targetOffset;
         startingTargetY = target.position.y;
 
-        foreach (string layer in layersToSeeThrough)
-            layerMaskSeeThrough |= 1 << LayerMask.NameToLayer(layer);
-
         defyAxisPeakTilt = yAxisPeakTilt;
 
         if (!target)
@@ -76,7 +72,7 @@ public class CameraFollow : MonoBehaviour
 
             // you can also use CapsuleCastAll()
             // TODO: setup your layermask it improve performance and filter your hits.
-            hits = Physics.RaycastAll(transform.position - transform.forward, transform.forward, distanceToPLayer, layerMaskSeeThrough);
+            hits = Physics.RaycastAll(transform.position - transform.forward, transform.forward, distanceToPLayer, layersToSeeThrough);
             foreach (RaycastHit hit in hits)
             {
                 if (startingTargetY > hit.point.y
