@@ -518,6 +518,48 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Event Name="level_complete" ID="{0B75560E-8E98-4F46-95CA-C251C8104979}">
+					<ChildrenList>
+						<Action Name="" ID="{23492C83-4ADA-4EA5-83E8-65E6604C4EF6}" ShortID="76147011">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="EXCLAMATION_Male_B_WoahahahaYes_01_mono" ID="{23277031-C298-4E05-86CD-A84C515D2A3B}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Folder Name="Ghost" ID="{580BB5B7-F7DA-46EF-89F2-208A7ECD558D}" ShortID="527865893">
+					<ChildrenList>
+						<Event Name="ghost_laugh" ID="{A620B980-DC34-47AA-BD8A-DEA5EE139DCD}">
+							<ChildrenList>
+								<Action Name="" ID="{BF73E611-7270-4F7D-82B6-5EC43E4872CA}" ShortID="417571201">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Ghost_Laugh" ID="{08467D41-351B-491F-BD50-0718BA548267}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="ghost_ambiance" ID="{4D668F67-2B3C-4C65-BB22-762B48DEAC5D}">
+							<ChildrenList>
+								<Action Name="" ID="{7CA7E9E7-BB62-4B42-B1B6-77E150AACC0E}" ShortID="530479790">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList/>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

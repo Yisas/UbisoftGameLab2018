@@ -14,9 +14,10 @@ public class SceneTransitionTrigger : MonoBehaviour {
             GameObject menu = GameObject.FindGameObjectWithTag("MenuUI");
             if(menu != null)
             {
+                // Level complete commented out becaues it gets cut off as scene transitions
+                //AkSoundEngine.PostEvent("level_complete", gameObject);
                 menu.GetComponent<StartOptions>().NextScene();
 
-                AkSoundEngine.PostEvent("LevelComplete", gameObject);
                 foreach(Transform child in transform)
                 {
                     child.gameObject.SetActive(true);

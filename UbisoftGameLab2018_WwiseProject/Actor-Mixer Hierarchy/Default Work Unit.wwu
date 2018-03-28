@@ -646,6 +646,17 @@
 						</BlendContainer>
 						<BlendContainer Name="button_activate" ID="{E2211E4E-F7AF-430A-B2A5-0826E8527C64}" ShortID="176156317">
 							<PropertyList>
+								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
 										<Value>3</Value>
@@ -727,10 +738,21 @@
 							<ChildrenList>
 								<RandomSequenceContainer Name="slide" ID="{FE2727A8-047E-47EB-B58D-AC4A4053421C}" ShortID="965512982">
 									<PropertyList>
+										<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+										<Property Name="MaxSoundPerInstance" Type="int16">
+											<ValueList>
+												<Value>1</Value>
+											</ValueList>
+										</Property>
 										<Property Name="PlayMechanismSpecialTransitions" Type="bool" Value="True"/>
 										<Property Name="PlayMechanismSpecialTransitionsValue" Type="Real64" Value="0.3"/>
 										<Property Name="PlayMechanismStepOrContinuous" Type="int16" Value="0"/>
 										<Property Name="RandomOrSequence" Type="int16" Value="0"/>
+										<Property Name="UseMaxSoundPerInstance" Type="bool">
+											<ValueList>
+												<Value>True</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
@@ -789,6 +811,20 @@
 									</Playlist>
 								</RandomSequenceContainer>
 								<Sound Name="slide_end" ID="{04E42275-5CAF-4DDD-803C-551270DE149E}" ShortID="337974404">
+									<PropertyList>
+										<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
+										<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+										<Property Name="MaxSoundPerInstance" Type="int16">
+											<ValueList>
+												<Value>1</Value>
+											</ValueList>
+										</Property>
+										<Property Name="UseMaxSoundPerInstance" Type="bool">
+											<ValueList>
+												<Value>True</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -823,7 +859,6 @@
 					<ChildrenList>
 						<BlendContainer Name="footsteps" ID="{3EE0308A-942F-4B15-8E33-9193A4A53C52}" ShortID="53096087">
 							<PropertyList>
-								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
 								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
 								<Property Name="MaxSoundPerInstance" Type="int16">
 									<ValueList>
@@ -1201,7 +1236,6 @@
 						</BlendContainer>
 						<BlendContainer Name="thump" ID="{B33B946A-9EFF-4343-97B7-0169EC62E039}" ShortID="181072227">
 							<PropertyList>
-								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
 								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
 								<Property Name="MaxSoundPerInstance" Type="int16">
 									<ValueList>
@@ -1686,6 +1720,19 @@
 				<Folder Name="Sounds" ID="{A55FBD5B-F8BB-470D-9FDB-9C3FCE421A7B}" ShortID="1072215793">
 					<ChildrenList>
 						<Sound Name="EXCLAMATION_Male_B_WoahahahaYes_01_mono" ID="{23277031-C298-4E05-86CD-A84C515D2A3B}" ShortID="885600681">
+							<PropertyList>
+								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1705,6 +1752,19 @@
 							</ActiveSourceList>
 						</Sound>
 						<Sound Name="Ghost_Laugh" ID="{08467D41-351B-491F-BD50-0718BA548267}" ShortID="381478841">
+							<PropertyList>
+								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1763,7 +1823,6 @@
 						</Sound>
 						<Sound Name="AppearObject" ID="{3094E5C8-D780-4609-95A8-8F5FE231865F}" ShortID="506975592">
 							<PropertyList>
-								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
 								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
 								<Property Name="MaxSoundPerInstance" Type="int16">
 									<ValueList>
@@ -1891,7 +1950,6 @@
 						</Sound>
 						<Sound Name="Pickup" ID="{F62F8064-B2F8-4A74-BE3B-4E91454966CD}" ShortID="870526144">
 							<PropertyList>
-								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
 								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
 								<Property Name="MaxSoundPerInstance" Type="int16">
 									<ValueList>
@@ -1962,7 +2020,6 @@
 						</Sound>
 						<Sound Name="Throw" ID="{9580EF69-DB34-4967-8208-318B996DBFA8}" ShortID="662092424">
 							<PropertyList>
-								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
 								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
 								<Property Name="MaxSoundPerInstance" Type="int16">
 									<ValueList>
