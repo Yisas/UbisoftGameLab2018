@@ -36,7 +36,6 @@ public class GManager : NetworkBehaviour
     public GameObject[] clientAuthorityCachedObjects = new GameObject[4];
 
     private int localPlayerID;
-    [SyncVar]
     private bool clientsConnected = false;
 
     private List<ResettableObject> resettableObjects = new List<ResettableObject>();
@@ -143,15 +142,27 @@ public class GManager : NetworkBehaviour
             currentLevelTime += Time.deltaTime;
         }
 
-        if ((isServer && !clientsConnected && GetComponent<NetworkIdentity>().observers.Count == 2) ||
-            /*Duck tape condition for racing condition on players not appearing in the scene during this call. Very bad code. I'm sorry.*/
-            (clientsConnected && resettableObjects.Count <= 3))
+        if ((isServer && !clientsConnected && GetComponent<NetworkIdentity>().observers.Count == 2))
         {
             clientsConnected = true;
 
-            CommonRegisterAllResettableObjects();
+            FindPlayers();
 
-            RpcRegisterAllResettableObjects();
+            if (player1 && player2)
+            {
+                // Make sure to register players first
+                RegisterResettableObject(player1.GetComponent<ResettableObject>());
+                RegisterResettableObject(player2.GetComponent<ResettableObject>());
+
+                // Register resettable objects positions
+                foreach (ResettableObject ro in GameObject.FindObjectsOfType<ResettableObject>())
+                {
+                    if (ro.tag != "Player")
+                        RegisterResettableObject(ro);
+                }
+            }
+
+            RpcRegisterAllResettableObjects(resettableObjects);
 
             // Spawn cached objects
             for (int i = 0; i < spawnableInteractableObjects.Length; i++)
@@ -160,31 +171,9 @@ public class GManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcRegisterAllResettableObjects()
+    private void RpcRegisterAllResettableObjects(List<ResettableObject> resettableObjects)
     {
-        if (!isServer)
-        {
-            CommonRegisterAllResettableObjects();
-        }
-    }
-
-    private void CommonRegisterAllResettableObjects()
-    {
-        FindPlayers();
-
-        if (player1 && player2)
-        {
-            // Make sure to register players first
-            RegisterResettableObject(player1.GetComponent<ResettableObject>());
-            RegisterResettableObject(player2.GetComponent<ResettableObject>());
-
-            // Register resettable objects positions
-            foreach (ResettableObject ro in GameObject.FindObjectsOfType<ResettableObject>())
-            {
-                if (ro.tag != "Player")
-                    RegisterResettableObject(ro);
-            }
-        }
+        this.resettableObjects = resettableObjects;
     }
 
     public void RegisterResettableObject(ResettableObject ro)
