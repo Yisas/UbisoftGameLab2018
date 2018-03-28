@@ -305,7 +305,10 @@ public class PlayerObjectInteraction : NetworkBehaviour
     [Command]
     private void CmdSetPlayerAuthorityToHeldObject(NetworkIdentity clientToReceiveAuthority, NetworkIdentity netIdentityOfObj)
     {
-        GManager.Instance.SetPlayerAuthorityToHeldObject(clientToReceiveAuthority, netIdentityOfObj);
+        if (clientToReceiveAuthority && netIdentityOfObj)
+            GManager.Instance.SetPlayerAuthorityToHeldObject(clientToReceiveAuthority, netIdentityOfObj);
+        else
+            Debug.LogWarning("Null reference at CmdSetPlayerAuthority");
     }
 
     //pickup/grab

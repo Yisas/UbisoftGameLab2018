@@ -47,12 +47,6 @@ public class ResettableObject : NetworkBehaviour
         // If a resettable object touches the deadzone then it will be reset to its original position.
         if (other.gameObject.layer == LayerMask.NameToLayer("Deadzone"))
         {
-            if (gameObject.CompareTag("Player"))
-            {
-                PlayerObjectInteraction playerInteraction = gameObject.GetComponent<PlayerObjectInteraction>();
-                if (playerInteraction != null && playerInteraction.heldObj != null)
-                    playerInteraction.DropPickup();
-            }
             Reset();
         }
     }
