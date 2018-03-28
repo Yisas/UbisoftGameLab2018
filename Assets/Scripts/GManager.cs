@@ -190,9 +190,15 @@ public class GManager : NetworkBehaviour
     public void RegisterResettableObject(ResettableObject ro)
     {
         ro.ID = resettableObjects.Count;
-        resettableObjects.Add(ro);
-        positionsOfResettableObjects.Add(ro.transform.position);
-        rotationsOfResettableObjects.Add(ro.transform.rotation);
+
+        if (!resettableObjects.Contains(ro))
+            resettableObjects.Add(ro);
+
+        if (!positionsOfResettableObjects.Contains(ro.transform.position))
+            positionsOfResettableObjects.Add(ro.transform.position);
+
+        if (!rotationsOfResettableObjects.Contains(ro.transform.rotation))
+            rotationsOfResettableObjects.Add(ro.transform.rotation);
     }
 
     public void RegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
