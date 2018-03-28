@@ -472,6 +472,52 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Folder Name="Objects" ID="{A006A73D-B81B-4494-9B32-E59D6E7A4DFC}" ShortID="386191749">
+					<ChildrenList>
+						<Event Name="appear_object" ID="{3AA2F313-AF72-4F0C-BF7C-B78B952C6269}">
+							<ChildrenList>
+								<Action Name="" ID="{24DB18E0-58DC-4F7A-B2D2-C0864788CA56}" ShortID="853450482">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="AppearObject" ID="{3094E5C8-D780-4609-95A8-8F5FE231865F}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="throw" ID="{E7C5C9DF-9055-4E5B-A040-D618836741A8}">
+							<ChildrenList>
+								<Action Name="" ID="{6E622C47-A3D9-4A3C-A999-45599DABD493}" ShortID="26364895">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Throw" ID="{9580EF69-DB34-4967-8208-318B996DBFA8}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="pickup" ID="{73311CF7-BA47-4880-AEFB-DD530217CE2A}">
+							<ChildrenList>
+								<Action Name="" ID="{81BE96AC-4021-4290-B39C-408DCE5BA76D}" ShortID="465538455">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="Pickup" ID="{F62F8064-B2F8-4A74-BE3B-4E91454966CD}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

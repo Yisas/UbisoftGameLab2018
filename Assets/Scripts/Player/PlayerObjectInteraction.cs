@@ -277,12 +277,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
             {
                 if (ao.playerToAppearTo == playerMove.PlayerID)
                 {
-                    AkSoundEngine.PostEvent("AppearObject", gameObject);
+                    AkSoundEngine.PostEvent("appear_object", gameObject);
                 }
             }
             else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
             {
-                AkSoundEngine.PostEvent("BoxCollide", gameObject);
+                AkSoundEngine.PostEvent("impact_thump", gameObject);
             }
         }
 
@@ -522,6 +522,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (!Physics.CheckSphere(other.position, checkRadius, LayerMask.NameToLayer("Ignore Raycast")))
         {
+            AkSoundEngine.PostEvent("pickup", gameObject);
             // Only destroy objects on the server
             if (isServer)
             {
@@ -881,7 +882,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void CommonThrowPickup()
     {
-        AkSoundEngine.PostEvent("Throw", gameObject);
+        AkSoundEngine.PostEvent("throw", gameObject);
 
         GameObject throwableToSpawn = null;
         if (isLocalPlayer)
@@ -1032,8 +1033,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private void AddJoint()
     {
         if (heldObj)
-        {
-            AkSoundEngine.PostEvent("Pickup", gameObject);
+        {            
 
             if (joint)
             {
