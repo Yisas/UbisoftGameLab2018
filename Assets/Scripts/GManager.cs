@@ -233,7 +233,7 @@ public class GManager : NetworkBehaviour
             if (isServer)
                 clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
             else
-                SetIdOfClientAuthorityCachedObjects(id, type);
+                CmdSetIdOfClientAuthorityCachedObjects(id, type);
 
                 resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
         }
@@ -253,7 +253,7 @@ public class GManager : NetworkBehaviour
     }
 
     [Command]
-    private void SetIdOfClientAuthorityCachedObjects(int id, PickupableObject.PickupableType type)
+    private void CmdSetIdOfClientAuthorityCachedObjects(int id, PickupableObject.PickupableType type)
     {
         clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
     }
