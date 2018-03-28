@@ -103,7 +103,7 @@ public class ResettableObject : NetworkBehaviour
 
     private void OnDestroy()
     {
-        GManager.Instance.RegisterResettableObjectDestroyed(idInGameManager, GetComponent<PickupableObject>().Type);
+        //GManager.Instance.RegisterResettableObjectDestroyed(idInGameManager, GetComponent<PickupableObject>().Type);
     }
 
     public bool IsMoved

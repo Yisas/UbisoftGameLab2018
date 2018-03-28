@@ -416,6 +416,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
             CmdServerDestroy(other.gameObject);
         }
 
+        // Register about to destroy with game manager to keep resettable object position on the next cached object
+        GManager.Instance.RegisterResettableObjectDestroyed(other.GetComponent<ResettableObject>().ID, other.GetComponent<PickupableObject>().Type);
+
         timeOfPickup = Time.time;
         newHeldObj = HoldableType.Pushable;
         ShowFakeObject(PickupableObject.PickupableType.BigBox);
@@ -531,6 +534,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
             {
                 CmdServerDestroy(other.gameObject);
             }
+
+            // Register as destroyed with gamemanager to set other cache to be this resettable
+            GManager.Instance.RegisterResettableObjectDestroyed(other.GetComponent<ResettableObject>().ID, other.GetComponent<PickupableObject>().Type);
 
             CommonLiftPickup(type);
 

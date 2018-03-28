@@ -110,7 +110,6 @@ public class GManager : NetworkBehaviour
         if (isServer)
             return;
 
-        Debug.Log("HERE");
         clientAuthorityCachedObjects[(int)type] = go;
         clientAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = false;
         clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().wasSpawnedByGameManager = (true);
