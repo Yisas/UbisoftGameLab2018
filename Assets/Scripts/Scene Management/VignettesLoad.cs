@@ -25,32 +25,27 @@ public class VignettesLoad : NetworkBehaviour
         //start playing the audio narration?
     }
 
-    private void LAteUpdate()
-    {
-       
-    }
-
     private void Update()
     {
         if (StartTimer())
         {
             Fade.SetFadeOut(true);
         }
-        if (Fade.GetHasFadedOut())
-        {
-            GameObject menu = GameObject.FindGameObjectWithTag("MenuUI");
-            if (menu != null)
-            {
-                menu.GetComponent<StartOptions>().NextScene();
+        //if (Fade.GetHasFadedOut())
+        //{
+        //    GameObject menu = GameObject.FindGameObjectWithTag("MenuUI");
+        //    if (menu != null)
+        //    {
+        //        menu.GetComponent<StartOptions>().NextScene();
 
-                foreach (Transform child in transform)
-                {
-                    child.gameObject.SetActive(true);
-                }
+        //        foreach (Transform child in transform)
+        //        {
+        //            child.gameObject.SetActive(true);
+        //        }
 
-                this.enabled = false;
-            }
-        }
+        //        this.enabled = false;
+        //    }
+        //}
     }
 
 

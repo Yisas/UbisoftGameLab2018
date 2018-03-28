@@ -322,47 +322,19 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1002747429043256, guid: dcd76364469916345969dfbad9848046, type: 2}
-      propertyPath: m_Name
-      value: FadeInOut Image
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396466819781014, guid: dcd76364469916345969dfbad9848046, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1579525291465896, guid: dcd76364469916345969dfbad9848046, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224401688320125216, guid: dcd76364469916345969dfbad9848046,
-        type: 2}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 224162583999755048, guid: dcd76364469916345969dfbad9848046,
-        type: 2}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 114105171261666180, guid: dcd76364469916345969dfbad9848046,
         type: 2}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1579525291465896, guid: dcd76364469916345969dfbad9848046, type: 2}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114160799354717676, guid: dcd76364469916345969dfbad9848046,
         type: 2}
       propertyPath: Timer
       value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 114471832611235436, guid: dcd76364469916345969dfbad9848046,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114160799354717676, guid: dcd76364469916345969dfbad9848046,
-        type: 2}
-      propertyPath: Vignette
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: dcd76364469916345969dfbad9848046, type: 2}
@@ -548,11 +520,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!224 &1469542536 stripped
-RectTransform:
-  m_PrefabParentObject: {fileID: 224849412820266018, guid: dcd76364469916345969dfbad9848046,
-    type: 2}
-  m_PrefabInternal: {fileID: 338584148}
 --- !u!1001 &1528472664
 Prefab:
   m_ObjectHideFlags: 0
@@ -654,12 +621,12 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1649927537}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -400, y: -166.35802, z: 0}
-  m_LocalScale: {x: 0.61728394, y: 0.61728394, z: 0.61728394}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1469542536}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1871991761
 GameObject:
