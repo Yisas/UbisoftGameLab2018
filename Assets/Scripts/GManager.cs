@@ -202,6 +202,8 @@ public class GManager : NetworkBehaviour
         {
             serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
             resettableObjects[id] = serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
+            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
+            resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
         }
         else
         {
