@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class VignettesLoad : NetworkBehaviour
 {
-    public Image Vignette;
+   // public Image Vignette;
+   // public VideoPlayer Video;
+
     public float Timer = 30;
 
     private LoadScene Fade;
