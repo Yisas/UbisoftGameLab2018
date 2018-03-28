@@ -41,6 +41,7 @@ public class GhostObjectInteraction : NetworkBehaviour
 
     public void GrabObject(Collider other)
     {
+        AkSoundEngine.PostEvent("ghost_laugh", gameObject);
         GManager.Instance.NetworkedObjectDestroy(other.gameObject);
         newHeldObj = PlayerObjectInteraction.HoldableType.Pickup;
         ShowFakeObject(other.GetComponent<PickupableObject>().Type);
@@ -79,7 +80,6 @@ public class GhostObjectInteraction : NetworkBehaviour
     {
         if (heldObj)
         {
-            AkSoundEngine.PostEvent("GhostLaugh", gameObject);
             joint = heldObj.AddComponent<FixedJoint>();
             joint.connectedBody = GetComponent<Rigidbody>();
             heldObj.layer = gameObject.layer;

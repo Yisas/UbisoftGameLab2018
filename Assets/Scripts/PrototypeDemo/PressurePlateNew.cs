@@ -51,7 +51,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             myLight.enabled = false;
             isActive = false;
 
-            AkSoundEngine.PostEvent("PlateOff", gameObject);
+            AkSoundEngine.PostEvent("button_activate", gameObject);
 
             SetClosed();
         }
@@ -103,7 +103,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             lockAnim[animName].speed = 1;
             lockAnim.Play(animName);
 
-            AkSoundEngine.PostEvent("PlateOn", gameObject);
+            AkSoundEngine.PostEvent("button_activate", gameObject);
 
             SetOpen();
 
@@ -153,7 +153,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             //lockAnim.Play(string.Concat("lock", LockID, "Close"));
 
             SetClosed();
-            AkSoundEngine.PostEvent("PlateOff", gameObject);
+            AkSoundEngine.PostEvent("button_activate", gameObject);
 
             Door[] doors = target.GetComponentsInChildren<Door>();
             foreach (Door d in doors)
