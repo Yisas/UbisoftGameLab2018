@@ -41,7 +41,14 @@ public class GhostObjectInteraction : NetworkBehaviour
 
     public void GrabObject(Collider other)
     {
-        GManager.Instance.NetworkedObjectDestroy(other.gameObject);
+        // Only destroy objects on the server
+        if (isServer)
+        {
+            NetworkServer.Destroy(other.gameObject);
+            // Register about to destroy with game manager to keep resettable object position on the next cached object
+            GManager.Instance.RegisterResettableObjectDestroyed(other.GetComponent<ResettableObject>().ID, other.GetComponent<PickupableObject>().Type, true);
+        }
+
         newHeldObj = PlayerObjectInteraction.HoldableType.Pickup;
         ShowFakeObject(other.GetComponent<PickupableObject>().Type);
     }

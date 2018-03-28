@@ -230,8 +230,12 @@ public class GManager : NetworkBehaviour
         else
         {
             Debug.Log("objectDestroyedInClient");
-            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
-            resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
+            if (isServer)
+                clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
+            else
+                SetIdOfClientAuthorityCachedObjects(id, type);
+
+                resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
         }
     }
 
@@ -246,6 +250,12 @@ public class GManager : NetworkBehaviour
     private void CmdRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type, bool objectDestroyedInServer)
     {
         CommonRegisterResettableObjectDestroyed(id, type, objectDestroyedInServer);
+    }
+
+    [Command]
+    private void SetIdOfClientAuthorityCachedObjects(int id, PickupableObject.PickupableType type)
+    {
+        clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
     }
 
     public void DeRegisterResettableObject(ResettableObject ro)
