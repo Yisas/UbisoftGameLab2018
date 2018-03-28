@@ -30,13 +30,6 @@ public class ButtonPromptsNetworked : MonoBehaviour
     PlayerMove player;
     int lastPlayerID;
     int playerID;
-    NetworkIdentity playerNetID;    //NOTE: Instead we should use the PlayerMove player and get the player.isLocalPlayer??
-                                    //ATM: The code uses playerNetID--might be redunant though
-
-    public bool isBeingControlled/* = false*/;
-
-
-    ResettableObject isBeingHeld;
 
     private void Awake()
     {
@@ -61,8 +54,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
 
     void Start()
     {
-        //We do not see the prompts above the Pressureplate and Junk items at the start of the game
-        
+        //We do not see the prompts above the Pressureplate and Junk items at the start of the game        
         if (Canvas_Junk != null)
         {
             Canvas_Junk.enabled = false;
@@ -106,7 +98,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
         }
     }
 
-    //TRIGGERS ARE HERE
+    #region Triggers
     void OnTriggerStay(Collider other)
     {
         if (other.tag == "Player")
@@ -119,7 +111,6 @@ public class ButtonPromptsNetworked : MonoBehaviour
             }
 
             playerID = other.gameObject.GetComponent<PlayerMove>().PlayerID;
-            playerNetID = other.GetComponentInParent<NetworkIdentity>();    //Getting the players network identity...
             TurnOnPrompt();
         }
     }
@@ -139,6 +130,8 @@ public class ButtonPromptsNetworked : MonoBehaviour
             TurnOffPrompt();
         }
     }
+
+    #endregion
 
     public void TurnOnPrompt()
     {
@@ -181,9 +174,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
                     InteractImg.enabled = true;
                 }
             }
-            
-            //REQUIRES SOME TYPE OF FIX-- THE CONDITIONS ARE NOT BEING STATISFIED BY THE PLAYER INDUVIDUALLY eg. isBeingHeld
-            isBeingHeld = gameObject.GetComponentInParent<ResettableObject>();
+                        
             if (buttonprompt == ButtonPromptOn.player)
             {
                
