@@ -45,6 +45,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private Color gizmoColor;
     private PlayerMove otherPlayer = null;
 
+    //Audio
+    public float crateSoundSpeedThreshold;
+
     // State attributes
     private float timeOfPickup, timeOfThrow, defRotateSpeed;
 
@@ -255,6 +258,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
         }
 
+        // Play box slide sound if the held object is pushable and player is moving
+        if (newHeldObj == HoldableType.Pushable && characterMotor.currentSpeed.magnitude > crateSoundSpeedThreshold)
+            AkSoundEngine.PostEvent("slide_start", gameObject);
+        else 
+            AkSoundEngine.PostEvent("slide_start_stop", gameObject);
         checkIfBoxIsHanging();
     }
     #endregion

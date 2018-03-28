@@ -67,6 +67,7 @@ public class GhostObjectInteraction : NetworkBehaviour
         }
         else
         {
+            AkSoundEngine.PostEvent("torch_place", gameObject);
             throwableToSpawn.GetComponent<Rigidbody>().useGravity = false;
             throwableToSpawn.GetComponent<Collider>().isTrigger = true;
         }

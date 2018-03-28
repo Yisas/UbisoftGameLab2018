@@ -27,11 +27,12 @@ public class PushableObject : MonoBehaviour
             // TODO if heldObj type is pushable and character motor direction is > 1 but tweek the value
             //if (Mathf.Abs((transform.position - lastPosition).magnitude) >= dragNoisePlayThreshold)
             //{
-                AkSoundEngine.PostEvent("slide_start", gameObject);
+                
             //}
 
             lastPosition = transform.position;
         }
+        
     }
 
     public void ToggleIsBeingPushed()
@@ -52,6 +53,7 @@ public class PushableObject : MonoBehaviour
         {
             //rb.constraints = RigidbodyConstraints.FreezeAll;
             rb.mass = 100;
+            AkSoundEngine.PostEvent("slide_start_stop", gameObject);
             AkSoundEngine.PostEvent("slide_stop", gameObject);
         }
         else

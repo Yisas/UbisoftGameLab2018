@@ -213,16 +213,6 @@
 										</Reference>
 									</ReferenceList>
 								</Action>
-								<Action Name="" ID="{F96DBF35-F3E1-4954-8D87-1BEE78FD9165}" ShortID="1045517817">
-									<PropertyList>
-										<Property Name="ActionType" Type="int16" Value="1"/>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="Target">
-											<ObjectRef Name="music1" ID="{E2BA654E-EBDA-4938-ABA3-F11B6F0AA52A}" WorkUnitID="{99215BE4-7688-4C9B-9471-2A3A6F032358}"/>
-										</Reference>
-									</ReferenceList>
-								</Action>
 							</ChildrenList>
 						</Event>
 						<Event Name="cs_level1_stop" ID="{817C536B-2606-4D05-854B-EC494B46CCFB}">
@@ -560,6 +550,21 @@
 						</Event>
 					</ChildrenList>
 				</Folder>
+				<Event Name="slide_start_stop" ID="{46D44D08-48F1-420E-AEDF-9AA257E07BBF}">
+					<ChildrenList>
+						<Action Name="" ID="{5DF54674-E216-4760-B671-E87C2F4F1436}" ShortID="985400865">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+								<Property Name="Delay" Type="Real64" Value="0.25"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="slide" ID="{FE2727A8-047E-47EB-B58D-AC4A4053421C}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

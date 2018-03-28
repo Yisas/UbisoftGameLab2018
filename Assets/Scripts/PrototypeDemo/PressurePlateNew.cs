@@ -78,6 +78,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             string animName = string.Concat("lock", LockID, "Open");
             lockAnim[animName].speed = 1;
             lockAnim.Play(animName);
+            AkSoundEngine.PostEvent("door_woodslide", gameObject);
 
             Open();
         }
