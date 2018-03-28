@@ -27,7 +27,6 @@ public class Lava : MonoBehaviour
             }
 
             // Deactivate camera follow
-            int playerID = other.GetComponent<PlayerMove>().PlayerID;
 
             cameraFollow = Camera.main.GetComponent<CameraFollow>();
             cameraFollow.enabled = false;
@@ -47,7 +46,7 @@ public class Lava : MonoBehaviour
 
                 playerObjectInteraction.HideFakeObject();
 
-                GManager.Instance.ResetCachedObject(playerObjectInteraction.HeldObjType);
+                other.GetComponent<PlayerGameManagerCommunicators>().CmdResetCachedObject(playerObjectInteraction.HeldObjType);
             }
         }
     }

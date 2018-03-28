@@ -68,6 +68,18 @@ public class LoadScene : MonoBehaviour {
             FadeOut = false;
             Debug.Log("Herre.." + FadeOut);
         }
+        GameObject menu = GameObject.FindGameObjectWithTag("MenuUI");
+        if (menu != null)
+        {
+            menu.GetComponent<StartOptions>().NextScene();
+
+            foreach (Transform child in transform)
+            {
+                child.gameObject.SetActive(true);
+            }
+
+            this.enabled = false;
+        }
     }
 
     void FadeToClear()

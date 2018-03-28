@@ -32,6 +32,7 @@ public class Door : DoorAnimatorBehaviour
         {
             SetOpen();
             lockStay = true;
+            Portal.Instance.enableRays();
             //if(doorStaysOpen)
             //{
             //    displayTest.enabled = false;

@@ -4,17 +4,15 @@ using UnityEngine.EventSystems;
 
 public class ShowPanels : MonoBehaviour {
 
-	public GameObject optionsPanel;							//Store a reference to the Game Object OptionsPanel 
-	public GameObject optionsTint;							//Store a reference to the Game Object OptionsTint 
+	//public GameObject optionsPanel;							//Store a reference to the Game Object OptionsPanel 
+	//public GameObject optionsTint;							//Store a reference to the Game Object OptionsTint 
 	public GameObject menuPanel;							//Store a reference to the Game Object MenuPanel 
-	public GameObject pausePanel;                           //Store a reference to the Game Object PausePanel 
-    public GameObject creditPanel;
+	//public GameObject pausePanel;                           //Store a reference to the Game Object PausePanel 
+    //public GameObject creditPanel;
 
     private GameObject activePanel;                         
     private MenuObject activePanelMenuObject;
     private EventSystem eventSystem;
-
-
 
     private void SetSelection(GameObject panelToSetSelected)
     {
@@ -32,6 +30,7 @@ public class ShowPanels : MonoBehaviour {
         SetSelection(menuPanel);
     }
 
+    /*
     //Call this function to activate and display the Credit panel during the main menu
     public void ShowCreditPanel()
     {
@@ -66,6 +65,7 @@ public class ShowPanels : MonoBehaviour {
         optionsPanel.SetActive(false);
 		optionsTint.SetActive(false);
 	}
+    */
 
 	//Call this function to activate and display the main menu panel during the main menu
 	public void ShowMenu()
@@ -81,6 +81,7 @@ public class ShowPanels : MonoBehaviour {
 
 	}
 	
+    /*
 	//Call this function to activate and display the Pause panel during game play
 	public void ShowPausePanel()
 	{
@@ -96,4 +97,5 @@ public class ShowPanels : MonoBehaviour {
 		optionsTint.SetActive(false);
 
 	}
+    */
 }
