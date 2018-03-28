@@ -329,6 +329,8 @@ GameObject:
   - component: {fileID: 54302311295314138}
   - component: {fileID: 114061427982321016}
   - component: {fileID: 114669757899866290}
+  - component: {fileID: 114609591019911502}
+  - component: {fileID: 114202042740144846}
   m_Layer: 0
   m_Name: Ghost
   m_TagString: Untagged
@@ -1405,6 +1407,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ghost: {fileID: 114261684740536138}
+--- !u!114 &114202042740144846
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1861875874469952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 096fe6ca3e5df1945a3810e4f24764c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_listeners:
+    initialListenerList: []
+    useDefaultListeners: 1
+  isEnvironmentAware: 1
+  isStaticObject: 0
+  m_positionOffsetData:
+    KeepMe: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+  m_posOffsetData: {fileID: 0}
+  listenerMask: 1
 --- !u!114 &114261684740536138
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1472,6 +1495,28 @@ MonoBehaviour:
   - {fileID: 1997881336458496}
   - {fileID: 1727037435380066}
   - {fileID: 1139402694268930}
+--- !u!114 &114609591019911502
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1861875874469952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfa7915e901982a4ab8c2b77df4284b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerList: f7e1664c
+  useOtherObject: 0
+  actionOnEventType: 0
+  curveInterpolation: 4
+  enableActionOnEvent: 0
+  eventID: -164602120
+  m_callbackData: {fileID: 0}
+  playingId: 0
+  soundEmitterObject: {fileID: 1861875874469952}
+  transitionDuration: 0
+  valueGuid: 385ec4bc2ee32d429fefcfd9941e62e4
 --- !u!114 &114669757899866290
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1487,7 +1532,7 @@ MonoBehaviour:
   m_SendInterval: 0.033333335
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
-  m_SyncSpin: 0
+  m_SyncSpin: 1
   m_MovementTheshold: 0.001
   m_VelocityThreshold: 0.0001
   m_SnapThreshold: 5

@@ -54,9 +54,11 @@
 									</RTPCList>
 								</Property>
 								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+								<Property Name="OverridePositioning" Type="bool" Value="True"/>
+								<Property Name="PositioningType" Type="int16" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>5</Value>
+										<Value>12</Value>
 									</ValueList>
 									<RTPCList>
 										<RTPC Name="" ID="{8A240C3B-8149-4DFD-BEFA-4FB7BECD79D8}" ShortID="885902161">
@@ -92,6 +94,9 @@
 								</Property>
 							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="volcano_attenuation" ID="{07ABDBCE-5E7A-4F18-ADD2-6E0C11D7F0D4}" WorkUnitID="{7D2384A9-B907-4BD8-B36F-E7CD3A2C7A15}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
 								</Reference>
@@ -112,7 +117,12 @@
 						<Sound Name="fire_loop" ID="{5670DF2C-17E9-41CF-B040-E6BCB62D0CFF}" ShortID="798008920">
 							<PropertyList>
 								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+								<Property Name="OverridePositioning" Type="bool" Value="True"/>
+								<Property Name="PositioningType" Type="int16" Value="1"/>
 								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>5</Value>
+									</ValueList>
 									<RTPCList>
 										<RTPC Name="" ID="{EAF505D2-B8EA-4C20-BC82-165FA184C877}" ShortID="767047438">
 											<ReferenceList>
@@ -147,6 +157,9 @@
 								</Property>
 							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="torch_attenuation" ID="{0E5A71D7-C7D2-44A3-9DE8-8AE740521D22}" WorkUnitID="{7D2384A9-B907-4BD8-B36F-E7CD3A2C7A15}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
 								</Reference>
@@ -205,9 +218,11 @@
 										</RTPC>
 									</RTPCList>
 								</Property>
+								<Property Name="OverridePositioning" Type="bool" Value="True"/>
+								<Property Name="PositioningType" Type="int16" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
-										<Value>-6</Value>
+										<Value>-3</Value>
 									</ValueList>
 									<RTPCList>
 										<RTPC Name="" ID="{2350771B-5586-448F-9E54-09888C16B9EF}" ShortID="69650119">
@@ -243,6 +258,9 @@
 								</Property>
 							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="ghost_attenuation" ID="{EBA4BF65-4565-4374-826B-F3B9898D58C9}" WorkUnitID="{7D2384A9-B907-4BD8-B36F-E7CD3A2C7A15}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
 								</Reference>
@@ -1764,6 +1782,11 @@
 										<Value>True</Value>
 									</ValueList>
 								</Property>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-10</Value>
+									</ValueList>
+								</Property>
 							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
@@ -2292,6 +2315,25 @@
 										<ActiveSource Name="jump_man_voice" ID="{2E7E5E3D-4A95-4610-92C0-8ADD33F5EA10}" Platform="Linked"/>
 									</ActiveSourceList>
 								</Sound>
+								<Sound Name="ObjectDrop" ID="{7A8D6A0A-E472-4DFD-852E-605E32B2F0FD}" ShortID="273301504">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="ObjectDrop" ID="{8C565E7C-ECD2-4896-B073-90D8F6015D5D}" ShortID="938527642">
+											<Language>SFX</Language>
+											<AudioFile>ObjectDrop.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="ObjectDrop" ID="{8C565E7C-ECD2-4896-B073-90D8F6015D5D}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
 							</ChildrenList>
 						</Folder>
 						<Sound Name="DRAG_Wooden_Box" ID="{653E4285-50E2-472D-B4E4-EDC82AD7D5CE}" ShortID="429232239">
@@ -2368,6 +2410,116 @@
 							</ChildrenList>
 							<ActiveSourceList>
 								<ActiveSource Name="SCRAPE_Concrete_Slab_on_Concrete_Slab_Long_mono" ID="{9CDF6D54-CD0A-4F80-924A-511F632F7CBB}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="portal" ID="{FA8B87CC-A2AE-41B8-997E-ABB799FE451B}" ShortID="144779258">
+							<PropertyList>
+								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+								<Property Name="PositioningType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="portal_attenuation" ID="{827076F7-5D28-4845-AA7D-52954C01C67F}" WorkUnitID="{7D2384A9-B907-4BD8-B36F-E7CD3A2C7A15}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="portal" ID="{D2426AAB-C42C-4C1F-B548-F6E0F52A2286}" ShortID="917565479">
+									<Language>SFX</Language>
+									<AudioFile>portal.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="portal" ID="{D2426AAB-C42C-4C1F-B548-F6E0F52A2286}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="drop" ID="{987C4BC9-F66B-42DA-93E7-FFB3ECA8A18B}" ShortID="1015589656">
+							<PropertyList>
+								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="drop" ID="{0D82EA98-55BA-439C-A154-260664C19E9E}" ShortID="1041777728">
+									<Language>SFX</Language>
+									<AudioFile>drop.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="drop" ID="{0D82EA98-55BA-439C-A154-260664C19E9E}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="LavaSink" ID="{A51C6FE3-8EF5-489C-AA63-0AE3D9FCA537}" ShortID="1019478521">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-11</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="LavaSink" ID="{E4E9A213-06F8-4404-91CB-E843C9FB6B2E}" ShortID="919748671">
+									<Language>SFX</Language>
+									<AudioFile>LavaSink.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="LavaSink" ID="{E4E9A213-06F8-4404-91CB-E843C9FB6B2E}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="ItemRespawn" ID="{D4E0886E-115D-43D4-AED5-EED31EE0110D}" ShortID="294384895">
+							<PropertyList>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-2</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="ItemRespawn" ID="{33D3A1FF-50E3-4461-B2C0-3337DEC716D3}" ShortID="575089149">
+									<Language>SFX</Language>
+									<AudioFile>ItemRespawn.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="ItemRespawn" ID="{33D3A1FF-50E3-4461-B2C0-3337DEC716D3}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
 					</ChildrenList>

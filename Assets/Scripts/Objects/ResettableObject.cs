@@ -62,7 +62,11 @@ public class ResettableObject : NetworkBehaviour
         {
             Instantiate(bamParticleEffect, transform.position + transform.forward * 0.3f + transform.up, transform.rotation);
             currentPowCooldown = 0;
+            
         }
+        if(other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
+            && other.gameObject.layer != 2 /*ignore raycast*/ && !isBeingHeld && !gameObject.CompareTag("Player"))
+            AkSoundEngine.PostEvent("drop", gameObject);
     }
 
     public void Reset(bool preventRespawnEffect = false)
@@ -81,6 +85,7 @@ public class ResettableObject : NetworkBehaviour
             Vector3 positionToSpawnAt = new Vector3(ogPosition.x, ogPosition.y - meshRenderer.bounds.extents.y, ogPosition.z);
 
             GManager.Instance.TriggerRespawnThrowableEffect(positionToSpawnAt);
+            AkSoundEngine.PostEvent("item_respawn", gameObject);
         }
 
         GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);

@@ -14,6 +14,7 @@ public class Portal : MonoBehaviour {
 
     public void enableRays()
     {
+        // play portal sound      
         rays.SetActive(true);
     }
 

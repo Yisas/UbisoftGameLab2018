@@ -506,6 +506,20 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="drop" ID="{48C33799-A51C-4F7F-8CF3-F786D2962515}">
+							<ChildrenList>
+								<Action Name="" ID="{12ABFBD6-8963-4FDF-8B76-68878282FB50}" ShortID="1066343147">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="ObjectDrop" ID="{7A8D6A0A-E472-4DFD-852E-605E32B2F0FD}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 				<Event Name="level_complete" ID="{0B75560E-8E98-4F46-95CA-C251C8104979}">
@@ -560,6 +574,90 @@
 							<ReferenceList>
 								<Reference Name="Target">
 									<ObjectRef Name="slide" ID="{FE2727A8-047E-47EB-B58D-AC4A4053421C}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="torch_environment" ID="{821DBAC7-AACF-44C7-AE2A-C60BC6CC2166}">
+					<ChildrenList>
+						<Action Name="" ID="{00719ABE-EBAC-4260-99C3-F4B7DD537EA2}" ShortID="28690052">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="fire_loop" ID="{5670DF2C-17E9-41CF-B040-E6BCB62D0CFF}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="lava_environment" ID="{98946860-DC43-47F8-89F5-1F315CE2BB96}">
+					<ChildrenList>
+						<Action Name="" ID="{306CA6B4-3E72-4C27-8017-F27E8FAA195D}" ShortID="48105412">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="volcano_loop" ID="{78A3A953-DAF6-41E2-9404-0F836D108E59}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="ghost_environment" ID="{BCC45E38-E32E-422D-9FEF-CFD9941E62E4}">
+					<ChildrenList>
+						<Action Name="" ID="{BBF5FC0A-712C-40A8-9A52-21CB119A6CDA}" ShortID="902823809">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="ghost_loop" ID="{BC886650-2157-408A-92FD-3B9FD6BE19E7}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="portal" ID="{F65AFA3B-C3BB-4090-A52A-6E6526A4CFC6}">
+					<ChildrenList>
+						<Action Name="" ID="{2604DAE7-3F83-4F25-9807-F9428CE8EE33}" ShortID="504636719">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="portal" ID="{FA8B87CC-A2AE-41B8-997E-ABB799FE451B}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="lava_sink" ID="{700FBFB8-B568-49F2-A642-BB04D4DC6C08}">
+					<ChildrenList>
+						<Action Name="" ID="{3D2D7290-E421-4BCB-A794-7E37D2B3542D}" ShortID="925753407">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="LavaSink" ID="{A51C6FE3-8EF5-489C-AA63-0AE3D9FCA537}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="item_respawn" ID="{101F2EFB-416E-40F6-9B3D-58D94DE6D33A}">
+					<ChildrenList>
+						<Action Name="" ID="{5063660E-7C10-410C-8284-3D87A1DD1615}" ShortID="657119487">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="ItemRespawn" ID="{D4E0886E-115D-43D4-AED5-EED31EE0110D}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>

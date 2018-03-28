@@ -59,6 +59,7 @@ public class Lava : MonoBehaviour
             Vector3 particlePosition = other.transform.position;
             particlePosition.y = transform.position.y + lavaParticleHeight;
             Instantiate(lavaSinkParticles, particlePosition, transform.rotation);
+            AkSoundEngine.PostEvent("lava_sink", gameObject);
 
             // Fade out camera
             if (menu != null)
