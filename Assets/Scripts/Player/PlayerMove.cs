@@ -230,7 +230,7 @@ public class PlayerMove : NetworkBehaviour
         // Adding footsteps audio GGJ2018:
         if (grounded && GetComponent<Rigidbody>().velocity.magnitude > 0)
         {
-            AkSoundEngine.PostEvent("Footsteps", gameObject);
+            AkSoundEngine.PostEvent("fs_walk", gameObject);
         }
     }
 
@@ -352,7 +352,7 @@ public class PlayerMove : NetworkBehaviour
         //play landing sound
         if (groundedCount < landingSoundLength && groundedCount != 0 && GetComponent<Rigidbody>().velocity.y < 1)
         {
-            AkSoundEngine.PostEvent("PlayerLand", gameObject);
+            AkSoundEngine.PostEvent("impact_thump", gameObject);
         }
         
         //if we press jump in the air, save the time
@@ -388,7 +388,7 @@ public class PlayerMove : NetworkBehaviour
             return;
         }
 
-        AkSoundEngine.PostEvent("Jump", gameObject);
+        //AkSoundEngine.PostEvent("Jump", gameObject);
 
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddRelativeForce(jumpVelocity, ForceMode.Impulse);
