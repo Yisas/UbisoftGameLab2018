@@ -27,11 +27,23 @@ public class Portal : MonoBehaviour {
                 return;
             }
 
-            // Deactivate camera follow
-            int playerID = other.GetComponent<PlayerMove>().PlayerID;
-
             if (Camera.main.GetComponent<CameraFollow>())
                 Camera.main.GetComponent<CameraFollow>().enabled = false;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            // Do nothing if not local player
+            if (!other.GetComponent<UnityEngine.Networking.NetworkIdentity>().isLocalPlayer)
+            {
+                return;
+            }
+
+            if (Camera.main.GetComponent<CameraFollow>())
+                Camera.main.GetComponent<CameraFollow>().enabled = true;
         }
     }
 
