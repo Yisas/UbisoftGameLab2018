@@ -411,13 +411,13 @@ public class PlayerObjectInteraction : NetworkBehaviour
         {
             NetworkServer.Destroy(other.gameObject);
             // Register about to destroy with game manager to keep resettable object position on the next cached object
-            GManager.Instance.RegisterResettableObjectDestroyed(other.GetComponent<ResettableObject>().ID, other.GetComponent<PickupableObject>().Type);
+            GManager.Instance.RegisterResettableObjectDestroyed(other.GetComponent<ResettableObject>().ID, other.GetComponent<PickupableObject>().Type, true);
         }
         else
         {
             CmdServerDestroy(other.gameObject);
             // Register about to destroy with game manager to keep resettable object position on the next cached object
-            GetComponent<PlayerGameManagerCommunicators>().CmdRegisterResettableObjectDestroyed(other.GetComponent<ResettableObject>().ID, other.GetComponent<PickupableObject>().Type);
+            GetComponent<PlayerGameManagerCommunicators>().CmdRegisterResettableObjectDestroyed(other.GetComponent<ResettableObject>().ID, other.GetComponent<PickupableObject>().Type, false);
         }
 
         timeOfPickup = Time.time;
@@ -530,14 +530,16 @@ public class PlayerObjectInteraction : NetworkBehaviour
             if (isServer)
             {
                 NetworkServer.Destroy(other.gameObject);
+                Debug.Log("Server register " + other.GetComponent<ResettableObject>().ID);
                 // Register as destroyed with gamemanager to set other cache to be this resettable
-                GManager.Instance.RegisterResettableObjectDestroyed(other.GetComponent<ResettableObject>().ID, other.GetComponent<PickupableObject>().Type);
+                GManager.Instance.RegisterResettableObjectDestroyed(other.GetComponent<ResettableObject>().ID, other.GetComponent<PickupableObject>().Type, true);
             }
             else
             {
                 CmdServerDestroy(other.gameObject);
+                Debug.Log("Client register " + other.GetComponent<ResettableObject>().ID);
                 // Register as destroyed with gamemanager to set other cache to be this resettable
-                GetComponent<PlayerGameManagerCommunicators>().CmdRegisterResettableObjectDestroyed(other.GetComponent<ResettableObject>().ID, other.GetComponent<PickupableObject>().Type);
+                GetComponent<PlayerGameManagerCommunicators>().CmdRegisterResettableObjectDestroyed(other.GetComponent<ResettableObject>().ID, other.GetComponent<PickupableObject>().Type, false);
             }
 
             CommonLiftPickup(type);

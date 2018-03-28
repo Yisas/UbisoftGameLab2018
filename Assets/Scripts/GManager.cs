@@ -204,48 +204,48 @@ public class GManager : NetworkBehaviour
         rotationsOfResettableObjects.Add(ro.transform.rotation);
     }
 
-    public void RegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
+    public void RegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type, bool objectDestroyedInServer)
     {
-        CommonRegisterResettableObjectDestroyed(id, type);
+        CommonRegisterResettableObjectDestroyed(id, type, objectDestroyedInServer);
 
         if (isServer)
         {
-            RpcRegisterResettableObjectDestroyed(id, type);
+            RpcRegisterResettableObjectDestroyed(id, type, objectDestroyedInServer);
         }
         else
         {
-            CmdRegisterResettableObjectDestroyed(id, type);
+            CmdRegisterResettableObjectDestroyed(id, type, objectDestroyedInServer);
         }
     }
 
-    public void CommonRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
+    public void CommonRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type, bool objectDestroyedInServer)
     {
         // Cached object should become the resettable object reference
-        if (isServer)
+        if (objectDestroyedInServer)
         {
-            Debug.Log("server");
+            Debug.Log("objectDestroyedInServer");
             serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
             resettableObjects[id] = serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
         }
         else
         {
-            Debug.Log("client");
+            Debug.Log("objectDestroyedInClient");
             clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
             resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
         }
     }
 
     [ClientRpc]
-    private void RpcRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
+    private void RpcRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type, bool objectDestroyedInServer)
     {
         if (!isServer)
-            CommonRegisterResettableObjectDestroyed(id, type);
+            CommonRegisterResettableObjectDestroyed(id, type, objectDestroyedInServer);
     }
 
     [Command]
-    private void CmdRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
+    private void CmdRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type, bool objectDestroyedInServer)
     {
-        CommonRegisterResettableObjectDestroyed(id, type);
+        CommonRegisterResettableObjectDestroyed(id, type, objectDestroyedInServer);
     }
 
     public void DeRegisterResettableObject(ResettableObject ro)

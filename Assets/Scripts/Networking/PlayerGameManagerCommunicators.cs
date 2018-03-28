@@ -12,8 +12,8 @@ public class PlayerGameManagerCommunicators : NetworkBehaviour
     }
 
     [Command]
-    public void CmdRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
+    public void CmdRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type, bool objectDestroyedInServer)
     {
-        GManager.Instance.RegisterResettableObjectDestroyed(id, type);
+        GManager.Instance.RegisterResettableObjectDestroyed(id, type, objectDestroyedInServer);
     }
 }
