@@ -214,7 +214,7 @@ public class GManager : NetworkBehaviour
         }
         else
         {
-            CmdRegisterResettableObjectDestroyed(id, type, objectDestroyedInServer);
+            GetLocalPlayer().GetComponent<PlayerGameManagerCommunicators>().CmdRegisterResettableObjectDestroyed(id, type, objectDestroyedInServer);
         }
     }
 
@@ -233,9 +233,11 @@ public class GManager : NetworkBehaviour
             if (isServer)
                 clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
             else
-                CmdSetIdOfClientAuthorityCachedObjects(id, type);
+            {
+                GetLocalPlayer().GetComponent<PlayerGameManagerCommunicators>().CmdSetIdOfClientAuthorityCachedObjects(id, type);
+            }
 
-                resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
+            resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
         }
     }
 
@@ -253,7 +255,7 @@ public class GManager : NetworkBehaviour
     }
 
     [Command]
-    private void CmdSetIdOfClientAuthorityCachedObjects(int id, PickupableObject.PickupableType type)
+    public void CmdSetIdOfClientAuthorityCachedObjects(int id, PickupableObject.PickupableType type)
     {
         clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
     }

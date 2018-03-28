@@ -16,4 +16,10 @@ public class PlayerGameManagerCommunicators : NetworkBehaviour
     {
         GManager.Instance.RegisterResettableObjectDestroyed(id, type, objectDestroyedInServer);
     }
+
+    [Command]
+    public void CmdSetIdOfClientAuthorityCachedObjects(int id, PickupableObject.PickupableType type)
+    {
+        GManager.Instance.CmdSetIdOfClientAuthorityCachedObjects(id, type);
+    }
 }
