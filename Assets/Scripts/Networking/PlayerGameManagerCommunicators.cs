@@ -11,4 +11,9 @@ public class PlayerGameManagerCommunicators : NetworkBehaviour
         GManager.Instance.ResetCachedObject(type);
     }
 
+    [Command]
+    public void CmdRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
+    {
+        GManager.Instance.RegisterResettableObjectDestroyed(id, type);
+    }
 }

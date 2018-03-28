@@ -206,19 +206,46 @@ public class GManager : NetworkBehaviour
 
     public void RegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
     {
-        // Cached object should become the resettable object reference
+        CommonRegisterResettableObjectDestroyed(id, type);
+
         if (isServer)
         {
-            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
-            resettableObjects[id] = serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
-            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
-            resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
+            RpcRegisterResettableObjectDestroyed(id, type);
         }
         else
         {
+            CmdRegisterResettableObjectDestroyed(id, type);
+        }
+    }
+
+    public void CommonRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
+    {
+        // Cached object should become the resettable object reference
+        if (isServer)
+        {
+            Debug.Log("server");
+            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
+            resettableObjects[id] = serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
+        }
+        else
+        {
+            Debug.Log("client");
             clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
             resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
         }
+    }
+
+    [ClientRpc]
+    private void RpcRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
+    {
+        if (!isServer)
+            CommonRegisterResettableObjectDestroyed(id, type);
+    }
+
+    [Command]
+    private void CmdRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
+    {
+        CommonRegisterResettableObjectDestroyed(id, type);
     }
 
     public void DeRegisterResettableObject(ResettableObject ro)
