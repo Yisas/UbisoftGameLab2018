@@ -22,6 +22,9 @@ public class ResettableObject : NetworkBehaviour
 
     private float currentPowCooldown;
 
+    [SyncVar]
+    public bool wasSpawnedByGameManager = false;
+
     // Distance from the original position for the object to be considered moved
     private const float distanceMovedThreshold = 5.0f;
 

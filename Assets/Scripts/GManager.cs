@@ -83,6 +83,7 @@ public class GManager : NetworkBehaviour
             serverAuthorityCachedObjects[(int)type] = Instantiate(modelToSpawn, new Vector3(0, 200 * ((int)type + 1), 0), modelToSpawn.transform.rotation);
             serverAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = (false);
             serverAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().isKinematic = (false);
+            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().wasSpawnedByGameManager = (true);
             serverAuthorityCachedObjects[(int)type] = serverAuthorityCachedObjects[(int)type];
             NetworkServer.Spawn(serverAuthorityCachedObjects[(int)type]);
         }
@@ -92,6 +93,7 @@ public class GManager : NetworkBehaviour
             clientAuthorityCachedObjects[(int)type] = Instantiate(modelToSpawn, new Vector3(0, 210 * ((int)type + 1), 0), modelToSpawn.transform.rotation);
             clientAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = (false);
             clientAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().isKinematic = (false);
+            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().wasSpawnedByGameManager = (true);
             NetworkServer.Spawn(clientAuthorityCachedObjects[(int)type]);
             SetPlayerAuthorityToHeldObject(GetNonLocalPlayer().GetComponent<NetworkIdentity>(), clientAuthorityCachedObjects[(int)type].GetComponent<NetworkIdentity>());
             clientAuthorityCachedObjects[(int)type] = clientAuthorityCachedObjects[(int)type];
@@ -108,16 +110,24 @@ public class GManager : NetworkBehaviour
         if (isServer)
             return;
 
+        Debug.Log("HERE");
         clientAuthorityCachedObjects[(int)type] = go;
         clientAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = false;
+        clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().wasSpawnedByGameManager = (true);
     }
 
     public GameObject GetCachedObject(PickupableObject.PickupableType type)
     {
         if (isServer)
+        {
+            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().wasSpawnedByGameManager = (false);
             return serverAuthorityCachedObjects[(int)type];
+        }
         else
+        {
+            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().wasSpawnedByGameManager = (false);
             return clientAuthorityCachedObjects[(int)type];
+        }
     }
 
     /// <summary>
@@ -181,7 +191,7 @@ public class GManager : NetworkBehaviour
             // Register resettable objects positions
             foreach (ResettableObject ro in GameObject.FindObjectsOfType<ResettableObject>())
             {
-                if (ro.tag != "Player")
+                if (ro.tag != "Player" && !ro.wasSpawnedByGameManager)
                     RegisterResettableObject(ro);
             }
         }
