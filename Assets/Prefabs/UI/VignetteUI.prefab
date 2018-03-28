@@ -57,8 +57,8 @@ GameObject:
   - component: {fileID: 114689808008718710}
   - component: {fileID: 114089882846035556}
   - component: {fileID: 114160799354717676}
-  - component: {fileID: 114218804879305390}
-  - component: {fileID: 114692551130661010}
+  - component: {fileID: 114702613232711734}
+  - component: {fileID: 114306614726001746}
   m_Layer: 5
   m_Name: VignetteUI
   m_TagString: Untagged
@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Timer: 20
---- !u!114 &114218804879305390
+--- !u!114 &114306614726001746
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -146,9 +146,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 1396466819781014}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 043219ae1923bab4ba412a9cff75b481, type: 3}
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 220
+    i1: 215
+    i2: 99
+    i3: 100
+    i4: 70
+    i5: 153
+    i6: 22
+    i7: 52
+    i8: 89
+    i9: 105
+    i10: 223
+    i11: 186
+    i12: 217
+    i13: 132
+    i14: 128
+    i15: 70
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 1
 --- !u!114 &114352905588109082
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -224,7 +245,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &114692551130661010
+--- !u!114 &114702613232711734
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -232,30 +253,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1396466819781014}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Script: {fileID: 11500000, guid: 043219ae1923bab4ba412a9cff75b481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SceneId:
-    m_Value: 0
-  m_AssetId:
-    i0: 220
-    i1: 215
-    i2: 99
-    i3: 100
-    i4: 70
-    i5: 153
-    i6: 22
-    i7: 52
-    i8: 89
-    i9: 105
-    i10: 223
-    i11: 186
-    i12: 217
-    i13: 132
-    i14: 128
-    i15: 70
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 1
 --- !u!222 &222158481626938144
 CanvasRenderer:
   m_ObjectHideFlags: 1
