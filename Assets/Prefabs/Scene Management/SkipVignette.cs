@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class SkipVignette : /*NetworkBehaviour*/ MonoBehaviour
 {
+    private void Start()
+    {
+        //Safeguard to remove vibration on vignettes
+        XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, 0, 0);
+    }
+
     private void Update()
     {
         if (Input.GetButtonDown("Skip Vignette"))
