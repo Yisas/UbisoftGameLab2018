@@ -25,9 +25,14 @@ public class ResettableObject : NetworkBehaviour
     [SyncVar]
     public bool wasSpawnedByGameManager = false;
 
+    [SyncVar]
     private Vector3 originalPosition;
+    [SyncVar]
     private Quaternion originalRotation;
+
+    [SyncVar]
     public bool hasOriginalPosition = false;
+    [SyncVar]
     public bool hasOriginalRotation = false;
 
     // Distance from the original position for the object to be considered moved
@@ -145,7 +150,32 @@ public class ResettableObject : NetworkBehaviour
             {
                 hasOriginalPosition = true;
                 originalPosition = value;
+
+                if (isServer)
+                {
+                    RpcSetPosition(value);
+                }
+                else
+                {
+                    CmdSetPosition(value);
+                }
             }
+        }
+    }
+
+    [Command]
+    private void CmdSetPosition(Vector3 value)
+    {
+        hasOriginalPosition = true;
+        originalPosition = value;
+    }
+
+    private void RpcSetPosition(Vector3 value)
+    {
+        if (!isServer)
+        {
+            hasOriginalPosition = true;
+            originalPosition = value;
         }
     }
 
@@ -159,7 +189,32 @@ public class ResettableObject : NetworkBehaviour
             {
                 hasOriginalRotation = true;
                 originalRotation = value;
+
+                if (isServer)
+                {
+                    RpcSetRotation(value);
+                }
+                else
+                {
+                    CmdSetRotation(value);
+                }
             }
+        }
+    }
+
+    [Command]
+    private void CmdSetRotation(Quaternion value)
+    {
+        hasOriginalRotation = true;
+        originalRotation = value;
+    }
+
+    private void RpcSetRotation(Quaternion value)
+    {
+        if (!isServer)
+        {
+            hasOriginalRotation = true;
+            originalRotation = value;
         }
     }
 
