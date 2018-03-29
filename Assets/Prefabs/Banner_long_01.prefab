@@ -21,7 +21,8 @@ GameObject:
   - component: {fileID: 4036528899239556}
   - component: {fileID: 33419990295801954}
   - component: {fileID: 23882499132175654}
-  m_Layer: 0
+  - component: {fileID: 65238116811629944}
+  m_Layer: 18
   m_Name: Banner_long_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,3 +83,15 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1165369544303554}
   m_Mesh: {fileID: 4300000, guid: c4b888d73d4fcfa4e8f5553bacebcab1, type: 3}
+--- !u!65 &65238116811629944
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1165369544303554}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.03933861, y: 0.0019961928, z: 0.12750974}
+  m_Center: {x: 0, y: 0.00000001028347, z: -0.05360309}
