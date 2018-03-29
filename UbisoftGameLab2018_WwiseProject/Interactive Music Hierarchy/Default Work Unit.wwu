@@ -1,6 +1,629 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WwiseDocument Type="WorkUnit" ID="{A0957E7E-4ED8-4568-B9C9-03F40DCE1B53}" SchemaVersion="85">
+<WwiseDocument Type="WorkUnit" ID="{99215BE4-7688-4C9B-9471-2A3A6F032358}" SchemaVersion="85">
 	<InteractiveMusic>
-		<WorkUnit Name="Default Work Unit" ID="{A0957E7E-4ED8-4568-B9C9-03F40DCE1B53}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{99215BE4-7688-4C9B-9471-2A3A6F032358}" PersistMode="Standalone">
+			<ChildrenList>
+				<MusicPlaylistContainer Name="music1" ID="{E2BA654E-EBDA-4938-ABA3-F11B6F0AA52A}" ShortID="256208739">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>-7</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<MusicSegment Name="music1_100bpm" ID="{BC2F6EFF-49A8-4F36-8BC3-8DE34D9A3472}" ShortID="829133261">
+							<PropertyList>
+								<Property Name="EndPosition" Type="Real64" Value="29440.4916612519"/>
+								<Property Name="Tempo" Type="Real64" Value="100"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicTrack Name="music1_100bpm" ID="{A4D2CEE5-8E56-426E-8707-CF8E8051FA0C}" ShortID="739112226">
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="music1_100bpm" ID="{7A6BC296-15E4-49B3-A9D6-D6835B79525E}" ShortID="49795320">
+											<Language>SFX</Language>
+											<AudioFile>music1_100bpm.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<TransitionList>
+										<MusicTransition Name="Root" ID="{83F9BD15-74FF-4BAC-AE6D-7C6643454920}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</TransitionList>
+									<SequenceList>
+										<MusicTrackSequence Name="" ID="{736CBB78-0B5E-4E21-BE27-58C9C28ADC4C}">
+											<ClipList>
+												<MusicClip Name="music1_100bpm" ID="{7B80CC00-B52E-4C02-ACD4-E803B2AAB236}">
+													<PropertyList>
+														<Property Name="BeginTrimOffset" Type="Real64" Value="1759.50833874809"/>
+														<Property Name="EndTrimOffset" Type="Real64" Value="31200"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="30.4959930690925"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="461.842105263157"/>
+														<Property Name="PlayAt" Type="Real64" Value="-1759.50833874809"/>
+													</PropertyList>
+													<AudioSourceRef Name="music1_100bpm" ID="{7A6BC296-15E4-49B3-A9D6-D6835B79525E}"/>
+													<PropertyCurveList>
+														<PropertyCurve PropertyName="Highpass">
+															<Curve Name="" ID="{51054925-4ABE-4C7C-9D88-03F5D300D83F}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="1"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>1.75951</XPos>
+																		<YPos>0</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>31.2</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</PropertyCurve>
+														<PropertyCurve PropertyName="Lowpass">
+															<Curve Name="" ID="{99F4A7D8-A3AF-4385-815A-C952BF1B0F08}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="1"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>1.75951</XPos>
+																		<YPos>0</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>31.2</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</PropertyCurve>
+														<PropertyCurve PropertyName="Volume">
+															<Curve Name="" ID="{2D74A83A-D4B9-4C64-81FE-6A4439BD1453}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>1.75951</XPos>
+																		<YPos>0</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>31.2</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</PropertyCurve>
+													</PropertyCurveList>
+												</MusicClip>
+											</ClipList>
+										</MusicTrackSequence>
+									</SequenceList>
+								</MusicTrack>
+							</ChildrenList>
+							<CueList>
+								<MusicCue Name="Entry Cue" ID="{039377DD-550D-4687-BD2D-C5C7843295EB}">
+									<PropertyList>
+										<Property Name="TimeMs" Type="Real64" Value="40.4916612518964"/>
+									</PropertyList>
+								</MusicCue>
+								<MusicCue Name="Exit Cue" ID="{42EAA6C7-DD88-4599-A1A0-E018857C993A}">
+									<PropertyList>
+										<Property Name="CueType" Type="int16" Value="1"/>
+										<Property Name="TimeMs" Type="Real64" Value="28840.4916612519"/>
+									</PropertyList>
+								</MusicCue>
+							</CueList>
+						</MusicSegment>
+					</ChildrenList>
+					<TransitionList>
+						<MusicTransition Name="Root" ID="{50E038B2-FEEE-4FB9-AB9A-596F035A65CF}">
+							<PropertyList>
+								<Property Name="IsFolder" Type="bool" Value="True"/>
+							</PropertyList>
+							<ChildrenList>
+								<MusicTransition Name="Transition" ID="{219741EE-4B77-4BC3-A289-8864ACD34C40}">
+									<TransitionInfo/>
+								</MusicTransition>
+							</ChildrenList>
+							<TransitionInfo/>
+						</MusicTransition>
+					</TransitionList>
+					<Playlist>
+						<MusicPlaylistItem Name="" ID="{2DDF14BD-ED39-4B83-B04B-84529B7B6FE7}" ShortID="364639101">
+							<PropertyList>
+								<Property Name="LoopCount" Type="int16" Value="0"/>
+							</PropertyList>
+							<ChildrenList>
+								<MusicPlaylistItem Name="" ID="{BE8E4678-4002-45A1-9025-15423E05109D}" ShortID="47772584">
+									<PropertyList>
+										<Property Name="PlaylistItemType" Type="int16" Value="1"/>
+									</PropertyList>
+									<SegmentRef Name="music1_100bpm" ID="{BC2F6EFF-49A8-4F36-8BC3-8DE34D9A3472}"/>
+								</MusicPlaylistItem>
+							</ChildrenList>
+						</MusicPlaylistItem>
+					</Playlist>
+				</MusicPlaylistContainer>
+				<MusicPlaylistContainer Name="music2" ID="{97512DD5-C877-4294-B006-B213067E1838}" ShortID="787350955">
+					<PropertyList>
+						<Property Name="Highpass" Type="int16">
+							<ValueList>
+								<Value>13</Value>
+							</ValueList>
+						</Property>
+						<Property Name="Tempo" Type="Real64" Value="130"/>
+						<Property Name="TimeSignatureUpper" Type="int16" Value="3"/>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<MusicSegment Name="ubiconcours_music_130bpm_01" ID="{D7225DEC-8D08-4B49-875D-5048B9BCB529}" ShortID="324965464">
+							<PropertyList>
+								<Property Name="EndPosition" Type="Real64" Value="24000"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicTrack Name="ubiconcours_music_130bpm_01" ID="{E3CF7F57-59A6-4559-A7AD-D2BF3A68701C}" ShortID="419102550">
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="ubiconcours_music_130bpm_01" ID="{5A1CA466-6ABF-4DE0-85E3-70770C47CF56}" ShortID="347461814">
+											<Language>SFX</Language>
+											<AudioFile>ubiconcours_music_130bpm_01.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<TransitionList>
+										<MusicTransition Name="Root" ID="{8FA959BB-920B-4174-B19A-B0D366A149C3}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</TransitionList>
+									<SequenceList>
+										<MusicTrackSequence Name="" ID="{FC1890A2-B781-474C-A322-54B258EE0A94}">
+											<ClipList>
+												<MusicClip Name="ubiconcours_music_130bpm_01" ID="{743823D9-2567-40C5-A5AB-E38BCF1748DF}">
+													<PropertyList>
+														<Property Name="EndTrimOffset" Type="Real64" Value="24000"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="273.279428730556"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="983.805943430008"/>
+													</PropertyList>
+													<AudioSourceRef Name="ubiconcours_music_130bpm_01" ID="{5A1CA466-6ABF-4DE0-85E3-70770C47CF56}"/>
+													<PropertyCurveList>
+														<PropertyCurve PropertyName="Highpass">
+															<Curve Name="" ID="{79E78B98-8288-4DE4-AE86-806CC5EB331C}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="1"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>0</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>24</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</PropertyCurve>
+														<PropertyCurve PropertyName="Lowpass">
+															<Curve Name="" ID="{605F0BDB-7235-41BE-A3C4-4498963C4F06}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="1"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>0</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>24</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</PropertyCurve>
+														<PropertyCurve PropertyName="Volume">
+															<Curve Name="" ID="{5FF60AD6-9788-42D8-A495-77D5769BE7F2}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>0</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>24</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</PropertyCurve>
+													</PropertyCurveList>
+												</MusicClip>
+											</ClipList>
+										</MusicTrackSequence>
+									</SequenceList>
+								</MusicTrack>
+							</ChildrenList>
+							<CueList>
+								<MusicCue Name="Entry Cue" ID="{A85CBD10-89E2-4CB7-90CD-D4BB19832560}">
+									<PropertyList>
+										<Property Name="TimeMs" Type="Real64" Value="461.538461538462"/>
+									</PropertyList>
+								</MusicCue>
+								<MusicCue Name="Exit Cue" ID="{150C5416-E965-4EFD-B774-6070CE519866}">
+									<PropertyList>
+										<Property Name="CueType" Type="int16" Value="1"/>
+										<Property Name="TimeMs" Type="Real64" Value="22615.3846153846"/>
+									</PropertyList>
+								</MusicCue>
+							</CueList>
+						</MusicSegment>
+						<MusicSegment Name="ubiconcours_music_130bpm_02" ID="{A2600BD4-00CE-45ED-BDFF-EA6DC73D24B1}" ShortID="891590670">
+							<PropertyList>
+								<Property Name="EndPosition" Type="Real64" Value="25384.6258503401"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicTrack Name="ubiconcours_music_130bpm_02" ID="{47125378-20E3-49E8-A1CC-FE69941F969D}" ShortID="160823379">
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="ubiconcours_music_130bpm_02" ID="{BEFD0BB6-ECF9-4A9E-95DB-89519D1E0206}" ShortID="289887416">
+											<Language>SFX</Language>
+											<AudioFile>ubiconcours_music_130bpm_02.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<TransitionList>
+										<MusicTransition Name="Root" ID="{8B8BB440-8BEC-41E0-B1EF-3143C155CB6A}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</TransitionList>
+									<SequenceList>
+										<MusicTrackSequence Name="" ID="{BAB7695B-FB2C-46C3-8B9E-BD9CA3CD598F}">
+											<ClipList>
+												<MusicClip Name="ubiconcours_music_130bpm_02" ID="{AE9ECEE3-B2F6-416E-9797-1D8BFBF9FB88}">
+													<PropertyList>
+														<Property Name="EndTrimOffset" Type="Real64" Value="25384.6258503401"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="206.177922761047"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="1929.8253570434"/>
+													</PropertyList>
+													<AudioSourceRef Name="ubiconcours_music_130bpm_02" ID="{BEFD0BB6-ECF9-4A9E-95DB-89519D1E0206}"/>
+												</MusicClip>
+											</ClipList>
+										</MusicTrackSequence>
+									</SequenceList>
+								</MusicTrack>
+							</ChildrenList>
+							<CueList>
+								<MusicCue Name="Entry Cue" ID="{930831F4-FB6C-4FC1-9FC7-632334A2BA60}">
+									<PropertyList>
+										<Property Name="TimeMs" Type="Real64" Value="461.538461538462"/>
+									</PropertyList>
+								</MusicCue>
+								<MusicCue Name="Exit Cue" ID="{231576CF-B021-4765-97E5-4BAF03E6D089}">
+									<PropertyList>
+										<Property Name="CueType" Type="int16" Value="1"/>
+										<Property Name="TimeMs" Type="Real64" Value="22615.3846153846"/>
+									</PropertyList>
+								</MusicCue>
+							</CueList>
+						</MusicSegment>
+						<MusicSegment Name="ubiconcours_music_130bpm_03" ID="{8BC70B6F-8702-47E0-A8D4-D2A33D2AB60A}" ShortID="998694027">
+							<PropertyList>
+								<Property Name="EndPosition" Type="Real64" Value="24000"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicTrack Name="ubiconcours_music_130bpm_03" ID="{EB1506F9-6D88-4E09-90EF-3834EA89B83E}" ShortID="690295922">
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="ubiconcours_music_130bpm_03" ID="{4EF01095-12C1-415E-BEAF-9140AFAD6CA1}" ShortID="1062290245">
+											<Language>SFX</Language>
+											<AudioFile>ubiconcours_music_130bpm_03.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<TransitionList>
+										<MusicTransition Name="Root" ID="{1792BAC5-1D37-4F05-B3E6-BB4CC297F265}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</TransitionList>
+									<SequenceList>
+										<MusicTrackSequence Name="" ID="{40212B06-A103-4D7B-8120-08DF517823C2}">
+											<ClipList>
+												<MusicClip Name="ubiconcours_music_130bpm_03" ID="{98E44343-5A4D-432E-ADE7-BEEDF2B1C43B}">
+													<PropertyList>
+														<Property Name="EndTrimOffset" Type="Real64" Value="24000"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="263.157894736843"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="894.736842105263"/>
+													</PropertyList>
+													<AudioSourceRef Name="ubiconcours_music_130bpm_03" ID="{4EF01095-12C1-415E-BEAF-9140AFAD6CA1}"/>
+												</MusicClip>
+											</ClipList>
+										</MusicTrackSequence>
+									</SequenceList>
+								</MusicTrack>
+							</ChildrenList>
+							<CueList>
+								<MusicCue Name="Entry Cue" ID="{8A7C8B87-201A-45F3-8D67-A423E25AE491}">
+									<PropertyList>
+										<Property Name="TimeMs" Type="Real64" Value="461.538461538462"/>
+									</PropertyList>
+								</MusicCue>
+								<MusicCue Name="Exit Cue" ID="{47CCD281-78C1-4721-B936-88C596F3D599}">
+									<PropertyList>
+										<Property Name="CueType" Type="int16" Value="1"/>
+										<Property Name="TimeMs" Type="Real64" Value="22615.3846153846"/>
+									</PropertyList>
+								</MusicCue>
+							</CueList>
+						</MusicSegment>
+						<MusicSegment Name="ubiconcours_music_130bpm_04" ID="{131A7585-13DF-43D1-8507-CA362C7EA38D}" ShortID="119075393">
+							<PropertyList>
+								<Property Name="EndPosition" Type="Real64" Value="12923.0839002268"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicTrack Name="ubiconcours_music_130bpm_04" ID="{72B0AA59-9B46-40C0-895E-3ED1E24C58E0}" ShortID="482111065">
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="ubiconcours_music_130bpm_04" ID="{BCC751BD-D608-4583-9A37-F9A78150009F}" ShortID="240203107">
+											<Language>SFX</Language>
+											<AudioFile>ubiconcours_music_130bpm_04.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<TransitionList>
+										<MusicTransition Name="Root" ID="{D7B52AED-6893-4370-A6E2-5E402555A710}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</TransitionList>
+									<SequenceList>
+										<MusicTrackSequence Name="" ID="{55923BAD-A6C0-4EAE-B8CB-DCC3DB9617E9}">
+											<ClipList>
+												<MusicClip Name="ubiconcours_music_130bpm_04" ID="{21F74E05-B765-450F-9EA8-6A1DD2BBE666}">
+													<PropertyList>
+														<Property Name="EndTrimOffset" Type="Real64" Value="12923.0839002268"/>
+														<Property Name="FadeInDuration" Type="Real64" Value="240.89081831563"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="1289.47438039543"/>
+													</PropertyList>
+													<AudioSourceRef Name="ubiconcours_music_130bpm_04" ID="{BCC751BD-D608-4583-9A37-F9A78150009F}"/>
+												</MusicClip>
+											</ClipList>
+										</MusicTrackSequence>
+									</SequenceList>
+								</MusicTrack>
+							</ChildrenList>
+							<CueList>
+								<MusicCue Name="Entry Cue" ID="{8BA763E7-8D61-46D7-8134-5E3349BF5FB7}">
+									<PropertyList>
+										<Property Name="TimeMs" Type="Real64" Value="461.538461538462"/>
+									</PropertyList>
+								</MusicCue>
+								<MusicCue Name="Exit Cue" ID="{5BAF587D-A8B6-4EC2-AEBE-CFA3789ADCC9}">
+									<PropertyList>
+										<Property Name="CueType" Type="int16" Value="1"/>
+										<Property Name="TimeMs" Type="Real64" Value="11538.4615384615"/>
+									</PropertyList>
+								</MusicCue>
+							</CueList>
+						</MusicSegment>
+						<MusicSegment Name="ubiconcours_music_130bpm_05" ID="{B77D6C59-636B-44AC-97F9-3457C5F2D8DA}" ShortID="229136102">
+							<PropertyList>
+								<Property Name="EndPosition" Type="Real64" Value="24000"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<MusicTrack Name="ubiconcours_music_130bpm_05" ID="{76851D1F-B336-43CD-B684-44021B347FCE}" ShortID="899528490">
+									<ReferenceList>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="ubiconcours_music_130bpm_05" ID="{9900521A-FC73-4CAF-A3B0-7649CB55731F}" ShortID="593541900">
+											<Language>SFX</Language>
+											<AudioFile>ubiconcours_music_130bpm_05.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<TransitionList>
+										<MusicTransition Name="Root" ID="{F39ADF20-4E5A-4858-A981-8A1D2391C4D7}">
+											<PropertyList>
+												<Property Name="IsFolder" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo/>
+										</MusicTransition>
+									</TransitionList>
+									<SequenceList>
+										<MusicTrackSequence Name="" ID="{FF87EA66-2CDF-4D28-ABCF-3C065A778138}">
+											<ClipList>
+												<MusicClip Name="ubiconcours_music_130bpm_05" ID="{0F2D460D-D2A6-4A85-AE93-BD21174E3812}">
+													<PropertyList>
+														<Property Name="EndTrimOffset" Type="Real64" Value="24000"/>
+														<Property Name="FadeInMode" Type="int16" Value="0"/>
+														<Property Name="FadeOutDuration" Type="Real64" Value="1315.78947368421"/>
+													</PropertyList>
+													<AudioSourceRef Name="ubiconcours_music_130bpm_05" ID="{9900521A-FC73-4CAF-A3B0-7649CB55731F}"/>
+												</MusicClip>
+											</ClipList>
+										</MusicTrackSequence>
+									</SequenceList>
+								</MusicTrack>
+							</ChildrenList>
+							<CueList>
+								<MusicCue Name="Entry Cue" ID="{01496AEF-99C7-438B-AA6B-3FA873516A6F}">
+									<PropertyList>
+										<Property Name="TimeMs" Type="Real64" Value="461.538461538462"/>
+									</PropertyList>
+								</MusicCue>
+								<MusicCue Name="Exit Cue" ID="{359DFC85-FC7A-4E71-9121-728A7C6F718B}">
+									<PropertyList>
+										<Property Name="CueType" Type="int16" Value="1"/>
+										<Property Name="TimeMs" Type="Real64" Value="22615.3846153846"/>
+									</PropertyList>
+								</MusicCue>
+							</CueList>
+						</MusicSegment>
+					</ChildrenList>
+					<TransitionList>
+						<MusicTransition Name="Root" ID="{E6E68D41-D674-4656-AD8E-0E917960F1AE}">
+							<PropertyList>
+								<Property Name="IsFolder" Type="bool" Value="True"/>
+							</PropertyList>
+							<ChildrenList>
+								<MusicTransition Name="Transition" ID="{5F7AFD40-8A31-41E9-9241-5E39AA37B0A9}">
+									<TransitionInfo/>
+								</MusicTransition>
+							</ChildrenList>
+							<TransitionInfo/>
+						</MusicTransition>
+					</TransitionList>
+					<Playlist>
+						<MusicPlaylistItem Name="" ID="{6FB9A89A-D09B-4FCF-AA26-34FD41E6DB52}" ShortID="901158283">
+							<PropertyList>
+								<Property Name="LoopCount" Type="int16" Value="0"/>
+								<Property Name="PlayMode" Type="int16" Value="2"/>
+							</PropertyList>
+							<ChildrenList>
+								<MusicPlaylistItem Name="" ID="{741562F4-9B1C-48FA-A451-887E049C0A2B}" ShortID="87112547">
+									<PropertyList>
+										<Property Name="PlaylistItemType" Type="int16" Value="1"/>
+									</PropertyList>
+									<SegmentRef Name="ubiconcours_music_130bpm_01" ID="{D7225DEC-8D08-4B49-875D-5048B9BCB529}"/>
+								</MusicPlaylistItem>
+								<MusicPlaylistItem Name="" ID="{2BF302B7-7BF8-4534-A6CA-35AABF27DBF9}" ShortID="850606025">
+									<PropertyList>
+										<Property Name="PlaylistItemType" Type="int16" Value="1"/>
+									</PropertyList>
+									<SegmentRef Name="ubiconcours_music_130bpm_02" ID="{A2600BD4-00CE-45ED-BDFF-EA6DC73D24B1}"/>
+								</MusicPlaylistItem>
+								<MusicPlaylistItem Name="" ID="{FC848A15-AF83-4893-83C8-B7F187FB1F1B}" ShortID="152872469">
+									<PropertyList>
+										<Property Name="PlaylistItemType" Type="int16" Value="1"/>
+									</PropertyList>
+									<SegmentRef Name="ubiconcours_music_130bpm_03" ID="{8BC70B6F-8702-47E0-A8D4-D2A33D2AB60A}"/>
+								</MusicPlaylistItem>
+								<MusicPlaylistItem Name="" ID="{CBCB83F6-EB0C-42F1-981C-21B07F22C9F9}" ShortID="207349508">
+									<PropertyList>
+										<Property Name="PlaylistItemType" Type="int16" Value="1"/>
+									</PropertyList>
+									<SegmentRef Name="ubiconcours_music_130bpm_04" ID="{131A7585-13DF-43D1-8507-CA362C7EA38D}"/>
+								</MusicPlaylistItem>
+								<MusicPlaylistItem Name="" ID="{1EC305A0-CC64-452E-979A-023E5E2BEA28}" ShortID="96920710">
+									<PropertyList>
+										<Property Name="PlaylistItemType" Type="int16" Value="1"/>
+									</PropertyList>
+									<SegmentRef Name="ubiconcours_music_130bpm_05" ID="{B77D6C59-636B-44AC-97F9-3457C5F2D8DA}"/>
+								</MusicPlaylistItem>
+							</ChildrenList>
+						</MusicPlaylistItem>
+					</Playlist>
+				</MusicPlaylistContainer>
+			</ChildrenList>
+		</WorkUnit>
 	</InteractiveMusic>
 </WwiseDocument>

@@ -184,6 +184,15 @@ public class PlayerMove : NetworkBehaviour
 
         if(transformToSyncTo)
             lastFrameTransformToSyncToPosition = transformToSyncTo.position;
+
+        // Adding footsteps audio GGJ2018:
+        if (grounded && GetComponent<Rigidbody>().velocity.magnitude > 0)
+        {
+            AkSoundEngine.PostEvent("footsteps", gameObject);
+        }
+        else
+            AkSoundEngine.PostEvent("footsteps_stop", gameObject);
+
     }
 
     //apply correct player movement (fixedUpdate for physics calculations)
@@ -226,12 +235,6 @@ public class PlayerMove : NetworkBehaviour
         }
         else
             Debug.LogWarning("Animator missing on player " + playerID);
-
-        // Adding footsteps audio GGJ2018:
-        if (grounded && GetComponent<Rigidbody>().velocity.magnitude > 0)
-        {
-            AkSoundEngine.PostEvent("Footsteps", gameObject);
-        }
     }
 
     //prevents rigidbody from sliding down slight slopes (read notes in characterMotor class for more info on friction)
@@ -352,7 +355,7 @@ public class PlayerMove : NetworkBehaviour
         //play landing sound
         if (groundedCount < landingSoundLength && groundedCount != 0 && GetComponent<Rigidbody>().velocity.y < 1)
         {
-            AkSoundEngine.PostEvent("PlayerLand", gameObject);
+            //AkSoundEngine.PostEvent("impact_thump", gameObject);
         }
         
         //if we press jump in the air, save the time
@@ -388,7 +391,7 @@ public class PlayerMove : NetworkBehaviour
             return;
         }
 
-        AkSoundEngine.PostEvent("Jump", gameObject);
+       AkSoundEngine.PostEvent("jump", gameObject);
 
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddRelativeForce(jumpVelocity, ForceMode.Impulse);

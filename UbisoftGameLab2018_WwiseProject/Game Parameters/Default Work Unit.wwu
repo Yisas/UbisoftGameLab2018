@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WwiseDocument Type="WorkUnit" ID="{3AD1BD91-4422-4771-ACB5-1CEF070207F9}" SchemaVersion="85">
+<WwiseDocument Type="WorkUnit" ID="{C4E563B9-B5A2-48DF-AF79-F3A30F71832E}" SchemaVersion="85">
 	<GameParameters>
-		<WorkUnit Name="Default Work Unit" ID="{3AD1BD91-4422-4771-ACB5-1CEF070207F9}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{C4E563B9-B5A2-48DF-AF79-F3A30F71832E}" PersistMode="Standalone">
+			<ChildrenList>
+				<GameParameter Name="fire_distance" ID="{D265B972-8C17-4213-8B49-6CC3FAFDAA98}"/>
+				<GameParameter Name="lava_distance" ID="{4625DF20-54BB-400F-844A-ED4F422F45B2}"/>
+				<GameParameter Name="ghost_distance" ID="{16EAA22E-9E12-4435-AF8D-F03B8DFBEE84}"/>
+				<GameParameter Name="vortex_distance" ID="{4D4B820E-DF24-49F5-AC3E-A16DB103F70F}"/>
+			</ChildrenList>
+		</WorkUnit>
 	</GameParameters>
 </WwiseDocument>

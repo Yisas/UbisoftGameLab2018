@@ -16,7 +16,7 @@ public class SceneTransitionTrigger : MonoBehaviour {
             {
                 menu.GetComponent<StartOptions>().NextScene();
 
-                AkSoundEngine.PostEvent("LevelComplete", gameObject);
+                //AkSoundEngine.PostEvent("LevelComplete", gameObject);
                 foreach(Transform child in transform)
                 {
                     child.gameObject.SetActive(true);

@@ -24,11 +24,6 @@ public class PushableObject : MonoBehaviour
     {
         if (isBeingPushed)
         {
-            if (Mathf.Abs((transform.position - lastPosition).magnitude) >= dragNoisePlayThreshold)
-            {
-                AkSoundEngine.PostEvent("DragWoodenBox", gameObject);
-            }
-
             lastPosition = transform.position;
         }
     }
@@ -51,7 +46,8 @@ public class PushableObject : MonoBehaviour
         {
             //rb.constraints = RigidbodyConstraints.FreezeAll;
             rb.mass = 100;
-            AkSoundEngine.PostEvent("StopDragWoodenBox", gameObject);
+            AkSoundEngine.PostEvent("slide_start_stop", gameObject);
+            AkSoundEngine.PostEvent("slide_stop", gameObject);
         }
         else
         {
