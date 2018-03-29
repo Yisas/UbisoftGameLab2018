@@ -20,6 +20,9 @@ GameObject:
   - component: {fileID: 114768446379573488}
   - component: {fileID: 114534868319236936}
   - component: {fileID: 114669128925631986}
+  - component: {fileID: 114655108111296586}
+  - component: {fileID: 114365365857115258}
+  - component: {fileID: 114706831639721238}
   m_Layer: 17
   m_Name: Player Camera
   m_TagString: MainCamera
@@ -151,24 +154,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54415757aaddf4b8a9cd7122fd120cc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _preset: 20
+  _preset: 10
   _quality: 0
   _compareMode: 0
   _sharpenMinDepth: 0
   _sharpenMaxDepth: 1.1
-  _sharpen: 3
+  _sharpen: 2
   _sharpenDepthThreshold: 0.035
-  _sharpenRelaxation: 0.07
-  _sharpenClamp: 0.45
+  _sharpenRelaxation: 0.065
+  _sharpenClamp: 0.4
   _sharpenMotionSensibility: 0.5
-  _saturate: 1
-  _contrast: 1.02
+  _saturate: 0.5
+  _contrast: 1.005
   _brightness: 1.05
   _dither: 0.02
   _ditherDepth: 0
   _daltonize: 0
   isDirty: 0
 --- !u!114 &114254281682996210
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 096fe6ca3e5df1945a3810e4f24764c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_listeners:
+    initialListenerList: []
+    useDefaultListeners: 1
+  isEnvironmentAware: 0
+  isStaticObject: 0
+  m_positionOffsetData:
+    KeepMe: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+  m_posOffsetData: {fileID: 0}
+  listenerMask: 1
+--- !u!114 &114365365857115258
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -201,6 +225,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RenderOrder: 0
+--- !u!114 &114655108111296586
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cee5de4c01387847a498e40ce5b88eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDefaultListener: 1
+  listenerId: 0
 --- !u!114 &114669128925631986
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -213,6 +250,54 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RenderOrder: 1
+--- !u!114 &114706831639721238
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b9e31fdf962e3e4ca3b62ec3ecc2f4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tonemapper: 0
+  Exposure: 1
+  LinearWhitePoint: 11.2
+  ApplyDithering: 0
+  QualityLevel: 1
+  BlendAmount: 0
+  LutTexture: {fileID: 2800000, guid: 43844b533efa0a149bf8820c46ad7afa, type: 3}
+  LutBlendTexture: {fileID: 0}
+  MaskTexture: {fileID: 0}
+  UseDepthMask: 0
+  DepthMaskCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  UseVolumes: 0
+  ExitVolumeBlendTime: 1
+  TriggerVolumeProxy: {fileID: 0}
+  VolumeCollisionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  EffectFlags:
+    components: []
+  sharedInstanceID: f18895de-7005-4a58-8104-2441a931c1a0
 --- !u!114 &114768446379573488
 MonoBehaviour:
   m_ObjectHideFlags: 1
