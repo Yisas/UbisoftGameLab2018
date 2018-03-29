@@ -1163,6 +1163,122 @@
 								<ActiveSource Name="ObjectDrop" ID="{E2B0BB3D-39ED-423F-B04B-FDA2D4AB6C31}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
+						<Sound Name="AppearObject" ID="{213893A5-2BCA-47BF-8268-658C1831DF88}" ShortID="849523502">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="AppearObject" ID="{37ACDBC4-5FF3-451E-8912-E126EB4FB19C}" ShortID="997123193">
+									<Language>SFX</Language>
+									<AudioFile>Sounds\AppearObject.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="AppearObject" ID="{37ACDBC4-5FF3-451E-8912-E126EB4FB19C}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="Ghost_Laugh" ID="{8C7F949D-D813-47F1-947F-48B520D90582}" ShortID="820413111">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="Effect0" CompanyID="4095" PluginID="65535" PluginType="15">
+									<ObjectRef Name="Have_U_Ever_Been_Outside" ID="{FE29AE8D-FD86-4652-A95D-68D32F5760EC}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Ghost_Laugh" ID="{134D4E17-16F5-4D47-A30A-AAD1EE76CE80}" ShortID="44048537">
+									<Language>SFX</Language>
+									<AudioFile>Ghost_Laugh.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Ghost_Laugh" ID="{134D4E17-16F5-4D47-A30A-AAD1EE76CE80}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="jump" ID="{F5A8715D-2BB8-4428-98F8-183DFAC8D2C0}" ShortID="1070036722">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="Effect0" CompanyID="4095" PluginID="65535" PluginType="15">
+									<ObjectRef Name="Have_U_Ever_Been_Outside" ID="{FE29AE8D-FD86-4652-A95D-68D32F5760EC}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="jump" ID="{999751FF-3646-49A8-9D84-350C8B35AD83}" ShortID="807251517">
+									<Language>SFX</Language>
+									<AudioFile>jump.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="jump" ID="{999751FF-3646-49A8-9D84-350C8B35AD83}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="FOOTSTEP_Player_Run" ID="{F9221261-DCAB-4BF6-94E0-B127456ABBD0}" ShortID="302681508">
+							<PropertyList>
+								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
+								<Property Name="Pitch" Type="int32">
+									<ModifierList>
+										<ModifierInfo>
+											<Modifier Name="" ID="{D253EADD-04FD-481A-813F-2C3B744213F2}">
+												<PropertyList>
+													<Property Name="Max" Type="Real64" Value="5"/>
+													<Property Name="Min" Type="Real64" Value="-5"/>
+												</PropertyList>
+											</Modifier>
+										</ModifierInfo>
+									</ModifierList>
+								</Property>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>12</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="Effect0" CompanyID="4095" PluginID="65535" PluginType="15">
+									<ObjectRef Name="Have_U_Ever_Been_Outside" ID="{FE29AE8D-FD86-4652-A95D-68D32F5760EC}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="FOOTSTEP_Player_Run" ID="{EB2D469D-3E2D-4043-BEDB-DC03A99D882F}" ShortID="195392309">
+									<Language>SFX</Language>
+									<AudioFile>FOOTSTEP_Player_Run.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="FOOTSTEP_Player_Run" ID="{EB2D469D-3E2D-4043-BEDB-DC03A99D882F}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
 					</ChildrenList>
 				</Folder>
 				<ActorMixer Name="characters" ID="{5580AAA9-957C-4D38-95AA-CCF34D7ABE53}" ShortID="460914112">
@@ -1180,6 +1296,14 @@
 					<ChildrenList>
 						<BlendContainer Name="footsteps" ID="{3EE0308A-942F-4B15-8E33-9193A4A53C52}" ShortID="53096087">
 							<PropertyList>
+								<Property Name="InitialDelay" Type="Real64">
+									<ModifierList>
+										<ModifierInfo>
+											<Modifier Name="" ID="{7EBF83D3-4CF0-47D9-91BA-08CF308D556C}"/>
+										</ModifierInfo>
+									</ModifierList>
+								</Property>
+								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
 								<Property Name="MaxSoundPerInstance" Type="int16">
 									<ValueList>
 										<Value>1</Value>
@@ -1228,6 +1352,10 @@
 												</ModifierInfo>
 											</ModifierList>
 										</Property>
+										<Property Name="PlayMechanismInfiniteOrNumberOfLoops" Type="int16" Value="0"/>
+										<Property Name="PlayMechanismLoop" Type="bool" Value="True"/>
+										<Property Name="PlayMechanismSpecialTransitionsType" Type="int16" Value="1"/>
+										<Property Name="PlayMechanismSpecialTransitionsValue" Type="Real64" Value="0"/>
 										<Property Name="RandomAvoidRepeatingCount" Type="int32" Value="2"/>
 										<Property Name="Volume" Type="Real64">
 											<ModifierList>
@@ -1252,6 +1380,9 @@
 									</ReferenceList>
 									<ChildrenList>
 										<Sound Name="Chainmail_Footstep_01" ID="{9F0EC84B-B704-4389-94AC-0C484CEA8019}" ShortID="454653911">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1271,6 +1402,9 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="Chainmail_Footstep_02" ID="{26B95D0C-F995-4646-9050-4633D302669F}" ShortID="555557595">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1290,6 +1424,9 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="Chainmail_Footstep_03" ID="{207E7062-2845-42B8-8796-A69D736C9F09}" ShortID="458687817">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1309,6 +1446,9 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="Chainmail_Footstep_04" ID="{2134EC62-8120-4BF5-B4C4-0B1CBA2DEDFA}" ShortID="924449251">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1328,6 +1468,9 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="Chainmail_Footstep_05" ID="{594B5B1A-F992-4E1E-A74D-2660725896E0}" ShortID="51525997">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1403,6 +1546,9 @@
 									</ReferenceList>
 									<ChildrenList>
 										<Sound Name="fs_leatherarmor_01" ID="{AF5E095B-F53A-4684-B273-49870AF41D60}" ShortID="904599722">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1426,6 +1572,9 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="fs_leatherarmor_01-001" ID="{0494F5A7-3BDC-4E42-9B95-C0C6C0D61643}" ShortID="485773482">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1451,6 +1600,9 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="fs_leatherarmor_01-002" ID="{1726C8B4-FD09-4050-8338-0AE517DD8F27}" ShortID="814702262">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1476,6 +1628,9 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="fs_leatherarmor_01-003" ID="{AD986A9F-F36A-499E-AA47-CA690A8F3B57}" ShortID="411803617">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1501,6 +1656,9 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="fs_leatherarmor_01-004" ID="{B4744C71-F536-4189-9C58-017BD4E86B6F}" ShortID="396157661">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1526,6 +1684,9 @@
 											</ActiveSourceList>
 										</Sound>
 										<Sound Name="fs_leatherarmor_01-005" ID="{4E2C5304-C9F1-478B-9FEB-2C459C383770}" ShortID="826275272">
+											<PropertyList>
+												<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1856,25 +2017,6 @@
 								</RandomSequenceContainer>
 							</ChildrenList>
 						</BlendContainer>
-						<Sound Name="Ghost_Laugh" ID="{8C7F949D-D813-47F1-947F-48B520D90582}" ShortID="820413111">
-							<ReferenceList>
-								<Reference Name="Conversion">
-									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
-								</Reference>
-								<Reference Name="OutputBus">
-									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
-								</Reference>
-							</ReferenceList>
-							<ChildrenList>
-								<AudioFileSource Name="Ghost_Laugh" ID="{134D4E17-16F5-4D47-A30A-AAD1EE76CE80}" ShortID="44048537">
-									<Language>SFX</Language>
-									<AudioFile>Ghost_Laugh.wav</AudioFile>
-								</AudioFileSource>
-							</ChildrenList>
-							<ActiveSourceList>
-								<ActiveSource Name="Ghost_Laugh" ID="{134D4E17-16F5-4D47-A30A-AAD1EE76CE80}" Platform="Linked"/>
-							</ActiveSourceList>
-						</Sound>
 					</ChildrenList>
 				</ActorMixer>
 				<ActorMixer Name="narration" ID="{FA7F4420-FB1F-48F6-9A15-2C686BEA29B5}" ShortID="456016858">

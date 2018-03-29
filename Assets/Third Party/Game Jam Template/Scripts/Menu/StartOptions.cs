@@ -146,6 +146,14 @@ public class StartOptions : NetworkBehaviour {
                 AkSoundEngine.PostEvent("cs_level7_stop", gameObject);
                 break;
         }
+        if (sceneName.Contains("Level"))
+        {
+            AkSoundEngine.PostEvent("music_level_start", gameObject);            
+        }
+        else
+        {
+            AkSoundEngine.PostEvent("music_level_stop", gameObject);          
+        }
     }
 
     public void NextScene()

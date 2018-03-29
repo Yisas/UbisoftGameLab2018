@@ -288,7 +288,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             {
                 if (ao.playerToAppearTo == playerMove.PlayerID)
                 {
-                    AkSoundEngine.PostEvent("AppearObject", gameObject);
+                    AkSoundEngine.PostEvent("appear_object", gameObject);
                 }
             }
             else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))

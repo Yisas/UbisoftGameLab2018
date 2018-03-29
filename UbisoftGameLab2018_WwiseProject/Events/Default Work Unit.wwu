@@ -658,7 +658,11 @@
 							<PropertyList>
 								<Property Name="ActionType" Type="int16" Value="1"/>
 							</PropertyList>
-							<ReferenceList/>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="ghost_loop" ID="{BC886650-2157-408A-92FD-3B9FD6BE19E7}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
 						</Action>
 					</ChildrenList>
 				</Event>
@@ -668,7 +672,11 @@
 							<PropertyList>
 								<Property Name="ActionType" Type="int16" Value="1"/>
 							</PropertyList>
-							<ReferenceList/>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="volcano_loop" ID="{78A3A953-DAF6-41E2-9404-0F836D108E59}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
 						</Action>
 					</ChildrenList>
 				</Event>
@@ -681,6 +689,62 @@
 							<ReferenceList>
 								<Reference Name="Target">
 									<ObjectRef Name="vortex_loop" ID="{829FCDD8-6C1D-4E74-B52D-CDC9A8CC89BE}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="appear_object" ID="{62827A6A-D518-47DE-9409-01E17FD07BE1}">
+					<ChildrenList>
+						<Action Name="" ID="{4B1C59DE-EABF-4B3B-9B8B-117D5058F60C}" ShortID="560789513">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="AppearObject" ID="{213893A5-2BCA-47BF-8268-658C1831DF88}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="jump" ID="{7300C581-C402-4D42-9A5E-197E8F0530B2}">
+					<ChildrenList>
+						<Action Name="" ID="{044EFF2F-D13B-48F6-B8E0-CD038CC84A15}" ShortID="198419237">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="jump" ID="{F5A8715D-2BB8-4428-98F8-183DFAC8D2C0}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="footsteps" ID="{02544DF2-D606-4103-BB35-606F51B565A7}">
+					<ChildrenList>
+						<Action Name="" ID="{81EC2FDD-0A5D-4854-91FC-418460412CD8}" ShortID="781127544">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="FOOTSTEP_Player_Run" ID="{F9221261-DCAB-4BF6-94E0-B127456ABBD0}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="footsteps_stop" ID="{07EC0DE6-6815-403A-92D6-AABDF73AA693}">
+					<ChildrenList>
+						<Action Name="" ID="{13AF6E46-7918-4926-B06D-5967943B2102}" ShortID="91620935">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="FOOTSTEP_Player_Run" ID="{F9221261-DCAB-4BF6-94E0-B127456ABBD0}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
