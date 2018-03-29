@@ -113,6 +113,7 @@ public class StartOptions : NetworkBehaviour {
 
     private void playSceneAudio(string sceneName)
     {
+        AkSoundEngine.PostEvent("footsteps_stop", gameObject);
         switch (sceneName)
         {
             case "Vignette 1":
