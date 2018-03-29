@@ -44,9 +44,11 @@ public class Lava : MonoBehaviour
                     other.GetComponent<PlayerMove>().rotateSpeed = playerObjectInteraction.defaultRotateSpeed;
                 }
 
-                playerObjectInteraction.HideFakeObject();
-
-                other.GetComponent<PlayerGameManagerCommunicators>().CmdResetCachedObject(playerObjectInteraction.HeldObjType);
+                // Drop a cached object into the deadzone!
+                if (playerObjectInteraction.HeldObjType != PickupableObject.PickupableType.BigBox)
+                    playerObjectInteraction.DropPickup();
+                else
+                    playerObjectInteraction.LetGoOfPushable();
             }
         }
     }
