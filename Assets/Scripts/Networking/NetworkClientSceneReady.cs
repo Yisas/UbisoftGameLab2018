@@ -13,6 +13,16 @@ public class NetworkClientSceneReady : NetworkBehaviour
         {
             if (!isServer)
             {
+                PlayerMove[] players = GameObject.FindObjectsOfType<PlayerMove>();
+
+                foreach (PlayerMove pm in players)
+                {
+                    if (pm.PlayerID == 2)
+                    {
+                        return;
+                    }
+                }
+
                 ClientScene.AddPlayer(2);
             }
         }
