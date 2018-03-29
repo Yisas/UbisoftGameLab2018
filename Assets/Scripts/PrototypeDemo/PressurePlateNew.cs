@@ -123,6 +123,13 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             Open();
             objectOnMe = other.gameObject;
         }
+
+        // If the object is a pickup set the boolean that its on a pressure plate
+        ResettableObject resettableObject = other.GetComponent<ResettableObject>();
+        if (resettableObject != null && resettableObject.CompareTag("Pickup"))
+        {
+            resettableObject.IsOnPressurePlate = true;
+        }
     }
 
     private void OnTriggerExit(Collider other)
