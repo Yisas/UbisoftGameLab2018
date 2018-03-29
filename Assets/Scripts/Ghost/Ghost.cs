@@ -51,7 +51,7 @@ public class Ghost : Movable
     // Coroutine that changes the ghosts angle as well as height
     private Coroutine angleChangeCoroutine;
     private bool isWanderCoRunning;
-    private bool isHittingWall;
+    public bool isHittingWall;
     private Vector3 wallNormal;
     private Vector3 rayHitPosition;
     private float wallAvoidanceTimer;

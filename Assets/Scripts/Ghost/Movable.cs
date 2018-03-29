@@ -23,6 +23,6 @@ public abstract class Movable : NetworkBehaviour {
     // The speed at which the ghost will float back up after being grounded.
     public float floatSpeed;
 
-    internal Vector3 targetRotation;
+    public Vector3 targetRotation;
     internal Vector3 linearVelocity;
 }

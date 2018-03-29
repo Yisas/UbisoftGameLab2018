@@ -49,7 +49,7 @@ public class GhostObjectInteraction : NetworkBehaviour
     public void DropPickup()
     {
         HideFakeObject();
-        newHeldObj = PlayerObjectInteraction.HoldableType.None;
+        newHeldObj = PlayerObjectInteraction.HoldableType.None;       
 
         GameObject throwableToSpawn = null;
         throwableToSpawn = GManager.Instance.GetCachedObject(heldObjectType);
@@ -68,10 +68,18 @@ public class GhostObjectInteraction : NetworkBehaviour
         {
             throwableToSpawn.GetComponent<Rigidbody>().useGravity = false;
             throwableToSpawn.GetComponent<Collider>().isTrigger = true;
+            
         }
 
         if (isServer)
             GManager.Instance.CachedObjectWasUsed(heldObjectType, true);
+
+        Quaternion oppositeRotation = movableAI.transform.rotation;
+        oppositeRotation.y = -movableAI.transform.rotation.y;
+        movableAI.transform.rotation = oppositeRotation;
+        movableAI.targetRotation = oppositeRotation.eulerAngles;
+        movableAI.velocity = Vector3.zero;
+        movableAI.GetComponent<Ghost>().isHittingWall = false;
     }
 
     //connect player and pickup/pushable object via a physics joint
