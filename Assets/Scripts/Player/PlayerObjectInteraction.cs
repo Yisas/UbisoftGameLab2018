@@ -50,6 +50,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private float originalMass;
 
+    //Audio
+    public float crateSoundSpeedThreshold = 1;
+
     // Private references
     private PlayerMove playerMove;
     private CharacterMotor characterMotor;
@@ -258,6 +261,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
         }
 
+        // Play box slide sound if the held object is pushable and player is moving
+        if (newHeldObj == HoldableType.Pushable && characterMotor.currentSpeed.magnitude > crateSoundSpeedThreshold)
+            AkSoundEngine.PostEvent("slide_start", gameObject);
+        else
+            AkSoundEngine.PostEvent("slide_start_stop", gameObject);
         checkIfBoxIsHanging();
     }
     #endregion
@@ -285,7 +293,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
             else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
             {
-                AkSoundEngine.PostEvent("BoxCollide", gameObject);
+                AkSoundEngine.PostEvent("impact_thump", gameObject);
             }
         }
 
@@ -541,6 +549,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (!Physics.CheckSphere(other.position, checkRadius, LayerMask.NameToLayer("Ignore Raycast")))
         {
+            AkSoundEngine.PostEvent("pickup", gameObject);
             if (isLocalPlayer)
             {
                 ResettableObject ro = other.GetComponent<ResettableObject>();
@@ -928,7 +937,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void CommonThrowPickup()
     {
-        AkSoundEngine.PostEvent("Throw", gameObject);
+        AkSoundEngine.PostEvent("throw", gameObject);
 
         GameObject throwableToSpawn = null;
         if (isLocalPlayer)
@@ -1086,7 +1095,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (heldObj)
         {
-            AkSoundEngine.PostEvent("Pickup", gameObject);
 
             if (joint)
             {

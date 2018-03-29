@@ -19,6 +19,7 @@ public class Portal : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
+        AkSoundEngine.PostEvent("vortex_jump", gameObject);
         if (other.tag == "Player")
         {
             // Do nothing if not local player

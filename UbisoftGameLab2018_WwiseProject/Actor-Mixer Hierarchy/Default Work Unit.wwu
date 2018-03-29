@@ -61,6 +61,8 @@
 									</RTPCList>
 								</Property>
 								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+								<Property Name="OverridePositioning" Type="bool" Value="True"/>
+								<Property Name="PositioningType" Type="int16" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
 										<Value>9</Value>
@@ -99,6 +101,9 @@
 								</Property>
 							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="lava" ID="{CBE973B6-1C7A-4793-BB60-FC3D0065D26A}" WorkUnitID="{7D2384A9-B907-4BD8-B36F-E7CD3A2C7A15}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
 								</Reference>
@@ -119,6 +124,8 @@
 						<Sound Name="fire_loop" ID="{5670DF2C-17E9-41CF-B040-E6BCB62D0CFF}" ShortID="798008920">
 							<PropertyList>
 								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+								<Property Name="OverridePositioning" Type="bool" Value="True"/>
+								<Property Name="PositioningType" Type="int16" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
 										<Value>8</Value>
@@ -157,6 +164,9 @@
 								</Property>
 							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="torch" ID="{67F01751-8F2E-489E-B9B1-DDA605D11AAA}" WorkUnitID="{7D2384A9-B907-4BD8-B36F-E7CD3A2C7A15}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
 								</Reference>
@@ -215,6 +225,8 @@
 										</RTPC>
 									</RTPCList>
 								</Property>
+								<Property Name="OverridePositioning" Type="bool" Value="True"/>
+								<Property Name="PositioningType" Type="int16" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
 										<Value>-1</Value>
@@ -253,6 +265,9 @@
 								</Property>
 							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="ghost" ID="{1BC0EC08-3EAE-431E-B937-F573FFDE52E6}" WorkUnitID="{7D2384A9-B907-4BD8-B36F-E7CD3A2C7A15}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
 								</Reference>
@@ -306,6 +321,8 @@
 									</RTPCList>
 								</Property>
 								<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+								<Property Name="OverridePositioning" Type="bool" Value="True"/>
+								<Property Name="PositioningType" Type="int16" Value="1"/>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
 										<Value>-4</Value>
@@ -349,6 +366,9 @@
 								</Property>
 							</PropertyList>
 							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="portal" ID="{63EC9374-0B48-4AE0-8CFA-02B87F42B7FC}" WorkUnitID="{7D2384A9-B907-4BD8-B36F-E7CD3A2C7A15}"/>
+								</Reference>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
 								</Reference>
@@ -768,10 +788,21 @@
 							<ChildrenList>
 								<RandomSequenceContainer Name="slide" ID="{FE2727A8-047E-47EB-B58D-AC4A4053421C}" ShortID="965512982">
 									<PropertyList>
+										<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+										<Property Name="MaxSoundPerInstance" Type="int16">
+											<ValueList>
+												<Value>1</Value>
+											</ValueList>
+										</Property>
 										<Property Name="PlayMechanismSpecialTransitions" Type="bool" Value="True"/>
 										<Property Name="PlayMechanismSpecialTransitionsValue" Type="Real64" Value="0.3"/>
 										<Property Name="PlayMechanismStepOrContinuous" Type="int16" Value="0"/>
 										<Property Name="RandomOrSequence" Type="int16" Value="0"/>
+										<Property Name="UseMaxSoundPerInstance" Type="bool">
+											<ValueList>
+												<Value>True</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
@@ -1075,6 +1106,63 @@
 								</Sound>
 							</ChildrenList>
 						</RandomSequenceContainer>
+						<Sound Name="Throw" ID="{0BD0E33A-CD3D-4A4F-B588-5450C48C9F1F}" ShortID="1023925199">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Throw" ID="{E07FE513-88C8-4A0E-A494-CFAC0F624FFB}" ShortID="175150723">
+									<Language>SFX</Language>
+									<AudioFile>Throw.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Throw" ID="{E07FE513-88C8-4A0E-A494-CFAC0F624FFB}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="Pickup" ID="{3F8E0957-37C3-46CF-84BD-A855454CC2B9}" ShortID="69273540">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Pickup" ID="{1E5DF874-2B7A-4C5A-A5F7-BFE643BE2B84}" ShortID="496097732">
+									<Language>SFX</Language>
+									<AudioFile>Pickup.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Pickup" ID="{1E5DF874-2B7A-4C5A-A5F7-BFE643BE2B84}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="ObjectDrop" ID="{990AF021-E715-4140-B2F8-84C97A74CF76}" ShortID="227592508">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="ObjectDrop" ID="{E2B0BB3D-39ED-423F-B04B-FDA2D4AB6C31}" ShortID="659072164">
+									<Language>SFX</Language>
+									<AudioFile>ObjectDrop.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="ObjectDrop" ID="{E2B0BB3D-39ED-423F-B04B-FDA2D4AB6C31}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
 					</ChildrenList>
 				</Folder>
 				<ActorMixer Name="characters" ID="{5580AAA9-957C-4D38-95AA-CCF34D7ABE53}" ShortID="460914112">
@@ -1091,6 +1179,18 @@
 					</ReferenceList>
 					<ChildrenList>
 						<BlendContainer Name="footsteps" ID="{3EE0308A-942F-4B15-8E33-9193A4A53C52}" ShortID="53096087">
+							<PropertyList>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1455,6 +1555,13 @@
 							</ChildrenList>
 						</BlendContainer>
 						<BlendContainer Name="thump" ID="{B33B946A-9EFF-4343-97B7-0169EC62E039}" ShortID="181072227">
+							<PropertyList>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
@@ -1749,6 +1856,25 @@
 								</RandomSequenceContainer>
 							</ChildrenList>
 						</BlendContainer>
+						<Sound Name="Ghost_Laugh" ID="{8C7F949D-D813-47F1-947F-48B520D90582}" ShortID="820413111">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Ghost_Laugh" ID="{134D4E17-16F5-4D47-A30A-AAD1EE76CE80}" ShortID="44048537">
+									<Language>SFX</Language>
+									<AudioFile>Ghost_Laugh.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Ghost_Laugh" ID="{134D4E17-16F5-4D47-A30A-AAD1EE76CE80}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
 					</ChildrenList>
 				</ActorMixer>
 				<ActorMixer Name="narration" ID="{FA7F4420-FB1F-48F6-9A15-2C686BEA29B5}" ShortID="456016858">

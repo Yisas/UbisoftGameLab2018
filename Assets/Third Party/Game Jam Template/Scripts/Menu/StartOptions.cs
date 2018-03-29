@@ -38,7 +38,8 @@ public class StartOptions : NetworkBehaviour {
         menuCanvasGroup = GetComponent<CanvasGroup>();
 
         fadeImage.color = menuSettingsData.sceneChangeFadeColor;
-	}
+        AkSoundEngine.PostEvent("menu_start", gameObject);
+    }
 
     private void Update()
     {
@@ -58,9 +59,10 @@ public class StartOptions : NetworkBehaviour {
 
     public void StartButtonClicked()
 	{
-		//If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic
-		//To change fade time, change length of animation "FadeToColor"
-		if (menuSettingsData.musicLoopToChangeTo != null) 
+        AkSoundEngine.PostEvent("ui_validate", gameObject);
+        //If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic
+        //To change fade time, change length of animation "FadeToColor"
+        if (menuSettingsData.musicLoopToChangeTo != null) 
 		{
 			playMusic.FadeDown(menuSettingsData.menuFadeTime);
 		}
@@ -104,11 +106,51 @@ public class StartOptions : NetworkBehaviour {
     {
         string path = SceneUtility.GetScenePathByBuildIndex(sceneToStart);
         string sceneName = path.Substring(0, path.Length - 6).Substring(path.LastIndexOf('/') + 1);
+        playSceneAudio(sceneName);
         NetworkManager.singleton.ServerChangeScene(sceneName);
+    }
+
+    private void playSceneAudio(string sceneName)
+    {
+        switch (sceneName)
+        {
+            case "Vignette 1":
+                AkSoundEngine.PostEvent("menu_stop", gameObject);
+                AkSoundEngine.PostEvent("cs_level1_start", gameObject);
+                break;
+            case "Vignette 2":
+                AkSoundEngine.PostEvent("cs_level2_start", gameObject);
+                break;
+            case "Vignette 3":
+                AkSoundEngine.PostEvent("cs_level3_start", gameObject);
+                break;
+            case "Vignette 4":
+                AkSoundEngine.PostEvent("cs_level4_start", gameObject);
+                break;
+            case "Vignette 5":
+                AkSoundEngine.PostEvent("cs_level5_start", gameObject);
+                break;
+            case "Vignette 6":
+                AkSoundEngine.PostEvent("cs_level6_start", gameObject);
+                break;
+            case "Final Level":
+                AkSoundEngine.PostEvent("cs_level7_start", gameObject);
+                break;
+            default:
+                AkSoundEngine.PostEvent("cs_level1_stop", gameObject);
+                AkSoundEngine.PostEvent("cs_level2_stop", gameObject);
+                AkSoundEngine.PostEvent("cs_level3_stop", gameObject);
+                AkSoundEngine.PostEvent("cs_level4_stop", gameObject);
+                AkSoundEngine.PostEvent("cs_level5_stop", gameObject);
+                AkSoundEngine.PostEvent("cs_level6_stop", gameObject);
+                AkSoundEngine.PostEvent("cs_level7_stop", gameObject);
+                break;
+        }
     }
 
     public void NextScene()
     {
+        AkSoundEngine.PostEvent("menu_stop", gameObject);
         if (!isServer)
             return;
 

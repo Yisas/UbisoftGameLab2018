@@ -60,6 +60,8 @@ GameObject:
   - component: {fileID: 114830015419935284}
   - component: {fileID: 114213710497270314}
   - component: {fileID: 114330988365872306}
+  - component: {fileID: 114643627338209886}
+  - component: {fileID: 114440189634201206}
   m_Layer: 24
   m_Name: Torch
   m_TagString: Pickup
@@ -416,6 +418,9 @@ MonoBehaviour:
   bamParticleEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 2}
   powCooldown: 0.75
   idInGameManager: 0
+  wasSpawnedByGameManager: 0
+  hasOriginalPosition: 0
+  hasOriginalRotation: 0
 --- !u!114 &114330988365872306
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -494,6 +499,27 @@ MonoBehaviour:
   MaxLightDistance: 128
   AboveFogPercent: 1.58
   Offset: {x: 19780.506, y: 19780.506, z: 0}
+--- !u!114 &114440189634201206
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1347668835503844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 096fe6ca3e5df1945a3810e4f24764c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_listeners:
+    initialListenerList: []
+    useDefaultListeners: 1
+  isEnvironmentAware: 1
+  isStaticObject: 0
+  m_positionOffsetData:
+    KeepMe: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+  m_posOffsetData: {fileID: 0}
+  listenerMask: 1
 --- !u!114 &114442370952431780
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -564,6 +590,28 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114643627338209886
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1347668835503844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfa7915e901982a4ab8c2b77df4284b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerList: f7e1664c
+  useOtherObject: 0
+  actionOnEventType: 0
+  curveInterpolation: 4
+  enableActionOnEvent: 0
+  eventID: 668518050
+  m_callbackData: {fileID: 0}
+  playingId: 0
+  soundEmitterObject: {fileID: 0}
+  transitionDuration: 0
+  valueGuid: 041a25eae0f904459a0fee183644f51c
 --- !u!114 &114654866140407956
 MonoBehaviour:
   m_ObjectHideFlags: 1
