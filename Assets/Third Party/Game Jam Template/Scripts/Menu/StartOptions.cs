@@ -102,6 +102,7 @@ public class StartOptions : NetworkBehaviour {
 
     private void NetworkedSceneChange()
     {
+        NetworkServer.SetAllClientsNotReady();
         string path = SceneUtility.GetScenePathByBuildIndex(sceneToStart);
         string sceneName = path.Substring(0, path.Length - 6).Substring(path.LastIndexOf('/') + 1);
         NetworkManager.singleton.ServerChangeScene(sceneName);
