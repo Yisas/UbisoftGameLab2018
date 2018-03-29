@@ -10383,7 +10383,7 @@ MonoBehaviour:
   FogTransitionSize: 5
   MaxLightDistance: 128
   AboveFogPercent: 0.1
-  Offset: {x: 17189.879, y: 17189.879, z: 0}
+  Offset: {x: 17191.312, y: 17191.312, z: 0}
 --- !u!108 &1256612000
 Light:
   m_ObjectHideFlags: 0
@@ -16184,6 +16184,46 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 114124582072186660, guid: 71936dab500679241a8aafddeffb2251,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114124582072186660, guid: 71936dab500679241a8aafddeffb2251,
+        type: 2}
+      propertyPath: _preset
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114124582072186660, guid: 71936dab500679241a8aafddeffb2251,
+        type: 2}
+      propertyPath: _sharpen
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114124582072186660, guid: 71936dab500679241a8aafddeffb2251,
+        type: 2}
+      propertyPath: _sharpenRelaxation
+      value: 0.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 114124582072186660, guid: 71936dab500679241a8aafddeffb2251,
+        type: 2}
+      propertyPath: _sharpenClamp
+      value: 0.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 114124582072186660, guid: 71936dab500679241a8aafddeffb2251,
+        type: 2}
+      propertyPath: _saturate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114124582072186660, guid: 71936dab500679241a8aafddeffb2251,
+        type: 2}
+      propertyPath: _contrast
+      value: 1.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 114124582072186660, guid: 71936dab500679241a8aafddeffb2251,
+        type: 2}
+      propertyPath: isDirty
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8100000, guid: 71936dab500679241a8aafddeffb2251, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 71936dab500679241a8aafddeffb2251, type: 2}
@@ -16226,6 +16266,54 @@ MonoBehaviour:
     positionOffset: {x: 0, y: 0, z: 0}
   m_posOffsetData: {fileID: 0}
   listenerMask: 1
+--- !u!114 &1907642529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1907642513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b9e31fdf962e3e4ca3b62ec3ecc2f4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tonemapper: 0
+  Exposure: 1
+  LinearWhitePoint: 11.2
+  ApplyDithering: 0
+  QualityLevel: 1
+  BlendAmount: 0
+  LutTexture: {fileID: 2800000, guid: 43844b533efa0a149bf8820c46ad7afa, type: 3}
+  LutBlendTexture: {fileID: 0}
+  MaskTexture: {fileID: 0}
+  UseDepthMask: 0
+  DepthMaskCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  UseVolumes: 0
+  ExitVolumeBlendTime: 1
+  TriggerVolumeProxy: {fileID: 0}
+  VolumeCollisionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  EffectFlags:
+    components: []
+  sharedInstanceID: 717af7ce-e61e-46ec-8b3c-ad35f3505fb1
 --- !u!1001 &1907963283
 Prefab:
   m_ObjectHideFlags: 0
