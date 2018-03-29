@@ -383,10 +383,20 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         Debug.Log("Grabbing pushable from player " + playerMove.PlayerID + " islocal? " + isLocalPlayer + " isServer?" + isServer);
 
-        if (isLocalPlayer && !other.GetComponent<ResettableObject>().hasOriginalPosition)
+        if (isLocalPlayer)
         {
-            positionOfResettableObject = other.transform.position;
-            rotationOfResettableObject = other.transform.rotation;
+            ResettableObject ro = other.GetComponent<ResettableObject>();
+
+            if (!ro.hasOriginalPosition)
+            {
+                positionOfResettableObject = other.transform.position;
+                rotationOfResettableObject = other.transform.rotation;
+            }
+            else
+            {
+                positionOfResettableObject = ro.OriginalPosition;
+                rotationOfResettableObject = ro.OriginalRotation;
+            }
         }
 
         // Avoid any physics while in the process of grabbing
@@ -531,10 +541,20 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (!Physics.CheckSphere(other.position, checkRadius, LayerMask.NameToLayer("Ignore Raycast")))
         {
-            if (isLocalPlayer && !other.GetComponent<ResettableObject>().hasOriginalPosition)
+            if (isLocalPlayer)
             {
-                positionOfResettableObject = other.transform.position;
-                rotationOfResettableObject = other.transform.rotation;
+                ResettableObject ro = other.GetComponent<ResettableObject>();
+
+                if (!ro.hasOriginalPosition)
+                {
+                    positionOfResettableObject = other.transform.position;
+                    rotationOfResettableObject = other.transform.rotation;
+                }
+                else
+                {
+                    positionOfResettableObject = ro.OriginalPosition;
+                    rotationOfResettableObject = ro.OriginalRotation;
+                }
             }
 
             // Only destroy objects on the server
