@@ -64,8 +64,19 @@ public class ResettableObject : NetworkBehaviour
 
     public void Reset(bool preventRespawnEffect = false)
     {
-        Vector3 ogPosition = GManager.Instance.GetPositionOfResettableObject();
-        Quaternion ogRotation = GManager.Instance.GetRotationOfResettableObject();
+        Vector3 ogPosition;
+        Quaternion ogRotation;
+
+        if (tag != "Player")
+        {
+            ogPosition = GManager.Instance.GetPositionOfResettableObject();
+            ogRotation = GManager.Instance.GetRotationOfResettableObject();
+        }
+        else
+        {
+            ogPosition = GManager.Instance.GetOriginalPositionOfPlayer();
+            ogRotation = GManager.Instance.GetOriginalRotationOfPlayer();
+        }
 
         if (transform.tag == "Pickup" && !preventRespawnEffect)
         {
@@ -93,10 +104,6 @@ public class ResettableObject : NetworkBehaviour
 
         transform.position = ogPosition;
         transform.rotation = ogRotation;
-    }
-
-    private void OnDestroy()
-    {
     }
 
     public bool IsMoved

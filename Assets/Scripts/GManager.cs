@@ -39,6 +39,9 @@ public class GManager : NetworkBehaviour
     [SyncVar]
     private bool clientsConnected = false;
 
+    private Vector3 playerResetPosition;
+    private Quaternion playerResetRotation;
+
     private Vector3 positionOfResettableObject;
     private Quaternion rotationOfResettableObject;
 
@@ -167,6 +170,12 @@ public class GManager : NetworkBehaviour
             this.rotationOfResettableObject = rotationOfResettalbeObject;
     }
 
+    public void RegisterOriginalPlayerResettableObject(Vector3 position, Quaternion rotation)
+    {
+        playerResetPosition = position;
+        playerResetRotation = rotation;
+    }
+
     // When the player falls into lava with a carried object, the cached one should be reset and a new one should be cached
     public void ResetCachedObject(PickupableObject.PickupableType type)
     {
@@ -185,6 +194,16 @@ public class GManager : NetworkBehaviour
     public Quaternion GetRotationOfResettableObject()
     {
         return rotationOfResettableObject;
+    }
+
+    public Vector3 GetOriginalPositionOfPlayer()
+    {
+        return playerResetPosition;
+    }
+
+    public Quaternion GetOriginalRotationOfPlayer()
+    {
+        return playerResetRotation;
     }
 
     public void ResetAllResetableObjects(bool resetPlayers)
