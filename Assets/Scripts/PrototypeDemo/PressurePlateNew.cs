@@ -74,6 +74,11 @@ public class PressurePlateNew : DoorAnimatorBehaviour
                 objectOnMe = other.gameObject;
             }
 
+            if (other.tag == "Pickup")
+            {
+                other.GetComponent<ResettableObject>().IsOnPressurePlate = true;
+            }
+
             //Lock Opens
             string animName = string.Concat("lock", LockID, "Open");
             lockAnim[animName].speed = 1;
@@ -145,6 +150,11 @@ public class PressurePlateNew : DoorAnimatorBehaviour
             else
             {
                 objectOnMe = null;
+            }
+
+            if (other.tag == "Pickup")
+            {
+                other.GetComponent<ResettableObject>().IsOnPressurePlate = false;
             }
 
             myLight.enabled = false;
