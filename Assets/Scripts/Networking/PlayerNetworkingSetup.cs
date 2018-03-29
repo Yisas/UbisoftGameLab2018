@@ -58,5 +58,10 @@ public class PlayerNetworkingSetup : NetworkBehaviour
         {
             GManager.Instance.RegisterOriginalPlayerResettableObject(transform.position, transform.rotation);
         }
+
+        if (!isServer)
+        {
+            GetComponent<PlayerGameManagerCommunicators>().CmdStartGameManagers();
+        }
     }
 }

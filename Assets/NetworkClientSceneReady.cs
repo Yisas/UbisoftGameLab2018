@@ -11,13 +11,6 @@ public class NetworkClientSceneReady : NetworkBehaviour
         if (!isServer)
         {
             ClientScene.AddPlayer(2);
-            CmdStartGameManagers();
         }
-    }
-
-    [Command]
-    public void CmdStartGameManagers()
-    {
-        GManager.Instance.StartGameManagers();
     }
 }
