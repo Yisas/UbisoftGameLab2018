@@ -72,10 +72,10 @@ public class ButtonPromptsNetworked : MonoBehaviour
 
     void Update()
     { 
-        if(player && player.isLocalPlayer && Canvas_Player == null)
-        {
-            NetworkPlayerPromptReferenceStart(player.transform.GetComponentInChildren<Canvas>());
-        }
+        //if(player && player.isLocalPlayer && Canvas_Player == null)
+        //{
+        //    NetworkPlayerPromptReferenceStart(player.transform.GetComponentInChildren<Canvas>());
+        //}
     }
 
     /// <summary>
@@ -146,7 +146,7 @@ public class ButtonPromptsNetworked : MonoBehaviour
         }
         else if (buttonprompt == ButtonPromptOn.junk)   // If the prompt is suppose to appear above the Junk Items
         {
-            Canvas_Junk.gameObject.GetComponent<Canvas>().enabled = true;
+            Canvas_Junk.gameObject.GetComponent<Canvas>().enabled = true;            
         }
         else if (buttonprompt == ButtonPromptOn.player) // If the prompt is suppose to appear above the Player
         {
