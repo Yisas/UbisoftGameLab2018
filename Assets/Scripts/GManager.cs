@@ -20,6 +20,9 @@ public class GManager : NetworkBehaviour
     public bool resetPlayers = false;
     public static string pickupLayer = "Pickup";
     public GameObject respawnPickupEffect;
+    public static int nonTransparentLayer = 24;
+    public static string bordersNameTop = "top";
+    public static string bordersNameSide = "side";
 
     public static int invisiblePlayer1Layer = 9;
     public static int invisiblePlayer2Layer = 12;
