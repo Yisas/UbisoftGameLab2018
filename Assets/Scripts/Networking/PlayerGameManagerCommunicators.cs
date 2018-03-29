@@ -10,5 +10,4 @@ public class PlayerGameManagerCommunicators : NetworkBehaviour
     {
         GManager.Instance.ResetCachedObject(type);
     }
-
 }

@@ -53,5 +53,10 @@ public class PlayerNetworkingSetup : NetworkBehaviour
         {
             Debug.LogError("Invalid player added through networking");
         }
+
+        if (isLocalPlayer)
+        {
+            GManager.Instance.RegisterOriginalPlayerResettableObject(transform.position, transform.rotation);
+        }
     }
 }
