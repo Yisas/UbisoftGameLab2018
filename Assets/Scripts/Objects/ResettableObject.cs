@@ -120,10 +120,17 @@ public class ResettableObject : NetworkBehaviour
     {
         get
         {
-            if (Vector3.Distance(originalPosition, transform.position) > distanceMovedThreshold)
-                isMoved = true;
+            if (hasOriginalPosition)
+            {
+                if (Vector3.Distance(originalPosition, transform.position) > distanceMovedThreshold)
+                    isMoved = true;
+                else
+                    isMoved = false;
+            }
             else
-                isMoved = false;
+            {
+                return false;
+            }
             return isMoved;
         }
     }
