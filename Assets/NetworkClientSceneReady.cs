@@ -8,7 +8,16 @@ public class NetworkClientSceneReady : NetworkBehaviour
     // Use this for initialization
     void Start()
     {
-        if (isClient)
-            ClientScene.Ready(NetworkManager.singleton.client.connection);
+        if (!isServer)
+        {
+            ClientScene.AddPlayer(2);
+            CmdStartGameManagers();
+        }
+    }
+
+    [Command]
+    public void CmdStartGameManagers()
+    {
+        GManager.Instance.StartGameManagers();
     }
 }

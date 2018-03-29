@@ -153,11 +153,12 @@ public class GManager : NetworkBehaviour
         {
             currentLevelTime += Time.deltaTime;
         }
+    }
 
-        if (isServer && !clientsConnected && GetComponent<NetworkIdentity>().observers.Count == 2)
+    public void StartGameManagers()
+    {
+        if (isServer)
         {
-            clientsConnected = true;
-
             // Spawn cached objects
             for (int i = 0; i < spawnableInteractableObjects.Length; i++)
                 serverAuthorityCachedObjects[i] = CacheNewObject((PickupableObject.PickupableType)i);
