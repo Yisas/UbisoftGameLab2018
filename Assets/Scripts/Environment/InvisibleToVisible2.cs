@@ -22,6 +22,9 @@ public class InvisibleToVisible2 : MonoBehaviour
     public float regressionTresholdBottom = 0.05f;
     private bool isRegressingAlpha;
     public float maxTransparency = 0.75f;
+    private bool bordersVisible;
+
+    public static string bordersNameStart = "border";
 
     public void Start()
     {
@@ -74,6 +77,16 @@ public class InvisibleToVisible2 : MonoBehaviour
         }
         else
         {
+            if (!bordersVisible)
+            {
+                if (transform.name.ToLower().Contains(GManager.bordersNameSide) || transform.name.ToLower().Contains(GManager.bordersNameTop))
+                {
+                    transform.gameObject.layer = GManager.nonTransparentLayer;
+                    GetComponent<Renderer>().material.renderQueue = 5000;
+                }
+
+                bordersVisible = true;
+            }
             return;
         }
 

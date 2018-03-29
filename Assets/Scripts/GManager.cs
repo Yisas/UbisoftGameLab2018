@@ -20,6 +20,9 @@ public class GManager : NetworkBehaviour
     public bool resetPlayers = false;
     public static string pickupLayer = "Pickup";
     public GameObject respawnPickupEffect;
+    public static int nonTransparentLayer = 24;
+    public static string bordersNameTop = "top";
+    public static string bordersNameSide = "side";
 
     public static int invisiblePlayer1Layer = 9;
     public static int invisiblePlayer2Layer = 12;
@@ -36,11 +39,11 @@ public class GManager : NetworkBehaviour
     public GameObject[] clientAuthorityCachedObjects = new GameObject[4];
 
     private int localPlayerID;
+    [SyncVar]
     private bool clientsConnected = false;
 
-    private List<ResettableObject> resettableObjects = new List<ResettableObject>();
-    private List<Vector3> positionsOfResettableObjects = new List<Vector3>();
-    private List<Quaternion> rotationsOfResettableObjects = new List<Quaternion>();
+    private Vector3 playerResetPosition;
+    private Quaternion playerResetRotation;
 
     private void Awake()
     {
@@ -82,6 +85,7 @@ public class GManager : NetworkBehaviour
             serverAuthorityCachedObjects[(int)type] = Instantiate(modelToSpawn, new Vector3(0, 200 * ((int)type + 1), 0), modelToSpawn.transform.rotation);
             serverAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = (false);
             serverAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().isKinematic = (false);
+            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().wasSpawnedByGameManager = (true);
             serverAuthorityCachedObjects[(int)type] = serverAuthorityCachedObjects[(int)type];
             NetworkServer.Spawn(serverAuthorityCachedObjects[(int)type]);
         }
@@ -91,6 +95,7 @@ public class GManager : NetworkBehaviour
             clientAuthorityCachedObjects[(int)type] = Instantiate(modelToSpawn, new Vector3(0, 210 * ((int)type + 1), 0), modelToSpawn.transform.rotation);
             clientAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = (false);
             clientAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().isKinematic = (false);
+            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().wasSpawnedByGameManager = (true);
             NetworkServer.Spawn(clientAuthorityCachedObjects[(int)type]);
             SetPlayerAuthorityToHeldObject(GetNonLocalPlayer().GetComponent<NetworkIdentity>(), clientAuthorityCachedObjects[(int)type].GetComponent<NetworkIdentity>());
             clientAuthorityCachedObjects[(int)type] = clientAuthorityCachedObjects[(int)type];
@@ -109,14 +114,21 @@ public class GManager : NetworkBehaviour
 
         clientAuthorityCachedObjects[(int)type] = go;
         clientAuthorityCachedObjects[(int)type].GetComponent<Rigidbody>().useGravity = false;
+        clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().wasSpawnedByGameManager = (true);
     }
 
     public GameObject GetCachedObject(PickupableObject.PickupableType type)
     {
         if (isServer)
+        {
+            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().wasSpawnedByGameManager = (false);
             return serverAuthorityCachedObjects[(int)type];
+        }
         else
+        {
+            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().wasSpawnedByGameManager = (false);
             return clientAuthorityCachedObjects[(int)type];
+        }
     }
 
     /// <summary>
@@ -141,65 +153,22 @@ public class GManager : NetworkBehaviour
         {
             currentLevelTime += Time.deltaTime;
         }
+    }
 
-        if (isServer && !clientsConnected && GetComponent<NetworkIdentity>().observers.Count == 2)
+    public void StartGameManagers()
+    {
+        if (isServer)
         {
-            clientsConnected = true;
-            FindPlayers();
-
-            // Register resettable objects positions
-            foreach (ResettableObject ro in GameObject.FindObjectsOfType<ResettableObject>())
-            {
-                RegisterResettableObject(ro);
-            }
-
-            RpcRegisterAllResettableObjects();
-
             // Spawn cached objects
             for (int i = 0; i < spawnableInteractableObjects.Length; i++)
                 serverAuthorityCachedObjects[i] = CacheNewObject((PickupableObject.PickupableType)i);
         }
     }
 
-    [ClientRpc]
-    private void RpcRegisterAllResettableObjects()
+    public void RegisterOriginalPlayerResettableObject(Vector3 position, Quaternion rotation)
     {
-        if (!isServer)
-        {
-            // Register resettable objects positions
-            foreach (ResettableObject ro in GameObject.FindObjectsOfType<ResettableObject>())
-            {
-                RegisterResettableObject(ro);
-            }
-        }
-    }
-
-    public void RegisterResettableObject(ResettableObject ro)
-    {
-        ro.ID = resettableObjects.Count;
-        resettableObjects.Add(ro);
-        positionsOfResettableObjects.Add(ro.transform.position);
-        rotationsOfResettableObjects.Add(ro.transform.rotation);
-    }
-
-    public void RegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
-    {
-        // Cached object should become the resettable object reference
-        if (isServer)
-        {
-            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
-            resettableObjects[id] = serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
-        }
-        else
-        {
-            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
-            resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
-        }
-    }
-
-    public void DeRegisterResettableObject(ResettableObject ro)
-    {
-        resettableObjects.Remove(ro);
+        playerResetPosition = position;
+        playerResetRotation = rotation;
     }
 
     // When the player falls into lava with a carried object, the cached one should be reset and a new one should be cached
@@ -212,14 +181,14 @@ public class GManager : NetworkBehaviour
         }
     }
 
-    public Vector3 GetPositionOfResettableObject(int id)
+    public Vector3 GetOriginalPositionOfPlayer()
     {
-        return positionsOfResettableObjects[id];
+        return playerResetPosition;
     }
 
-    public Quaternion GetRotationOfResettableObject(int id)
+    public Quaternion GetOriginalRotationOfPlayer()
     {
-        return rotationsOfResettableObjects[id];
+        return playerResetRotation;
     }
 
     public void ResetAllResetableObjects(bool resetPlayers)

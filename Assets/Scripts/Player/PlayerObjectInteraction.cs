@@ -63,6 +63,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
     private float vibrationTime = 0;
     public float vibrationIntensity = 0.1f;
 
+    private Vector3 positionOfResettableObject;
+    private Quaternion rotationOfResettableObject;
+
     //setup
     void Awake()
     {
@@ -380,6 +383,22 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         Debug.Log("Grabbing pushable from player " + playerMove.PlayerID + " islocal? " + isLocalPlayer + " isServer?" + isServer);
 
+        if (isLocalPlayer)
+        {
+            ResettableObject ro = other.GetComponent<ResettableObject>();
+
+            if (!ro.hasOriginalPosition)
+            {
+                positionOfResettableObject = other.transform.position;
+                rotationOfResettableObject = other.transform.rotation;
+            }
+            else
+            {
+                positionOfResettableObject = ro.OriginalPosition;
+                rotationOfResettableObject = ro.OriginalRotation;
+            }
+        }
+
         // Avoid any physics while in the process of grabbing
         other.GetComponent<Collider>().isTrigger = true;
 
@@ -522,6 +541,22 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (!Physics.CheckSphere(other.position, checkRadius, LayerMask.NameToLayer("Ignore Raycast")))
         {
+            if (isLocalPlayer)
+            {
+                ResettableObject ro = other.GetComponent<ResettableObject>();
+
+                if (!ro.hasOriginalPosition)
+                {
+                    positionOfResettableObject = other.transform.position;
+                    rotationOfResettableObject = other.transform.rotation;
+                }
+                else
+                {
+                    positionOfResettableObject = ro.OriginalPosition;
+                    rotationOfResettableObject = ro.OriginalRotation;
+                }
+            }
+
             // Only destroy objects on the server
             if (isServer)
             {
@@ -731,6 +766,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
         }
 
+        if (isLocalPlayer)
+        {
+            pushableToSpawn.GetComponent<ResettableObject>().OriginalPosition = positionOfResettableObject;
+            pushableToSpawn.GetComponent<ResettableObject>().OriginalRotation = rotationOfResettableObject;
+        }
+
         if (isServer)
             GManager.Instance.CachedObjectWasUsed(heldObjectType, playerMove.PlayerID == 1);
 
@@ -803,6 +844,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
             throwableToSpawn.GetComponent<Rigidbody>().useGravity = true;
             throwableToSpawn.GetComponent<Rigidbody>().isKinematic = false;
             throwableToSpawn.GetComponent<Collider>().isTrigger = false;
+        }
+
+        if (isLocalPlayer)
+        {
+            throwableToSpawn.GetComponent<ResettableObject>().OriginalPosition = positionOfResettableObject;
+            throwableToSpawn.GetComponent<ResettableObject>().OriginalRotation = rotationOfResettableObject;
         }
 
         if (isServer)
@@ -908,6 +955,12 @@ public class PlayerObjectInteraction : NetworkBehaviour
             throwableToSpawn.GetComponent<Rigidbody>().velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             throwableToSpawn.GetComponent<Rigidbody>().AddForce(throwableToSpawn.transform.forward * throwForce.z, ForceMode.VelocityChange);
             throwableToSpawn.GetComponent<Rigidbody>().AddForce(throwableToSpawn.transform.up * throwForce.y, ForceMode.VelocityChange);
+        }
+
+        if (isLocalPlayer)
+        {
+            throwableToSpawn.GetComponent<ResettableObject>().OriginalPosition = positionOfResettableObject;
+            throwableToSpawn.GetComponent<ResettableObject>().OriginalRotation = rotationOfResettableObject;
         }
 
         if (isServer)

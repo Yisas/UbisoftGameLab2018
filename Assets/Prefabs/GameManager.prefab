@@ -34,8 +34,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1974473820394908}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 48.792484, y: 0, z: -92.59}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -86,9 +86,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentLevelInvisibleTime: 120
   blinkTime: 5
-  blinkAlphaTresholdTop: 0.5
-  blinkAlphaTresholdBottom: 0.05
-  numberOfBlinks: 5
+  blinkAlphaTresholdTop: 0.6
+  blinkAlphaTresholdBottom: 0.01
+  numberOfBlinks: 2
+  maxTransparencyITV: 0.75
   resetPlayers: 0
   respawnPickupEffect: {fileID: 1586017220789314, guid: 23180e74501d3ea4f99bf70a362f6ecd,
     type: 2}

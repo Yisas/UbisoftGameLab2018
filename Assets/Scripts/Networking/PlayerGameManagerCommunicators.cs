@@ -11,4 +11,9 @@ public class PlayerGameManagerCommunicators : NetworkBehaviour
         GManager.Instance.ResetCachedObject(type);
     }
 
+    [Command]
+    public void CmdStartGameManagers()
+    {
+        GManager.Instance.StartGameManagers();
+    }
 }
