@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Networking.Match;
+using UnityEngine.SceneManagement;
 
 public class CustomNetworkManager : NetworkManager
 {
+    public int[] buildIndexWithoutPlayerSpawn;
+
     public override void OnServerConnect(NetworkConnection conn)
     {
         base.OnServerConnect(conn);
@@ -29,5 +33,18 @@ public class CustomNetworkManager : NetworkManager
 #endif
 
         GetComponent<NetworkManagerHUD>().showGUI = false;
+    }
+
+    public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+    {
+        for(int i =0; i < buildIndexWithoutPlayerSpawn.Length; i++)
+        {
+            if(SceneManager.GetActiveScene().buildIndex == buildIndexWithoutPlayerSpawn[i])
+            {
+                return;
+            }
+        }
+
+        base.OnServerAddPlayer(conn, playerControllerId);
     }
 }
