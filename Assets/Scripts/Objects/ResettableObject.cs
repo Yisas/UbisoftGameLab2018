@@ -47,12 +47,6 @@ public class ResettableObject : NetworkBehaviour
         // If a resettable object touches the deadzone then it will be reset to its original position.
         if (other.gameObject.layer == LayerMask.NameToLayer("Deadzone"))
         {
-            if (gameObject.CompareTag("Player"))
-            {
-                PlayerObjectInteraction playerInteraction = gameObject.GetComponent<PlayerObjectInteraction>();
-                if (playerInteraction != null && playerInteraction.heldObj != null)
-                    playerInteraction.DropPickup();
-            }
             Reset();
         }
     }
@@ -70,8 +64,8 @@ public class ResettableObject : NetworkBehaviour
 
     public void Reset(bool preventRespawnEffect = false)
     {
-        Vector3 ogPosition = GManager.Instance.GetPositionOfResettableObject(idInGameManager);
-        Quaternion ogRotation = GManager.Instance.GetRotationOfResettableObject(idInGameManager);
+        Vector3 ogPosition = GManager.Instance.GetPositionOfResettableObject();
+        Quaternion ogRotation = GManager.Instance.GetRotationOfResettableObject();
 
         if (transform.tag == "Pickup" && !preventRespawnEffect)
         {
@@ -103,14 +97,13 @@ public class ResettableObject : NetworkBehaviour
 
     private void OnDestroy()
     {
-        //GManager.Instance.RegisterResettableObjectDestroyed(idInGameManager, GetComponent<PickupableObject>().Type);
     }
 
     public bool IsMoved
     {
         get
         {
-            if (Vector3.Distance(GManager.Instance.GetPositionOfResettableObject(idInGameManager), transform.position) > distanceMovedThreshold)
+            if (Vector3.Distance(GManager.Instance.GetPositionOfResettableObject(), transform.position) > distanceMovedThreshold)
                 isMoved = true;
             else
                 isMoved = false;
@@ -132,7 +125,7 @@ public class ResettableObject : NetworkBehaviour
 
     public Vector3 OriginalPosition
     {
-        get { return GManager.Instance.GetPositionOfResettableObject(idInGameManager); }
+        get { return GManager.Instance.GetPositionOfResettableObject(); }
     }
 
     public int ID

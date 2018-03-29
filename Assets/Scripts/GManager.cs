@@ -39,9 +39,8 @@ public class GManager : NetworkBehaviour
     [SyncVar]
     private bool clientsConnected = false;
 
-    private List<ResettableObject> resettableObjects = new List<ResettableObject>();
-    private List<Vector3> positionsOfResettableObjects = new List<Vector3>();
-    private List<Quaternion> rotationsOfResettableObjects = new List<Quaternion>();
+    private Vector3 positionOfResettableObject;
+    private Quaternion rotationOfResettableObject;
 
     private void Awake()
     {
@@ -152,15 +151,9 @@ public class GManager : NetworkBehaviour
             currentLevelTime += Time.deltaTime;
         }
 
-        if ((isServer && !clientsConnected && GetComponent<NetworkIdentity>().observers.Count == 2) ||
-            /*Duck tape condition for racing condition on players not appearing in the scene during this call. Very bad code. I'm sorry.*/
-            (clientsConnected && resettableObjects.Count <= 3))
+        if (isServer && !clientsConnected && GetComponent<NetworkIdentity>().observers.Count == 2)
         {
             clientsConnected = true;
-
-            CommonRegisterAllResettableObjects();
-
-            RpcRegisterAllResettableObjects();
 
             // Spawn cached objects
             for (int i = 0; i < spawnableInteractableObjects.Length; i++)
@@ -168,89 +161,10 @@ public class GManager : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    private void RpcRegisterAllResettableObjects()
+    public void RegisterResettableObject(Vector3 positionOfResettableObject, Quaternion rotationOfResettalbeObject)
     {
-        if (!isServer)
-        {
-            CommonRegisterAllResettableObjects();
-        }
-    }
-
-    private void CommonRegisterAllResettableObjects()
-    {
-        FindPlayers();
-
-        if (player1 && player2)
-        {
-            // Make sure to register players first
-            RegisterResettableObject(player1.GetComponent<ResettableObject>());
-            RegisterResettableObject(player2.GetComponent<ResettableObject>());
-
-            // Register resettable objects positions
-            foreach (ResettableObject ro in GameObject.FindObjectsOfType<ResettableObject>())
-            {
-                if (ro.tag != "Player" && !ro.wasSpawnedByGameManager)
-                    RegisterResettableObject(ro);
-            }
-        }
-    }
-
-    public void RegisterResettableObject(ResettableObject ro)
-    {
-        ro.ID = resettableObjects.Count;
-        resettableObjects.Add(ro);
-        positionsOfResettableObjects.Add(ro.transform.position);
-        rotationsOfResettableObjects.Add(ro.transform.rotation);
-    }
-
-    public void RegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
-    {
-        CommonRegisterResettableObjectDestroyed(id, type);
-
-        if (isServer)
-        {
-            RpcRegisterResettableObjectDestroyed(id, type);
-        }
-        else
-        {
-            CmdRegisterResettableObjectDestroyed(id, type);
-        }
-    }
-
-    public void CommonRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
-    {
-        // Cached object should become the resettable object reference
-        if (isServer)
-        {
-            Debug.Log("server");
-            serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
-            resettableObjects[id] = serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
-        }
-        else
-        {
-            Debug.Log("client");
-            clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().ID = id;
-            resettableObjects[id] = clientAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>();
-        }
-    }
-
-    [ClientRpc]
-    private void RpcRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
-    {
-        if (!isServer)
-            CommonRegisterResettableObjectDestroyed(id, type);
-    }
-
-    [Command]
-    private void CmdRegisterResettableObjectDestroyed(int id, PickupableObject.PickupableType type)
-    {
-        CommonRegisterResettableObjectDestroyed(id, type);
-    }
-
-    public void DeRegisterResettableObject(ResettableObject ro)
-    {
-        resettableObjects.Remove(ro);
+            this.positionOfResettableObject = positionOfResettableObject;
+            this.rotationOfResettableObject = rotationOfResettalbeObject;
     }
 
     // When the player falls into lava with a carried object, the cached one should be reset and a new one should be cached
@@ -263,14 +177,14 @@ public class GManager : NetworkBehaviour
         }
     }
 
-    public Vector3 GetPositionOfResettableObject(int id)
+    public Vector3 GetPositionOfResettableObject()
     {
-        return positionsOfResettableObjects[id];
+        return positionOfResettableObject;
     }
 
-    public Quaternion GetRotationOfResettableObject(int id)
+    public Quaternion GetRotationOfResettableObject()
     {
-        return rotationsOfResettableObjects[id];
+        return rotationOfResettableObject;
     }
 
     public void ResetAllResetableObjects(bool resetPlayers)
