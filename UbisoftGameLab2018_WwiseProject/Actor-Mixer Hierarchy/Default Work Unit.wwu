@@ -535,6 +535,17 @@
 					<ChildrenList>
 						<ActorMixer Name="door" ID="{D3E16E4F-4E19-4DED-9439-4EA977AC31EC}" ShortID="721048961">
 							<PropertyList>
+								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
 										<Value>4</Value>
@@ -707,6 +718,17 @@
 						</BlendContainer>
 						<BlendContainer Name="button_activate" ID="{E2211E4E-F7AF-430A-B2A5-0826E8527C64}" ShortID="176156317">
 							<PropertyList>
+								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
+								<Property Name="MaxSoundPerInstance" Type="int16">
+									<ValueList>
+										<Value>1</Value>
+									</ValueList>
+								</Property>
+								<Property Name="UseMaxSoundPerInstance" Type="bool">
+									<ValueList>
+										<Value>True</Value>
+									</ValueList>
+								</Property>
 								<Property Name="Volume" Type="Real64">
 									<ValueList>
 										<Value>-6</Value>

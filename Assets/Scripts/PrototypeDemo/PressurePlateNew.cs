@@ -162,6 +162,7 @@ public class PressurePlateNew : DoorAnimatorBehaviour
 
             SetClosed();
             AkSoundEngine.PostEvent("button_activate", gameObject);
+            AkSoundEngine.PostEvent("door_woodslide", gameObject);
 
             Door[] doors = target.GetComponentsInChildren<Door>();
             foreach (Door d in doors)
