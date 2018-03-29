@@ -22,6 +22,19 @@ public class ResettableObject : NetworkBehaviour
 
     private float currentPowCooldown;
 
+    [SyncVar]
+    public bool wasSpawnedByGameManager = false;
+
+    [SyncVar]
+    private Vector3 originalPosition;
+    [SyncVar]
+    private Quaternion originalRotation;
+
+    [SyncVar]
+    public bool hasOriginalPosition = false;
+    [SyncVar]
+    public bool hasOriginalRotation = false;
+
     // Distance from the original position for the object to be considered moved
     private const float distanceMovedThreshold = 5.0f;
 
@@ -44,12 +57,6 @@ public class ResettableObject : NetworkBehaviour
         // If a resettable object touches the deadzone then it will be reset to its original position.
         if (other.gameObject.layer == LayerMask.NameToLayer("Deadzone"))
         {
-            if (gameObject.CompareTag("Player"))
-            {
-                PlayerObjectInteraction playerInteraction = gameObject.GetComponent<PlayerObjectInteraction>();
-                if (playerInteraction != null && playerInteraction.heldObj != null)
-                    playerInteraction.DropPickup();
-            }
             Reset();
         }
     }
@@ -67,8 +74,19 @@ public class ResettableObject : NetworkBehaviour
 
     public void Reset(bool preventRespawnEffect = false)
     {
-        Vector3 ogPosition = GManager.Instance.GetPositionOfResettableObject(idInGameManager);
-        Quaternion ogRotation = GManager.Instance.GetRotationOfResettableObject(idInGameManager);
+        Vector3 ogPosition;
+        Quaternion ogRotation;
+
+        if (tag != "Player")
+        {
+            ogPosition = originalPosition;
+            ogRotation = originalRotation;
+        }
+        else
+        {
+            ogPosition = GManager.Instance.GetOriginalPositionOfPlayer();
+            ogRotation = GManager.Instance.GetOriginalRotationOfPlayer();
+        }
 
         if (transform.tag == "Pickup" && !preventRespawnEffect)
         {
@@ -98,19 +116,21 @@ public class ResettableObject : NetworkBehaviour
         transform.rotation = ogRotation;
     }
 
-    private void OnDestroy()
-    {
-        GManager.Instance.RegisterResettableObjectDestroyed(idInGameManager, GetComponent<PickupableObject>().Type);
-    }
-
     public bool IsMoved
     {
         get
         {
-            if (Vector3.Distance(GManager.Instance.GetPositionOfResettableObject(idInGameManager), transform.position) > distanceMovedThreshold)
-                isMoved = true;
+            if (hasOriginalPosition)
+            {
+                if (Vector3.Distance(originalPosition, transform.position) > distanceMovedThreshold)
+                    isMoved = true;
+                else
+                    isMoved = false;
+            }
             else
-                isMoved = false;
+            {
+                return false;
+            }
             return isMoved;
         }
     }
@@ -129,7 +149,80 @@ public class ResettableObject : NetworkBehaviour
 
     public Vector3 OriginalPosition
     {
-        get { return GManager.Instance.GetPositionOfResettableObject(idInGameManager); }
+        get { return originalPosition; }
+
+        set
+        {
+            if (!hasOriginalPosition)
+            {
+                hasOriginalPosition = true;
+                originalPosition = value;
+
+                if (isServer)
+                {
+                    RpcSetPosition(value);
+                }
+                else
+                {
+                    CmdSetPosition(value);
+                }
+            }
+        }
+    }
+
+    [Command]
+    private void CmdSetPosition(Vector3 value)
+    {
+        hasOriginalPosition = true;
+        originalPosition = value;
+    }
+
+    private void RpcSetPosition(Vector3 value)
+    {
+        if (!isServer)
+        {
+            hasOriginalPosition = true;
+            originalPosition = value;
+        }
+    }
+
+    public Quaternion OriginalRotation
+    {
+        get { return originalRotation; }
+
+        set
+        {
+            if (!hasOriginalRotation)
+            {
+                hasOriginalRotation = true;
+                originalRotation = value;
+
+                if (isServer)
+                {
+                    RpcSetRotation(value);
+                }
+                else
+                {
+                    CmdSetRotation(value);
+                }
+            }
+        }
+    }
+
+    [Command]
+    private void CmdSetRotation(Quaternion value)
+    {
+        hasOriginalRotation = true;
+        originalRotation = value;
+    }
+
+    private void RpcSetRotation(Quaternion value)
+    {
+        if (!isServer)
+        {
+            hasOriginalRotation = true;
+            originalRotation = value;
+        }
     }
 
     public int ID
