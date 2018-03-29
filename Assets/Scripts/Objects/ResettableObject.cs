@@ -25,6 +25,11 @@ public class ResettableObject : NetworkBehaviour
     [SyncVar]
     public bool wasSpawnedByGameManager = false;
 
+    private Vector3 originalPosition;
+    private Quaternion originalRotation;
+    public bool hasOriginalPosition = false;
+    public bool hasOriginalRotation = false;
+
     // Distance from the original position for the object to be considered moved
     private const float distanceMovedThreshold = 5.0f;
 
@@ -69,8 +74,8 @@ public class ResettableObject : NetworkBehaviour
 
         if (tag != "Player")
         {
-            ogPosition = GManager.Instance.GetPositionOfResettableObject();
-            ogRotation = GManager.Instance.GetRotationOfResettableObject();
+            ogPosition = originalPosition;
+            ogRotation = originalRotation;
         }
         else
         {
@@ -110,7 +115,7 @@ public class ResettableObject : NetworkBehaviour
     {
         get
         {
-            if (Vector3.Distance(GManager.Instance.GetPositionOfResettableObject(), transform.position) > distanceMovedThreshold)
+            if (Vector3.Distance(originalPosition, transform.position) > distanceMovedThreshold)
                 isMoved = true;
             else
                 isMoved = false;
@@ -132,7 +137,30 @@ public class ResettableObject : NetworkBehaviour
 
     public Vector3 OriginalPosition
     {
-        get { return GManager.Instance.GetPositionOfResettableObject(); }
+        get { return originalPosition; }
+
+        set
+        {
+            if (!hasOriginalPosition)
+            {
+                hasOriginalPosition = true;
+                originalPosition = value;
+            }
+        }
+    }
+
+    public Quaternion OriginalRotation
+    {
+        get { return originalRotation; }
+
+        set
+        {
+            if (!hasOriginalRotation)
+            {
+                hasOriginalRotation = true;
+                originalRotation = value;
+            }
+        }
     }
 
     public int ID

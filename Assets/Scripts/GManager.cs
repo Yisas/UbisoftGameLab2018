@@ -42,9 +42,6 @@ public class GManager : NetworkBehaviour
     private Vector3 playerResetPosition;
     private Quaternion playerResetRotation;
 
-    private Vector3 positionOfResettableObject;
-    private Quaternion rotationOfResettableObject;
-
     private void Awake()
     {
         Instance = this;
@@ -164,12 +161,6 @@ public class GManager : NetworkBehaviour
         }
     }
 
-    public void RegisterResettableObject(Vector3 positionOfResettableObject, Quaternion rotationOfResettalbeObject)
-    {
-            this.positionOfResettableObject = positionOfResettableObject;
-            this.rotationOfResettableObject = rotationOfResettalbeObject;
-    }
-
     public void RegisterOriginalPlayerResettableObject(Vector3 position, Quaternion rotation)
     {
         playerResetPosition = position;
@@ -184,16 +175,6 @@ public class GManager : NetworkBehaviour
             serverAuthorityCachedObjects[(int)type].GetComponent<ResettableObject>().Reset();
             serverAuthorityCachedObjects[(int)type] = CacheNewObject(type);
         }
-    }
-
-    public Vector3 GetPositionOfResettableObject()
-    {
-        return positionOfResettableObject;
-    }
-
-    public Quaternion GetRotationOfResettableObject()
-    {
-        return rotationOfResettableObject;
     }
 
     public Vector3 GetOriginalPositionOfPlayer()
