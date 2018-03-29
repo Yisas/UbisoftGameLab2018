@@ -71,11 +71,11 @@ public class ButtonPromptsNetworked : MonoBehaviour
     }
 
     void Update()
-    { 
-        //if(player && player.isLocalPlayer && Canvas_Player == null)
-        //{
-        //    NetworkPlayerPromptReferenceStart(player.transform.GetComponentInChildren<Canvas>());
-        //}
+    {
+        if (player && player.isLocalPlayer && Canvas_Player == null)
+        {
+            NetworkPlayerPromptReferenceStart(player.transform.GetComponentInChildren<Canvas>());
+        }
     }
 
     /// <summary>
@@ -159,9 +159,9 @@ public class ButtonPromptsNetworked : MonoBehaviour
                     InteractImg.enabled = false;
 
                     Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
-
-
-                    if (player.GetComponent<PlayerObjectInteraction>().newHeldObj == PlayerObjectInteraction.HoldableType.Pickup) //Checking to see if a player is holding a Pickupable block
+                    
+                    if (player.GetComponent<PlayerObjectInteraction>().newHeldObj == PlayerObjectInteraction.HoldableType.Pickup        //Checking to see if a player is holding a Pickupable block
+                        || player.GetComponent<PlayerObjectInteraction>().newHeldObj == PlayerObjectInteraction.HoldableType.Pushable) //Checking to see if a player is holding a Pushable block
                     {
                         Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
                     }
