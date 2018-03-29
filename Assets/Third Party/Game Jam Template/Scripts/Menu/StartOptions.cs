@@ -114,40 +114,7 @@ public class StartOptions : NetworkBehaviour {
     private void playSceneAudio(string sceneName)
     {
         AkSoundEngine.PostEvent("footsteps_stop", gameObject);
-        switch (sceneName)
-        {
-            case "Vignette 1":
-                AkSoundEngine.PostEvent("menu_stop", gameObject);
-                AkSoundEngine.PostEvent("cs_level1_start", gameObject);
-                break;
-            case "Vignette 2":
-                AkSoundEngine.PostEvent("cs_level2_start", gameObject);
-                break;
-            case "Vignette 3":
-                AkSoundEngine.PostEvent("cs_level3_start", gameObject);
-                break;
-            case "Vignette 4":
-                AkSoundEngine.PostEvent("cs_level4_start", gameObject);
-                break;
-            case "Vignette 5":
-                AkSoundEngine.PostEvent("cs_level5_start", gameObject);
-                break;
-            case "Vignette 6":
-                AkSoundEngine.PostEvent("cs_level6_start", gameObject);
-                break;
-            case "Final Level":
-                AkSoundEngine.PostEvent("cs_level7_start", gameObject);
-                break;
-            default:
-                AkSoundEngine.PostEvent("cs_level1_stop", gameObject);
-                AkSoundEngine.PostEvent("cs_level2_stop", gameObject);
-                AkSoundEngine.PostEvent("cs_level3_stop", gameObject);
-                AkSoundEngine.PostEvent("cs_level4_stop", gameObject);
-                AkSoundEngine.PostEvent("cs_level5_stop", gameObject);
-                AkSoundEngine.PostEvent("cs_level6_stop", gameObject);
-                AkSoundEngine.PostEvent("cs_level7_stop", gameObject);
-                break;
-        }
+
         if (sceneName.Contains("Level"))
         {
             AkSoundEngine.PostEvent("music_level_start", gameObject);            
