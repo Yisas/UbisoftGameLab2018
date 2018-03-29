@@ -1,5 +1,4 @@
-﻿#define LAN_CONNECTION_FIX
-
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,11 +9,12 @@ public class NetworkClientSceneReady : NetworkBehaviour
     // Use this for initialization
     void Start()
     {
-#if LAN_CONNECTION_FIX
-        if (!isServer)
+        if (NetworkManager.singleton.GetComponent<CustomNetworkManagerHUD>().useLANCorrection)
         {
-            ClientScene.AddPlayer(2);
+            if (!isServer)
+            {
+                ClientScene.AddPlayer(2);
+            }
         }
-#endif
     }
 }

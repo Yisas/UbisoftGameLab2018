@@ -18,7 +18,7 @@ public class CustomNetworkManager : NetworkManager
             return;
 #endif
 
-        GetComponent<NetworkManagerHUD>().showGUI = false;
+        GetComponent<CustomNetworkManagerHUD>().showGUI = false;
         GameObject.FindGameObjectWithTag("MenuUI").GetComponent<Canvas>().enabled = true;
     }
 
@@ -32,7 +32,7 @@ public class CustomNetworkManager : NetworkManager
             return;
 #endif
 
-        GetComponent<NetworkManagerHUD>().showGUI = false;
+        GetComponent<CustomNetworkManagerHUD>().showGUI = false;
     }
 
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
