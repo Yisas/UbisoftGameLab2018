@@ -160,6 +160,12 @@ public class ButtonPromptsNetworked : MonoBehaviour
 
                     Canvas_Player.gameObject.GetComponent<Canvas>().enabled = true;
 
+
+                    if (player.GetComponent<PlayerObjectInteraction>().newHeldObj == PlayerObjectInteraction.HoldableType.Pickup) //Checking to see if a player is holding a Pickupable block
+                    {
+                        Canvas_Player.gameObject.GetComponent<Canvas>().enabled = false;
+                    }
+
                 }
                 else
                 {
