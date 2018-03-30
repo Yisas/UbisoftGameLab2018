@@ -162,6 +162,10 @@ public class StartOptions : NetworkBehaviour {
 
     public void NextScene()
     {
+        SkipVignette skipVignette = GameObject.FindObjectOfType<SkipVignette>();
+        if (skipVignette)
+            skipVignette.allowedToSkip = false;
+
         AkSoundEngine.PostEvent("menu_stop", gameObject);
         if (!isServer)
             return;
