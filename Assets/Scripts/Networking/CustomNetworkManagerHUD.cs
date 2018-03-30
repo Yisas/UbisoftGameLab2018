@@ -119,7 +119,14 @@ namespace UnityEngine.Networking
                     }
 
                     useLANCorrection = GUI.Toggle(new Rect(xpos, ypos, 200, 20), !useLANCorrection, "Use Wired LAN corrections");
+                    ypos += spacing;
 
+                    GManager.enablePhase1Glow = GUI.Toggle(new Rect(xpos, ypos, 200, 20), !GManager.enablePhase1Glow, "Enable 2-step transformative element");
+                    ypos += spacing;
+
+                    // Factor time to glow phases
+                    GUI.Label(new Rect(xpos, ypos, 200, 20), "Factor time to glow phase");
+                    GManager.factorTimeToGlowPhase = float.Parse(GUI.TextField(new Rect(xpos + 160, ypos, 30, 20), GManager.factorTimeToGlowPhase.ToString()));
                     ypos += spacing;
                 }
                 else
