@@ -8,6 +8,11 @@ public class SkipVignette : /*NetworkBehaviour*/ MonoBehaviour
     int counter = 1;
     public bool allowedToSkip = true;
 
+    public void Start()
+    {
+        XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, 0, 0);
+    }
+    
     private void Update()
     {
         if (Input.GetButtonDown("Skip Vignette"))
