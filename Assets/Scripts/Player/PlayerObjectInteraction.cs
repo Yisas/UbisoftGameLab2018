@@ -1177,6 +1177,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         get { return defRotateSpeed; }
     }
+
+    private void OnDestroy()
+    {
+        AkSoundEngine.PostEvent("footsteps_stop", gameObject);
+    }
 }
 
 /* NOTE: to check if the player is able to lift an object, and that nothing is above their head, a sphereCheck is used. (line 100)
