@@ -48,6 +48,8 @@ public class GManager : NetworkBehaviour
     private Vector3 playerResetPosition;
     private Quaternion playerResetRotation;
 
+    public GameObject playerFollow;
+
     private void Awake()
     {
         Instance = this;
@@ -338,10 +340,25 @@ public class GManager : NetworkBehaviour
         if (!cameraFollow)
             cameraFollow = Camera.main.GetComponent<CameraFollow>();
 
+        GameObject newTarget = Instantiate(playerFollow);
+        Transform target;
+
         if (idOfPlayerOverriding == 1)
-            cameraFollow.target = player1.GetComponent<PlayerObjectInteraction>().fakeObjects[(int)PickupableObject.PickupableType.Player].transform;
+        {
+            Debug.Log("here");
+            target = player1.GetComponent<PlayerObjectInteraction>().fakeObjects[(int)PickupableObject.PickupableType.Player].transform;
+            newTarget.transform.position = target.position;
+            newTarget.GetComponent<SmoothFollowTarget>().followTarget = player1.GetComponent<PlayerObjectInteraction>().fakeObjects[(int)PickupableObject.PickupableType.Player].transform;
+            cameraFollow.target = newTarget.transform;
+        }
         else
-            cameraFollow.target = player2.GetComponent<PlayerObjectInteraction>().fakeObjects[(int)PickupableObject.PickupableType.Player].transform;
+        {
+            Debug.Log("here");
+            target = player2.GetComponent<PlayerObjectInteraction>().fakeObjects[(int)PickupableObject.PickupableType.Player].transform;
+            newTarget.transform.position = target.position;
+            newTarget.GetComponent<SmoothFollowTarget>().followTarget = player2.GetComponent<PlayerObjectInteraction>().fakeObjects[(int)PickupableObject.PickupableType.Player].transform;
+            cameraFollow.target = newTarget.transform;
+        }
     }
 
     public void RestorePlayerOverride(Vector3 positionToRestoreTo, Quaternion rotationToRestoreTo, int idOfPlayerToRestore)

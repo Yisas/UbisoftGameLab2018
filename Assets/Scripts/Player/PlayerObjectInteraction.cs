@@ -364,7 +364,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
             if (other.tag == "Player" && newHeldObj == HoldableType.None && timeOfThrow + 0.2f < Time.time)
             {
-                //PickupPlayer(other);
+                PickupPlayer(other);
                 return;
             }
         }
