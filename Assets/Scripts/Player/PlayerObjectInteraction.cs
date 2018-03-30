@@ -273,6 +273,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
     #region Collision
     void OnTriggerEnter(Collider other)
     {
+        if ((other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
+            && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
+        {
+            AkSoundEngine.PostEvent("land", gameObject);
+        }
         if (isLocalPlayer && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
             && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y
             && gameObject.GetComponent<Renderer>().enabled)
@@ -291,11 +296,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
                 {
                     AkSoundEngine.PostEvent("appear_object", gameObject);
                 }
-            }
-            else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
-            {
-                AkSoundEngine.PostEvent("impact_thump", gameObject);
-            }
+            }            
         }
 
 

@@ -750,6 +750,34 @@
 						</Action>
 					</ChildrenList>
 				</Event>
+				<Event Name="land" ID="{6D47D79A-ABB3-4597-90FB-697D7F930A0A}">
+					<ChildrenList>
+						<Action Name="" ID="{73B8F95C-88EC-4D24-82CA-CE97B0353A9F}" ShortID="753381328">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="land" ID="{F145C582-3113-4263-8D2D-103023AE781B}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="ghost_hover" ID="{80C642C8-5DAF-4751-8773-02D5F8277C14}">
+					<ChildrenList>
+						<Action Name="" ID="{837A64EC-9F28-4D0F-8883-3E6D29C32088}" ShortID="153648545">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="ghost_hover" ID="{1D4E73E3-94CF-4A0F-8376-492019B804E9}" WorkUnitID="{A51947FF-5AB0-4C48-A5F1-70A0A8EFC3FD}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

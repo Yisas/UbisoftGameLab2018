@@ -355,7 +355,7 @@ public class PlayerMove : NetworkBehaviour
         //play landing sound
         if (groundedCount < landingSoundLength && groundedCount != 0 && GetComponent<Rigidbody>().velocity.y < 1)
         {
-            //AkSoundEngine.PostEvent("impact_thump", gameObject);
+            AkSoundEngine.PostEvent("land", gameObject);
         }
         
         //if we press jump in the air, save the time
