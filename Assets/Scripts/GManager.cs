@@ -219,6 +219,18 @@ public class GManager : NetworkBehaviour
         GameObject[] gos = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[]; //will return an array of all GameObjects in the scene
         foreach (GameObject go in gos)
         {
+            if (layer == GManager.invisiblePlayer2Layer && go.tag == "TeachingP1")
+            {
+                go.GetComponent<MeshRenderer>().enabled = false;
+                continue;
+            }
+
+            if (layer == GManager.invisiblePlayer1Layer && go.tag == "TeachingP2")
+            {
+                go.GetComponent<MeshRenderer>().enabled = false;
+                continue;
+            }
+
             if (enablePhase1Glow && go.layer == invisibleOppositePlayer && go.GetComponent<Renderer>()) //9: Invisible player 1 or 12: Invisible player 2
             {
                 StartCoroutine(WaitAndPrint(go, timeToGlowPhase));
@@ -230,10 +242,28 @@ public class GManager : NetworkBehaviour
                 go.AddComponent<InvisibleToVisible2>();
                 go.GetComponent<InvisibleToVisible2>().regressionTresholdBottom = blinkAlphaTresholdBottom;
                 go.GetComponent<InvisibleToVisible2>().regressionTresholdTop = blinkAlphaTresholdTop;
-                go.GetComponent<InvisibleToVisible2>().numberOfRegressions = numberOfBlinks;
-                go.GetComponent<InvisibleToVisible2>().delayToFadeInTime = currentLevelInvisibleTime;
-                go.GetComponent<InvisibleToVisible2>().FadeInTimeout = blinkTime;
-                go.GetComponent<InvisibleToVisible2>().maxTransparency = maxTransparencyITV;
+
+                if (go.tag == "TeachingP1")
+                {
+                    go.GetComponent<InvisibleToVisible2>().delayToFadeInTime = 5;
+                    go.GetComponent<InvisibleToVisible2>().FadeInTimeout = 3;
+                    go.GetComponent<InvisibleToVisible2>().maxTransparency = maxTransparencyITV;
+                    go.GetComponent<InvisibleToVisible2>().numberOfRegressions = 1;
+                }
+                else if (go.tag == "TeachingP2")
+                {
+                    go.GetComponent<InvisibleToVisible2>().delayToFadeInTime = 10;
+                    go.GetComponent<InvisibleToVisible2>().FadeInTimeout = 3;
+                    go.GetComponent<InvisibleToVisible2>().maxTransparency = maxTransparencyITV;
+                    go.GetComponent<InvisibleToVisible2>().numberOfRegressions = 1;
+                }
+                else
+                {
+                    go.GetComponent<InvisibleToVisible2>().numberOfRegressions = numberOfBlinks;
+                    go.GetComponent<InvisibleToVisible2>().delayToFadeInTime = currentLevelInvisibleTime;
+                    go.GetComponent<InvisibleToVisible2>().FadeInTimeout = blinkTime;
+                    go.GetComponent<InvisibleToVisible2>().maxTransparency = maxTransparencyITV;
+                }
             }
             else if (go.layer == layerNoSecretToPlayer)
             {
