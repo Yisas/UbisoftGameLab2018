@@ -219,7 +219,7 @@ public class GManager : NetworkBehaviour
         GameObject[] gos = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[]; //will return an array of all GameObjects in the scene
         foreach (GameObject go in gos)
         {
-            if (go.layer == invisibleOppositePlayer && go.GetComponent<Renderer>()) //9: Invisible player 1 or 12: Invisible player 2
+            if (enablePhase1Glow && go.layer == invisibleOppositePlayer && go.GetComponent<Renderer>()) //9: Invisible player 1 or 12: Invisible player 2
             {
                 StartCoroutine(WaitAndPrint(go, timeToGlowPhase));
                 continue;
