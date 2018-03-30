@@ -274,7 +274,8 @@ public class PlayerObjectInteraction : NetworkBehaviour
     void OnTriggerEnter(Collider other)
     {
         if (isLocalPlayer && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
-            && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
+            && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y
+            && gameObject.GetComponent<Renderer>().enabled)
         {
             XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, vibrationIntensity, vibrationIntensity);
             vibrationTime = bumpVibrationDuration;
