@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VignetteSoundPlayer : MonoBehaviour
+public class VignetteNarrationPlayer : MonoBehaviour
 {
 
     public int vignetteNumber;
@@ -10,10 +10,10 @@ public class VignetteSoundPlayer : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        AkSoundEngine.PostEvent("footsteps_stop", gameObject);
         switch ("Vignette " + vignetteNumber)
         {
             case "Vignette 1":
-                AkSoundEngine.PostEvent("menu_stop", gameObject);
                 AkSoundEngine.PostEvent("cs_level1_start", gameObject);
                 break;
             case "Vignette 2":
@@ -31,7 +31,7 @@ public class VignetteSoundPlayer : MonoBehaviour
             case "Vignette 6":
                 AkSoundEngine.PostEvent("cs_level6_start", gameObject);
                 break;
-            case "Final Level":
+            case "Vignette 7":
                 AkSoundEngine.PostEvent("cs_level7_start", gameObject);
                 break;
             default:
@@ -44,5 +44,17 @@ public class VignetteSoundPlayer : MonoBehaviour
                 AkSoundEngine.PostEvent("cs_level7_stop", gameObject);
                 break;
         }
+    }
+
+    private void OnDestroy()
+    {
+        AkSoundEngine.PostEvent("cs_level1_stop", gameObject);
+        AkSoundEngine.PostEvent("cs_level1_stop", gameObject);
+        AkSoundEngine.PostEvent("cs_level2_stop", gameObject);
+        AkSoundEngine.PostEvent("cs_level3_stop", gameObject);
+        AkSoundEngine.PostEvent("cs_level4_stop", gameObject);
+        AkSoundEngine.PostEvent("cs_level5_stop", gameObject);
+        AkSoundEngine.PostEvent("cs_level6_stop", gameObject);
+        AkSoundEngine.PostEvent("cs_level7_stop", gameObject);
     }
 }
