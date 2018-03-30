@@ -8,6 +8,7 @@ public class PickupableObject : NetworkBehaviour
     public enum PickupableType { Box = 0, Vase = 1, Torch = 2, BigBox = 3, Player = 4 }
     [SerializeField]
     private PickupableType type;
+    private float distanceToPlayer;
 
     public PickupableType Type
     {

@@ -33,6 +33,7 @@ public class Door : DoorAnimatorBehaviour
             SetOpen();
             lockStay = true;
             Portal.Instance.enableRays();
+            AkSoundEngine.PostEvent("door_unlock", gameObject);
             //if(doorStaysOpen)
             //{
             //    displayTest.enabled = false;

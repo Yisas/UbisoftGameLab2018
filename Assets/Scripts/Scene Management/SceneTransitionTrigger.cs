@@ -16,7 +16,7 @@ public class SceneTransitionTrigger : MonoBehaviour {
             {
                 menu.GetComponent<StartOptions>().NextScene();
 
-                AkSoundEngine.PostEvent("LevelComplete", gameObject);
+                //AkSoundEngine.PostEvent("LevelComplete", gameObject);
                 foreach(Transform child in transform)
                 {
                     child.gameObject.SetActive(true);
@@ -35,22 +35,10 @@ public class SceneTransitionTrigger : MonoBehaviour {
             if(other.GetComponent<PlayerMove>().PlayerID == 1)
             {
                 player1In = true;
-
-                // check if carryingplayer in
-                if(other.GetComponent<PlayerObjectInteraction>().newHeldObj != PlayerObjectInteraction.HoldableType.None)
-                {
-                    player2In = true;
-                }
             }
             else
             {
                 player2In = true;
-
-                // check if carryingplayer in
-                if (other.GetComponent<PlayerObjectInteraction>().newHeldObj != PlayerObjectInteraction.HoldableType.None)
-                {
-                    player1In = true;
-                }
             }
         }
     }

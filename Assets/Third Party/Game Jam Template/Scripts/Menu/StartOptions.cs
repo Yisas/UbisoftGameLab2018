@@ -38,7 +38,7 @@ public class StartOptions : NetworkBehaviour {
         menuCanvasGroup = GetComponent<CanvasGroup>();
 
         fadeImage.color = menuSettingsData.sceneChangeFadeColor;
-	}
+    }
 
     private void Update()
     {
@@ -58,9 +58,12 @@ public class StartOptions : NetworkBehaviour {
 
     public void StartButtonClicked()
 	{
-		//If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic
-		//To change fade time, change length of animation "FadeToColor"
-		if (menuSettingsData.musicLoopToChangeTo != null) 
+        Cursor.visible = false;
+
+        AkSoundEngine.PostEvent("ui_validate", gameObject);
+        //If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic
+        //To change fade time, change length of animation "FadeToColor"
+        if (menuSettingsData.musicLoopToChangeTo != null) 
 		{
 			playMusic.FadeDown(menuSettingsData.menuFadeTime);
 		}
@@ -105,11 +108,30 @@ public class StartOptions : NetworkBehaviour {
         NetworkServer.SetAllClientsNotReady();
         string path = SceneUtility.GetScenePathByBuildIndex(sceneToStart);
         string sceneName = path.Substring(0, path.Length - 6).Substring(path.LastIndexOf('/') + 1);
+        playSceneAudio(sceneName);
         NetworkManager.singleton.ServerChangeScene(sceneName);
+    }
+
+    private void playSceneAudio(string sceneName)
+    {
+
+
+        //if (sceneName.Contains("Level"))
+        //{
+        //    AkSoundEngine.PostEvent("music_level_start", gameObject);
+        //}
+        //else
+        //{
+        //    AkSoundEngine.PostEvent("music_level_stop", gameObject);
+        //}
     }
 
     public void NextScene()
     {
+        SkipVignette skipVignette = GameObject.FindObjectOfType<SkipVignette>();
+        if (skipVignette)
+            skipVignette.allowedToSkip = false;
+
         if (!isServer)
             return;
 

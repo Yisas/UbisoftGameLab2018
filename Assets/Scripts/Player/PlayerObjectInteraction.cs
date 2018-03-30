@@ -50,6 +50,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private float originalMass;
 
+    //Audio
+    public float crateSoundSpeedThreshold = 1;
+
     // Private references
     private PlayerMove playerMove;
     private CharacterMotor characterMotor;
@@ -258,6 +261,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
             }
         }
 
+        // Play box slide sound if the held object is pushable and player is moving
+        if (newHeldObj == HoldableType.Pushable && characterMotor.currentSpeed.magnitude > crateSoundSpeedThreshold)
+            AkSoundEngine.PostEvent("slide_start", gameObject);
+        else
+            AkSoundEngine.PostEvent("slide_start_stop", gameObject);
         checkIfBoxIsHanging();
     }
     #endregion
@@ -265,8 +273,14 @@ public class PlayerObjectInteraction : NetworkBehaviour
     #region Collision
     void OnTriggerEnter(Collider other)
     {
+        if ((other.tag == "Pushable" || LayerMask.LayerToName(other.gameObject.layer).Contains("Invisible") || LayerMask.LayerToName(other.gameObject.layer).Contains("Appearing"))
+            && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
+        {
+            AkSoundEngine.PostEvent("land", gameObject);
+        }
         if (isLocalPlayer && other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2")
-            && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y)
+            && other.gameObject.layer != 2 /*ignore raycast*/ && other.bounds.max.y > gameObject.GetComponent<Collider>().bounds.max.y
+            && gameObject.GetComponent<Renderer>().enabled)
         {
             XInputDotNetPure.GamePad.SetVibration(XInputDotNetPure.PlayerIndex.One, vibrationIntensity, vibrationIntensity);
             vibrationTime = bumpVibrationDuration;
@@ -280,13 +294,9 @@ public class PlayerObjectInteraction : NetworkBehaviour
             {
                 if (ao.playerToAppearTo == playerMove.PlayerID)
                 {
-                    AkSoundEngine.PostEvent("AppearObject", gameObject);
+                    AkSoundEngine.PostEvent("appear_object", gameObject);
                 }
-            }
-            else if (other.gameObject.layer != LayerMask.NameToLayer("Player 1") && other.gameObject.layer != LayerMask.NameToLayer("Player 2"))
-            {
-                AkSoundEngine.PostEvent("BoxCollide", gameObject);
-            }
+            }            
         }
 
 
@@ -541,6 +551,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (!Physics.CheckSphere(other.position, checkRadius, LayerMask.NameToLayer("Ignore Raycast")))
         {
+            AkSoundEngine.PostEvent("pickup", gameObject);
             if (isLocalPlayer)
             {
                 ResettableObject ro = other.GetComponent<ResettableObject>();
@@ -928,7 +939,7 @@ public class PlayerObjectInteraction : NetworkBehaviour
 
     private void CommonThrowPickup()
     {
-        AkSoundEngine.PostEvent("Throw", gameObject);
+        AkSoundEngine.PostEvent("throw", gameObject);
 
         GameObject throwableToSpawn = null;
         if (isLocalPlayer)
@@ -1086,7 +1097,6 @@ public class PlayerObjectInteraction : NetworkBehaviour
     {
         if (heldObj)
         {
-            AkSoundEngine.PostEvent("Pickup", gameObject);
 
             if (joint)
             {
@@ -1167,6 +1177,11 @@ public class PlayerObjectInteraction : NetworkBehaviour
     public float defaultRotateSpeed
     {
         get { return defRotateSpeed; }
+    }
+
+    private void OnDestroy()
+    {
+        AkSoundEngine.PostEvent("footsteps_stop", gameObject);
     }
 }
 

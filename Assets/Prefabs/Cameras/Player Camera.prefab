@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2000000}
   - component: {fileID: 9200000}
   - component: {fileID: 12400000}
+  - component: {fileID: 114032784165974060}
   - component: {fileID: 11400000}
   - component: {fileID: 4500000}
   - component: {fileID: 114878356331518064}
@@ -22,7 +23,10 @@ GameObject:
   - component: {fileID: 114669128925631986}
   - component: {fileID: 114655108111296586}
   - component: {fileID: 114365365857115258}
-  - component: {fileID: 114706831639721238}
+  - component: {fileID: 114554555877653626}
+  - component: {fileID: 114334013525511524}
+  - component: {fileID: 114157411201573366}
+  - component: {fileID: 114069340463646926}
   m_Layer: 17
   m_Name: Player Camera
   m_TagString: MainCamera
@@ -143,6 +147,46 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100000}
   m_IsPrefabParent: 1
+--- !u!114 &114032784165974060
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a78da3f00f3328541b4526c0b0b5ec5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineThickness: 0
+  lineIntensity: 0.87
+  fillAmount: 0.2
+  lineColor0: {r: 0.99264705, g: 0.99264705, b: 0.99264705, a: 1}
+  lineColor1: {r: 0, g: 1, b: 0, a: 1}
+  lineColor2: {r: 0, g: 0, b: 1, a: 1}
+  additiveRendering: 0
+  backfaceCulling: 1
+  cornerOutlines: 0
+  addLinesBetweenColors: 0
+  scaleWithScreenSize: 1
+  alphaCutoff: 0.5
+  flipY: 0
+  sourceCamera: {fileID: 0}
+  outlineCamera: {fileID: 0}
+  outlineShaderMaterial: {fileID: 0}
+  renderTexture: {fileID: 0}
+  extraRenderTexture: {fileID: 0}
+--- !u!114 &114069340463646926
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e12900426d1676a42b765db03ad85b14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114124582072186660
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -171,7 +215,76 @@ MonoBehaviour:
   _ditherDepth: 0
   _daltonize: 0
   isDirty: 0
+--- !u!114 &114157411201573366
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b9e31fdf962e3e4ca3b62ec3ecc2f4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tonemapper: 0
+  Exposure: 1
+  LinearWhitePoint: 11.2
+  ApplyDithering: 0
+  QualityLevel: 1
+  BlendAmount: 0
+  LutTexture: {fileID: 2800000, guid: c9d790d33929df34c88b8aefc6431e3f, type: 3}
+  LutBlendTexture: {fileID: 0}
+  MaskTexture: {fileID: 0}
+  UseDepthMask: 0
+  DepthMaskCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  UseVolumes: 0
+  ExitVolumeBlendTime: 1
+  TriggerVolumeProxy: {fileID: 0}
+  VolumeCollisionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  EffectFlags:
+    components: []
+  sharedInstanceID: abf7ddbc-5bbe-41f5-9fb7-0986e4c8f667
 --- !u!114 &114254281682996210
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 096fe6ca3e5df1945a3810e4f24764c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_listeners:
+    initialListenerList: []
+    useDefaultListeners: 1
+  isEnvironmentAware: 0
+  isStaticObject: 0
+  m_positionOffsetData:
+    KeepMe: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+  m_posOffsetData: {fileID: 0}
+  listenerMask: 1
+--- !u!114 &114334013525511524
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -225,6 +338,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RenderOrder: 0
+--- !u!114 &114554555877653626
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cee5de4c01387847a498e40ce5b88eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDefaultListener: 1
+  listenerId: 0
 --- !u!114 &114655108111296586
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -250,54 +376,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RenderOrder: 1
---- !u!114 &114706831639721238
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b9e31fdf962e3e4ca3b62ec3ecc2f4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Tonemapper: 0
-  Exposure: 1
-  LinearWhitePoint: 11.2
-  ApplyDithering: 0
-  QualityLevel: 1
-  BlendAmount: 0
-  LutTexture: {fileID: 2800000, guid: 43844b533efa0a149bf8820c46ad7afa, type: 3}
-  LutBlendTexture: {fileID: 0}
-  MaskTexture: {fileID: 0}
-  UseDepthMask: 0
-  DepthMaskCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  UseVolumes: 0
-  ExitVolumeBlendTime: 1
-  TriggerVolumeProxy: {fileID: 0}
-  VolumeCollisionMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  EffectFlags:
-    components: []
-  sharedInstanceID: f18895de-7005-4a58-8104-2441a931c1a0
 --- !u!114 &114768446379573488
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -310,7 +388,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RenderOrder: 0
-  callBackImageEffect: {fileID: 0}
+  callBackImageEffect: {fileID: 114534868319236936}
   callBackImageEffectOpaque: {fileID: 0}
   ShadowFix: 1
   TemporalSampling: 1
@@ -365,39 +443,39 @@ MonoBehaviour:
   MapToLDR: 0
   RemoveColorBanding: 1
   MatrixVP:
-    e00: 0.4436129
+    e00: -0.07462102
     e01: 0
-    e02: -0.83783925
-    e03: 13.346176
-    e10: 0
-    e11: -1.7320508
-    e12: 0
-    e13: 5.7330875
-    e20: -0.0002651737
+    e02: 0.8819248
+    e03: 115.98416
+    e10: -0.0005288982
+    e11: -1.428148
+    e12: -0.000044453944
+    e13: 3.9563844
+    e20: 0.0000099783965
     e21: 0
-    e22: -0.0001404022
-    e23: 0.2983845
-    e30: 0.8837657
+    e22: 0.0000008386852
+    e23: 0.009992281
+    e30: -0.9964864
     e31: 0
-    e32: 0.46792972
-    e33: 5.684173
+    e32: -0.08375478
+    e33: 0.78080654
   LastMatrixVP:
-    e00: 0.4436129
+    e00: -0.074129336
     e01: 0
-    e02: -0.83783925
-    e03: 13.346176
-    e10: 0
-    e11: 1.7320508
-    e12: 0
-    e13: -5.7330875
-    e20: -0.0002651737
+    e02: 0.8819662
+    e03: 115.98377
+    e10: -0.0005288982
+    e11: 1.428148
+    e12: -0.000044453944
+    e13: -3.9555557
+    e20: 0.0000099783965
     e21: 0
-    e22: -0.0001404022
-    e23: 0.2983845
-    e30: 0.8837657
+    e22: 0.0000008386852
+    e23: 0.009992281
+    e30: -0.9964864
     e31: 0
-    e32: 0.46792972
-    e33: 5.684173
+    e32: -0.08375478
+    e33: 0.78080654
   LastMatrixVPInv:
     e00: 0
     e01: 0
@@ -450,18 +528,18 @@ MonoBehaviour:
     e32: 0
     e33: 0
   MatrixV:
-    e00: 0.46792972
+    e00: -0.08375478
     e01: 0
-    e02: -0.8837657
-    e03: 14.077751
+    e02: 0.9964864
+    e03: 131.04387
     e10: 0
     e11: 1
     e12: 0
-    e13: -3.3099997
-    e20: -0.8837657
+    e13: -2.77
+    e20: 0.9964864
     e21: 0
-    e22: -0.46792972
-    e23: -5.684173
+    e22: 0.08375478
+    e23: -0.78080654
     e30: 0
     e31: 0
     e32: 0
