@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2000000}
   - component: {fileID: 9200000}
   - component: {fileID: 12400000}
+  - component: {fileID: 114032784165974060}
   - component: {fileID: 11400000}
   - component: {fileID: 4500000}
   - component: {fileID: 114878356331518064}
@@ -25,6 +26,7 @@ GameObject:
   - component: {fileID: 114554555877653626}
   - component: {fileID: 114334013525511524}
   - component: {fileID: 114157411201573366}
+  - component: {fileID: 114069340463646926}
   m_Layer: 17
   m_Name: Player Camera
   m_TagString: MainCamera
@@ -145,6 +147,46 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100000}
   m_IsPrefabParent: 1
+--- !u!114 &114032784165974060
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a78da3f00f3328541b4526c0b0b5ec5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineThickness: 0
+  lineIntensity: 0.87
+  fillAmount: 0.2
+  lineColor0: {r: 0.99264705, g: 0.99264705, b: 0.99264705, a: 1}
+  lineColor1: {r: 0, g: 1, b: 0, a: 1}
+  lineColor2: {r: 0, g: 0, b: 1, a: 1}
+  additiveRendering: 0
+  backfaceCulling: 1
+  cornerOutlines: 0
+  addLinesBetweenColors: 0
+  scaleWithScreenSize: 1
+  alphaCutoff: 0.5
+  flipY: 0
+  sourceCamera: {fileID: 0}
+  outlineCamera: {fileID: 0}
+  outlineShaderMaterial: {fileID: 0}
+  renderTexture: {fileID: 0}
+  extraRenderTexture: {fileID: 0}
+--- !u!114 &114069340463646926
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e12900426d1676a42b765db03ad85b14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114124582072186660
 MonoBehaviour:
   m_ObjectHideFlags: 1
