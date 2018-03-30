@@ -38,7 +38,6 @@ public class StartOptions : NetworkBehaviour {
         menuCanvasGroup = GetComponent<CanvasGroup>();
 
         fadeImage.color = menuSettingsData.sceneChangeFadeColor;
-        AkSoundEngine.PostEvent("menu_start", gameObject);
     }
 
     private void Update()
@@ -113,21 +112,20 @@ public class StartOptions : NetworkBehaviour {
 
     private void playSceneAudio(string sceneName)
     {
-        AkSoundEngine.PostEvent("footsteps_stop", gameObject);
 
-        if (sceneName.Contains("Level"))
-        {
-            AkSoundEngine.PostEvent("music_level_start", gameObject);            
-        }
-        else
-        {
-            AkSoundEngine.PostEvent("music_level_stop", gameObject);          
-        }
+
+        //if (sceneName.Contains("Level"))
+        //{
+        //    AkSoundEngine.PostEvent("music_level_start", gameObject);
+        //}
+        //else
+        //{
+        //    AkSoundEngine.PostEvent("music_level_stop", gameObject);
+        //}
     }
 
     public void NextScene()
     {
-        AkSoundEngine.PostEvent("menu_stop", gameObject);
         if (!isServer)
             return;
 
