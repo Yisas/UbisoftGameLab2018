@@ -59,6 +59,8 @@ public class StartOptions : NetworkBehaviour {
 
     public void StartButtonClicked()
 	{
+        Cursor.visible = false;
+
         AkSoundEngine.PostEvent("ui_validate", gameObject);
         //If changeMusicOnStart is true, fade out volume of music group of AudioMixer by calling FadeDown function of PlayMusic
         //To change fade time, change length of animation "FadeToColor"

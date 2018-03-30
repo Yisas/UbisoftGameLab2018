@@ -35,22 +35,10 @@ public class SceneTransitionTrigger : MonoBehaviour {
             if(other.GetComponent<PlayerMove>().PlayerID == 1)
             {
                 player1In = true;
-
-                // check if carryingplayer in
-                if(other.GetComponent<PlayerObjectInteraction>().newHeldObj != PlayerObjectInteraction.HoldableType.None)
-                {
-                    player2In = true;
-                }
             }
             else
             {
                 player2In = true;
-
-                // check if carryingplayer in
-                if (other.GetComponent<PlayerObjectInteraction>().newHeldObj != PlayerObjectInteraction.HoldableType.None)
-                {
-                    player1In = true;
-                }
             }
         }
     }
