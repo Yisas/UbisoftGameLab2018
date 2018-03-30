@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class SkipVignette : /*NetworkBehaviour*/ MonoBehaviour
 {
+    int counter = 1;
+
     private void Update()
     {
         if (Input.GetButtonDown("Skip Vignette"))
@@ -24,17 +26,21 @@ public class SkipVignette : /*NetworkBehaviour*/ MonoBehaviour
 
     void Skip()
     {
-        GameObject menu = GameObject.FindGameObjectWithTag("MenuUI");
-        if (menu != null)
+        counter--;
+        if (counter == 0)
         {
-            menu.GetComponent<StartOptions>().NextScene();
-
-            foreach (Transform child in transform)
+            GameObject menu = GameObject.FindGameObjectWithTag("MenuUI");
+            if (menu != null)
             {
-                child.gameObject.SetActive(true);
-            }
+                menu.GetComponent<StartOptions>().NextScene();
 
-            this.enabled = false;
+                foreach (Transform child in transform)
+                {
+                    child.gameObject.SetActive(true);
+                }
+
+                this.enabled = false;
+            }
         }
     }
 
