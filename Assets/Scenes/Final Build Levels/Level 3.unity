@@ -5175,9 +5175,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 244347040}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: cfa7915e901982a4ab8c2b77df4284b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  triggerList: f7e1664c
+  useOtherObject: 0
+  actionOnEventType: 0
+  curveInterpolation: 4
+  enableActionOnEvent: 0
+  eventID: 0
+  m_callbackData: {fileID: 0}
+  playingId: 0
+  soundEmitterObject: {fileID: 0}
+  transitionDuration: 0
+  valueGuid: 00000000000000000000000000000000
 --- !u!23 &244347042
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5258,9 +5269,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 244347040}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 514b0d5ba62d290408d2837a9ce4224b, type: 3}
+  m_Script: {fileID: 11500000, guid: 096fe6ca3e5df1945a3810e4f24764c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_listeners:
+    initialListenerList: []
+    useDefaultListeners: 1
+  isEnvironmentAware: 1
+  isStaticObject: 0
+  m_positionOffsetData:
+    KeepMe: 0
+    positionOffset: {x: 0, y: 0, z: 0}
+  m_posOffsetData: {fileID: 0}
+  listenerMask: 1
 --- !u!114 &244347047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6337,7 +6358,7 @@ GameObject:
   - component: {fileID: 355657334}
   - component: {fileID: 355657333}
   - component: {fileID: 355657332}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: top2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12759,7 +12780,7 @@ Prefab:
     - target: {fileID: 114927424902240250, guid: cc3092e7c668e8744bf90ab5e03eb4f1,
         type: 2}
       propertyPath: currentLevelInvisibleTime
-      value: 130
+      value: 180
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cc3092e7c668e8744bf90ab5e03eb4f1, type: 2}
@@ -13333,7 +13354,7 @@ GameObject:
   - component: {fileID: 1117255577}
   - component: {fileID: 1117255576}
   - component: {fileID: 1117255575}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: top1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16948,7 +16969,7 @@ GameObject:
   - component: {fileID: 1541806837}
   - component: {fileID: 1541806836}
   - component: {fileID: 1541806835}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: top4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23271,7 +23292,7 @@ GameObject:
   - component: {fileID: 1839025529}
   - component: {fileID: 1839025528}
   - component: {fileID: 1839025527}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: top3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
