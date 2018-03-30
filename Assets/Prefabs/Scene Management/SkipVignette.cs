@@ -6,12 +6,19 @@ using UnityEngine;
 public class SkipVignette : /*NetworkBehaviour*/ MonoBehaviour
 {
     int counter = 1;
+    public bool allowedToSkip = true;
 
     private void Update()
     {
         if (Input.GetButtonDown("Skip Vignette"))
         {
-            Skip();
+            if (allowedToSkip)
+            {
+                allowedToSkip = false;
+                Skip();
+            }
+            else
+                return;
             //if (isServer)
             //{
             //    Debug.Log("Skipping Vignette");
