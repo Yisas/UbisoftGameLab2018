@@ -9,6 +9,9 @@ public class GManager : NetworkBehaviour
     public static float currentLevelTime;
     public static float adaptedCurrentLevelTime;
     public static bool isPaused = false;
+    public static float previousNoHintsTime = 0; //Time phase 0 last level
+    public static float factorTimeToGlowPhase = 0.70f; //factor time to glow phase
+    private float timeToGlowPhase = 0;
     public float currentLevelInvisibleTime = 120; //120secs or any set. Delay time. After this time stuff will start appearing
     public float blinkTime = 5; //200secs*numberOfBlinks to fade in everything
     public float blinkAlphaTresholdTop = 0.5f;
@@ -23,7 +26,7 @@ public class GManager : NetworkBehaviour
     public static int nonTransparentLayer = 24;
     public static string bordersNameTop = "top";
     public static string bordersNameSide = "side";
-
+    public static bool enablePhase1Glow = true;
     public static int invisiblePlayer1Layer = 9;
     public static int invisiblePlayer2Layer = 12;
 
@@ -52,7 +55,10 @@ public class GManager : NetworkBehaviour
 
     private void Start()
     {
+        timeToGlowPhase = factorTimeToGlowPhase * currentLevelInvisibleTime;
         lastLevelFinishedTime = currentLevelTime;
+
+        if (enablePhase1Glow) lastLevelFinishedTime -= previousNoHintsTime;
         currentLevelTime = 0;
 
         if (lastLevelFinishedTime == 0) return;
@@ -64,6 +70,10 @@ public class GManager : NetworkBehaviour
         }
         adaptedCurrentLevelTime = currentLevelInvisibleTime + (currentLevelInvisibleTime * extraPercentageTime);
         lastLevelFixedTime = currentLevelInvisibleTime;
+        previousNoHintsTime = timeToGlowPhase;
+
+        if (enablePhase1Glow)
+            currentLevelInvisibleTime += timeToGlowPhase;
     }
 
     /// <summary>
@@ -203,12 +213,18 @@ public class GManager : NetworkBehaviour
         }
     }
 
-    public void setInvisibleToVisibleWorld(int layer, int layerNoSecretToPlayer)
+    public void setInvisibleToVisibleWorld(int layer, int layerNoSecretToPlayer, int invisibleOppositePlayer)
     {
         //Call this in a method in camera thing where filtering
         GameObject[] gos = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[]; //will return an array of all GameObjects in the scene
         foreach (GameObject go in gos)
         {
+            if (go.layer == invisibleOppositePlayer && go.GetComponent<Renderer>()) //9: Invisible player 1 or 12: Invisible player 2
+            {
+                StartCoroutine(WaitAndPrint(go, timeToGlowPhase));
+                continue;
+            }
+
             if (go.layer == layer && go.GetComponent<Renderer>()) //9: Invisible player 1 or 12: Invisible player 2
             {
                 go.AddComponent<InvisibleToVisible2>();
@@ -223,7 +239,14 @@ public class GManager : NetworkBehaviour
             {
                 go.GetComponent<Renderer>().enabled = false;
             }
+
         }
+    }
+
+    private IEnumerator WaitAndPrint(GameObject go, float timeToGlow)
+    {
+        yield return new WaitForSeconds(timeToGlow);
+        go.AddComponent<cakeslice.Outline>();
     }
 
     /// <summary>

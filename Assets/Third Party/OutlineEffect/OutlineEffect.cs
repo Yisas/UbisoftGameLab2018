@@ -51,7 +51,7 @@ namespace cakeslice
 
         private readonly LinkedSet<Outline> outlines = new LinkedSet<Outline>();
 
-        [Range(1.0f, 6.0f)]
+        [Range(0.0f, 6.0f)]
         public float lineThickness = 1.25f;
         [Range(0, 10)]
         public float lineIntensity = .5f;
