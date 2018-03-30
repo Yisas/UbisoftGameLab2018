@@ -1338,6 +1338,25 @@
 								<ActiveSource Name="land" ID="{C53D143E-DC00-4725-B5B8-9CED42F9562D}" Platform="Linked"/>
 							</ActiveSourceList>
 						</Sound>
+						<Sound Name="Enchanted Valley" ID="{7E01449F-E848-48F2-8810-9AAFB39CDD7D}" ShortID="109152903">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{59BFF714-F90E-4EA2-96D3-4D33FD2DABE2}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{2D2EB2A6-159C-4D21-BCBE-0EB01A5F7288}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Enchanted Valley" ID="{415B9227-79AF-47AC-9E7F-5424F9762E13}" ShortID="753434759">
+									<Language>SFX</Language>
+									<AudioFile>Enchanted Valley.wav</AudioFile>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Enchanted Valley" ID="{415B9227-79AF-47AC-9E7F-5424F9762E13}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
 					</ChildrenList>
 				</Folder>
 				<ActorMixer Name="characters" ID="{5580AAA9-957C-4D38-95AA-CCF34D7ABE53}" ShortID="460914112">
@@ -2879,6 +2898,11 @@
 							</ModifierList>
 						</Property>
 						<Property Name="PositioningType" Type="int16" Value="1"/>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>-12</Value>
+							</ValueList>
+						</Property>
 					</PropertyList>
 					<ReferenceList>
 						<Reference Name="Attenuation">
