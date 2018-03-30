@@ -105,8 +105,6 @@ public class ResettableObject : NetworkBehaviour
             AkSoundEngine.PostEvent("vase_generate", gameObject);
         }
 
-        GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-
         // If a torch, turn off gravity
         PickupableObject pickup = GetComponent<PickupableObject>();
         if (pickup)
@@ -118,6 +116,9 @@ public class ResettableObject : NetworkBehaviour
 
         transform.position = ogPosition;
         transform.rotation = ogRotation;
+
+        GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        GetComponent<Rigidbody>().Sleep();
     }
 
     public bool IsMoved
