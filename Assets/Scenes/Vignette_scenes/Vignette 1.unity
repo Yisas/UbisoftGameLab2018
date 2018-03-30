@@ -578,6 +578,44 @@ Prefab:
     - {fileID: 328348251153810046, guid: 62ad3e99fc41e0e40adf15dc106e3334, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 62ad3e99fc41e0e40adf15dc106e3334, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &835914445 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1526776583658008, guid: 62ad3e99fc41e0e40adf15dc106e3334,
+    type: 2}
+  m_PrefabInternal: {fileID: 835914444}
+--- !u!328 &835914446
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 835914445}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: 34a8371270e6c2541a7bec94d1803056, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 359539794}
+  m_TargetTexture: {fileID: 0}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: _MainTex
+  m_RenderMode: 0
+  m_AspectRatio: 2
+  m_DataSource: 0
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 1
+  m_TargetAudioSources:
+  - {fileID: 0}
+  m_DirectAudioVolumes:
+  - 1
+  m_Url: 
+  m_EnabledAudioTracks: 01
+  m_DirectAudioMutes: 00
+  m_ControlledAudioTrackCount: 1
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 0
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
 --- !u!114 &841662687 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114471832611235436, guid: dcd76364469916345969dfbad9848046,
