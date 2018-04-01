@@ -10,7 +10,7 @@ public class GManager : NetworkBehaviour
     public static float adaptedCurrentLevelTime;
     public static bool isPaused = false;
     public static float previousNoHintsTime = 0; //Time phase 0 last level
-    public static float factorTimeToGlowPhase = 0.70f; //factor time to glow phase
+    public static float factorTimeToGlowPhase = 0.10f; //factor time to glow phase
     private float timeToGlowPhase = 0;
     public float currentLevelInvisibleTime = 120; //120secs or any set. Delay time. After this time stuff will start appearing
     public float blinkTime = 5; //200secs*numberOfBlinks to fade in everything
