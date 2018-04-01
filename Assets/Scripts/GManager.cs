@@ -21,17 +21,21 @@ public class GManager : NetworkBehaviour
     public static float lastLevelFixedTime;
     public static GManager Instance;
     public bool resetPlayers = false;
-    public static string pickupLayer = "Pickup";
+    public const string pickupLayer = "Pickup";
     public GameObject respawnPickupEffect;
     public static int nonTransparentLayer = 24;
-    public static string bordersNameTop = "top";
-    public static string bordersNameSide = "side";
+    public const string bordersNameTop = "top";
+    public const string bordersNameSide = "side";
     public static bool enablePhase1Glow = true;
     public static int invisiblePlayer1Layer = 9;
     public static int invisiblePlayer2Layer = 12;
+    private const string teachingMomentP1 = "";
 
-    public static int SeeTP1NonCollidable = 20;
-    public static int SeeTP2NonCollidable = 21;
+    public const int SeeTP1NonCollidable = 20;
+    public const int SeeTP2NonCollidable = 21;
+
+    public const string teachingMomentP1Tag = "TeachingP1";
+    public const string teachingMomentP2Tag = "TeachingP2";
 
     private CameraFollow cameraFollow;
     private GameObject player1;
@@ -219,13 +223,13 @@ public class GManager : NetworkBehaviour
         GameObject[] gos = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[]; //will return an array of all GameObjects in the scene
         foreach (GameObject go in gos)
         {
-            if (layer == GManager.invisiblePlayer2Layer && go.tag == "TeachingP1")
+            if (layer == GManager.invisiblePlayer2Layer && go.tag == teachingMomentP1Tag)
             {
                 go.GetComponent<MeshRenderer>().enabled = false;
                 continue;
             }
 
-            if (layer == GManager.invisiblePlayer1Layer && go.tag == "TeachingP2")
+            if (layer == GManager.invisiblePlayer1Layer && go.tag == teachingMomentP2Tag)
             {
                 go.GetComponent<MeshRenderer>().enabled = false;
                 continue;
