@@ -18,7 +18,10 @@ public class FinalScene : MonoBehaviour {
 
         if(internalTimer <= 0)
         {
-            GameObject.FindGameObjectWithTag("MenuUI").GetComponent<StartOptions>().RestartGame();
+            // Temporarily cutting this for final level
+            //GameObject.FindGameObjectWithTag("MenuUI").GetComponent<StartOptions>().RestartGame();
+
+            GameObject.FindGameObjectWithTag("MenuUI").GetComponent<StartOptions>().NextScene();
             this.enabled = false;
         }
 	}
